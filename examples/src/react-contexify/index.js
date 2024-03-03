@@ -1,9 +1,0 @@
-// Change the require statements to dynamic imports
-
-export { default as ContextMenu } from "./Component/ContextMenu";
-export { default as Item } from "./Component/Item";
-export { default as Separator } from "./Component/Separator";
-export { default as menuProvider } from "./ContextMenuProvider";
-
-// Update the dynamic import for index.js
-export const importIndex = () => "./index";
