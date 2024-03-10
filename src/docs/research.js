@@ -16,6 +16,7 @@ const classes = {
     [option.className]: !!option.className,
     'is-selected': isSelected
 }
+
 // key={value}
 // className={optionClass}
 // onMouseDown={this.setValue.bind(this, value, label)}
@@ -39,7 +40,6 @@ const classes = {
  * showCheckbox
  * highlightOption
  * toggleOptionsList
- * keepSearchTerm
  * groupedObject
  * closeIconType // provide icon options take some strings and map it to actual icons
  * groupby // groupby certain key in the list
