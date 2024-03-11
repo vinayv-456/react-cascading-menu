@@ -100,3 +100,17 @@ const classes = {
  * isCompletelySelected(locks/complete till the leaf)
  *
  */
+
+/**
+ * feature priority order:
+ * multi-select
+ * tags
+ * search - autocomplete
+ * lock
+ * select-all
+ * accessability
+ * animations
+ * theme
+ * documentation(storybook)
+ * testcases
+ */

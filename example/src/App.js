@@ -6,7 +6,11 @@ import { menuGroup } from "./constants.js";
 const App = () => {
   return (
     <div>
-      <Index menuGroup={menuGroup} displayValue="value" />
+      <Index
+        menuGroup={menuGroup}
+        isMultiSelection={true}
+        displayValue="value"
+      />
     </div>
   );
 };

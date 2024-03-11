@@ -8,6 +8,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
   const {
     menuGroup,
     isObject,
+    activeItem,
     selectedItems,
     displayValue,
     groupby,
@@ -17,7 +18,6 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
   const { options: opt, ...parentItemObj } = menuGroup;
-  console.log("menuGroup", menuGroup);
 
   /**
    *
@@ -42,6 +42,8 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
       ) : null}
       {options?.map((ele: Item) => {
         const label = isObject ? ele?.[displayValue] : ele;
+        const isSubMenuActive = activeItem?.[groupHeading]?.[ele.id];
+        const isActive = activeItem?.[groupHeading]?.[ele.id]?.id === ele.id;
         return (
           <>
             <div
@@ -53,8 +55,10 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
               <div
                 style={{ width: "100%" }}
                 className={classnames({
-                  active:
+                  "fade-active":
+                    !isActive &&
                     selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                  active: isActive,
                 })}
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
@@ -63,9 +67,10 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
               >
                 {label}
               </div>
-              {selectedItems?.[groupHeading]?.[ele.id] && (
+              {isSubMenuActive && (
                 <DropdownMenu
                   menuGroup={ele}
+                  activeItem={activeItem}
                   selectedItems={selectedItems}
                   isObject={isObject}
                   displayValue={displayValue}
