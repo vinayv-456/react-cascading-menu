@@ -44,9 +44,18 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
         const label = isObject ? ele?.[displayValue] : ele;
         return (
           <>
-            <div key={ele.id} className={classes("dropdown-option")}>
+            <div
+              key={ele.id}
+              className={classnames({
+                "dropdown-option": true,
+              })}
+            >
               <div
                 style={{ width: "100%" }}
+                className={classnames({
+                  active:
+                    selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                })}
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
                   handleItemSelection(ele, groupHeading, parentItemObj)
