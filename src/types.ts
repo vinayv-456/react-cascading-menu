@@ -29,10 +29,14 @@ export interface SelectedItemTypeVal {
   label: string;
   value: string;
   groupHeading: string;
-  parentItemObj: MenuGroup;
+  // connecting front and back to traversing from one to another
+  parentGroup?: string;
+  parentId?: ItemId;
+  childGroup?: string;
+  childId?: ItemId;
 }
 
-type ItemId = number | string;
+export type ItemId = number | string;
 
 export interface SelectedItemType {
   [grpHeading: string]: {
@@ -51,7 +55,7 @@ export interface Props {
   displayValue: string;
   groupby: string;
   caseSensitiveSearch?: boolean;
-  isMultiSelection?: boolean;
+  isMultiSelection: boolean;
   keepSearchTerm?: boolean;
   emptyRecordMsg: string;
   selectionLimit: number;
@@ -63,6 +67,7 @@ export interface Props {
 
 export interface DPItemProps {
   menuGroup: MenuGroup;
+  activeItem: SelectedItemType;
   selectedItems: SelectedItemType;
   isObject: boolean;
   displayValue: string;
