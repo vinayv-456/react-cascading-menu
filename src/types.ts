@@ -16,12 +16,36 @@ export interface ClassNames {
 
 export type Item = ItemObj | string | any; // any - as item can any number of key-value pairs
 
+export interface MenuGroup {
+  id: ItemId;
+  label: string;
+  value: string;
+  groupHeading: string;
+  options?: MenuGroup[];
+}
+
+export interface SelectedItemTypeVal {
+  id: ItemId;
+  label: string;
+  value: string;
+  groupHeading: string;
+  parentItemObj: MenuGroup;
+}
+
+type ItemId = number | string;
+
+export interface SelectedItemType {
+  [grpHeading: string]: {
+    [id: ItemId]: SelectedItemTypeVal;
+  };
+}
+
 export interface Ref {
   test: () => void;
 }
 
 export interface Props {
-  options: Item[];
+  menuGroup: MenuGroup;
   selectedItems: Item;
   isObject: boolean;
   displayValue: string;
@@ -38,9 +62,16 @@ export interface Props {
 }
 
 export interface DPItemProps {
-  options: Item[];
+  menuGroup: MenuGroup;
+  selectedItems: SelectedItemType;
   isObject: boolean;
   displayValue: string;
   groupby: string;
   emptyRecordMsg: string;
+  showNext: boolean;
+  handleItemSelection: (
+    item: MenuGroup,
+    groupHeading: string,
+    parentItemObj: MenuGroup
+  ) => void;
 }

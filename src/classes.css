@@ -1,10 +1,136 @@
-.container {
-  position: relative;
+.dropdown-menu {
+  width: 100%;
+  position: absolute;
+  margin: 0;
+  padding: .25rem 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+  color: #000;
+  font-family: Roboto, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+  font-size: 1rem;
+  letter-spacing: .00937em;
+  line-height: 1.5rem;
+  list-style-type: none;
+  text-decoration: inherit;
+  text-transform: inherit;
+  /* background-color: white; */
+  /* border: 1px solid #ccc; */
+  /* box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, .2),
+    0 8px 10px 1px rgba(0, 0, 0, .14),
+    0 3px 14px 2px rgba(0, 0, 0, .12); */
 }
 
-.dropdown-wrapper {
+.dropdown-group{
+  min-width: 15rem;
+  width: max-content;
+  height: 10rem;
+  max-height: 20rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+  /* background-color: skyblue;
+  border: 1px solid red */
+}
+
+.dropdown-group  .dropdown-group {
+  left: 13rem;
+  min-height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.dropdown-option:hover > .dropdown-group {
+  /* animation: fadeInShow .3s; */
+  display: block;
+}
+
+
+.dropdown-menu .dropdown-group > .dropdown-heading {
+  padding: 8px 10px;
+  color: rgba(51, 51, 51, 1);
+  font-weight: bold;
+  text-transform: capitalize;
+  position: sticky;
+  top: 0px;
+  background-color: white;
+  width: 10rem;
+  display: flex;
+}
+
+
+.dropdown-option {
+  box-sizing: border-box;
+  color: rgba(51, 51, 51, 0.8);
+  cursor: pointer;
+  /* padding: 8px 10px; */
+  align-items: center;
+  display: flex;
+  min-height: 2.5rem;
+  padding: .5rem 1.5rem;
+}
+
+
+.dropdown-option:hover:not(.disabled) {
+  background: rgba(0, 0, 0, .08);
+}
+
+.disabled {
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+
+.show {
+  animation: fadeInShow .3s;
+  display: block;
+}
+
+
+@keyframes fadeInShow {
+  0% {
+    opacity: 0;
+    transform: scale(0)
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1)
+  }
+}
+
+.dropdown-option:last-child {
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.dropdown-option:hover {
+  background-color: #f2f9fc;
+  color: #333;
+}
+
+.dropdown-option.is-selected {
+  background-color: #f2f9fc;
+  color: #333;
+}
+
+.dropdown-noresults {
+  box-sizing: border-box;
+  color: #ccc;
+  cursor: default;
+  display: block;
+  padding: 8px 10px;
+}
+
+/* .container {
   position: relative;
-  overflow: hidden;
+} */
+
+/* .dropdown-wrapper {
+  position: relative;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -14,13 +140,13 @@
   outline: none;
   padding: 8px 52px 8px 10px;
   transition: all 200ms ease;
-}
+} */
 
-.Dropdown-control:hover {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-}
+/* .dp-container{
+  position: relative;
+} */
 
-.Dropdown-arrow {
+/* .dropdown-arrow {
   border-color: #999 transparent transparent;
   border-style: solid;
   border-width: 5px 5px 0;
@@ -34,60 +160,7 @@
   width: 0;
 }
 
-.is-open .Dropdown-arrow {
+.is-open .dropdown-arrow {
   border-color: transparent transparent #999;
   border-width: 0 5px 5px;
-}
-
-.Dropdown-menu {
-  background-color: white;
-  border: 1px solid #ccc;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
-  margin-top: -1px;
-  max-height: 200px;
-  overflow-y: auto;
-  position: absolute;
-  top: 100%;
-  width: 100%;
-  z-index: 1000;
-  -webkit-overflow-scrolling: touch;
-}
-
-.Dropdown-menu .Dropdown-group > .Dropdown-title {
-  padding: 8px 10px;
-  color: rgba(51, 51, 51, 1);
-  font-weight: bold;
-  text-transform: capitalize;
-}
-
-.Dropdown-option {
-  box-sizing: border-box;
-  color: rgba(51, 51, 51, 0.8);
-  cursor: pointer;
-  display: block;
-  padding: 8px 10px;
-}
-
-.Dropdown-option:last-child {
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
-}
-
-.Dropdown-option:hover {
-  background-color: #f2f9fc;
-  color: #333;
-}
-
-.Dropdown-option.is-selected {
-  background-color: #f2f9fc;
-  color: #333;
-}
-
-.Dropdown-noresults {
-  box-sizing: border-box;
-  color: #ccc;
-  cursor: default;
-  display: block;
-  padding: 8px 10px;
-}
+} */

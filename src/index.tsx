@@ -1,18 +1,20 @@
 import React, {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from "react";
-import { Props, Ref } from "./types";
+import { MenuGroup, Props, Ref, SelectedItemType } from "./types";
 import classes from "react-style-classes";
 import DropdownMenu from "./components/DropdownMenu";
+import classNames from "classnames";
 
 const Index = forwardRef<Ref, Props>((props, ref) => {
   const {
-    options,
-    selectedItems,
+    menuGroup,
+    selectedItems: preSelectedItems,
     isObject,
     displayValue,
     groupby,
@@ -30,6 +32,9 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
   const [searchVal, setSearchVal] = useState<string>("");
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const searchBoxRef = useRef<HTMLInputElement>(null);
+  const [selectedItems, setSelectedItems] =
+    useState<SelectedItemType>(preSelectedItems);
+
   useImperativeHandle(ref, () => ({
     test: () => {},
   }));
@@ -38,34 +43,54 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     // focus the search box whenever the click is inside the container
   }, []);
 
-  const handleDpMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    setIsOpen((prev) => !prev);
+  const handleItemSelection = (
+    item: MenuGroup,
+    groupHeading: string,
+    parentItemObj: MenuGroup
+  ) => {
+    const { options, ...itemRest } = item;
+    console.log("new selection", item);
+    // TODO: handled only single selection
+    if (selectedItems?.[groupHeading]?.[item.id]) {
+      // deselect
+      const { [groupHeading]: id, ...restSelected } = selectedItems;
+      setSelectedItems(restSelected);
+    } else {
+      // add item
+      setSelectedItems({
+        ...selectedItems,
+        [groupHeading]: {
+          [item.id]: { ...itemRest, parentItemObj },
+        },
+      });
+    }
   };
+  console.log("selectedItems", selectedItems);
   return (
-    <div className={classes("container")}>
+    <div ref={dropdownWrapperRef}>
+      <input
+        type="text"
+        value={searchVal}
+        onChange={(e) => setSearchVal(e.target.value)}
+        autoComplete="off"
+        ref={searchBoxRef}
+      />
       <div
-        onClick={handleDpMenu}
-        className={classes("dropdown-wrapper")}
-        ref={dropdownWrapperRef}
+        className={classNames({
+          "dropdown-menu": true,
+        })}
       >
-        <input
-          type="text"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          autoComplete="off"
-          ref={searchBoxRef}
-        />
-        {/* add icon here */}
-      </div>
-      {isOpen && (
         <DropdownMenu
-          options={options}
+          menuGroup={menuGroup}
           isObject={isObject}
           displayValue={displayValue}
           groupby={groupby}
           emptyRecordMsg={emptyRecordMsg}
+          showNext={true}
+          selectedItems={selectedItems}
+          handleItemSelection={handleItemSelection}
         />
-      )}
+      </div>
     </div>
   );
 });
@@ -79,4 +104,5 @@ Index.defaultProps = {
   caseSensitiveSearch: true,
   isMultiSelection: false,
   emptyRecordMsg: "No Items",
+  selectedItems: {},
 };

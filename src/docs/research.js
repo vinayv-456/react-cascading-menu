@@ -1,21 +1,20 @@
-
 const { Dropdown } = require("react-bootstrap");
 
 // At dropdown level
 const state = {
-    selected: {label, value}, // should support pre-population
-    isOpen: boolean
+  selected: { label, value }, // should support pre-population
+  isOpen: boolean,
 };
-const dpRef = useRef()
+const dpRef = useRef();
 // implement useClickOutside(hook) but for a change i want to do using event manager
 
 // At item level
 // take className from the user for each item
 const classes = {
-    [`${this.props.baseClassName}-option`]: true,
-    [option.className]: !!option.className,
-    'is-selected': isSelected
-}
+  [`${this.props.baseClassName}-option`]: true,
+  [option.className]: !!option.className,
+  "is-selected": isSelected,
+};
 
 // key={value}
 // className={optionClass}
@@ -28,10 +27,8 @@ const classes = {
 // provide option to provide the class-names for each of the part of the Dropdown
 // baseClassName, controlClassName, placeholderClassName, menuClassName, arrowClassName, arrowClosed, arrowOpen, className
 
-
-
-// multi select 
-// when implementing the useclick outside on a element then we don't neeed to define a ref and then apply useclickoutside hook 
+// multi select
+// when implementing the useclick outside on a element then we don't neeed to define a ref and then apply useclickoutside hook
 // by passing the ref and the clickoutsideHandler
 
 /**
@@ -71,13 +68,35 @@ const classes = {
 
 /**
  * intresting issues
- * if the user is using restSelectedValues and want to notify after completion like he had some dependent task then 
+ * if the user is using restSelectedValues and want to notify after completion like he had some dependent task then
  *  --- it will be difficult to implement in functional component as there is not return like useState in class based components
  * line 140: onMount we are triggering artifically by having eventListner click, and then focusing it in the handler
  * ---- But the component is mounted long before right?
- * 
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
+ */
+
+/**
+ * Cascading dropdown features
+ * search(through multiple levels) -> populate the selection
+ * Multi/single selection
+ * filter lock
+ * local search at single level
+ * select all options
+ */
+
+/**
+ * design ideas
+ * local search is fine, can expand the searchbox on search icon click
+ * global search should cover the entire menu
+ * tags should be shown at idividual level as well at the global level
+ */
+
+/**
+ * export the following methods through imperative ref handler
+ * isCompletelySelected(locks/complete till the leaf)
+ *
+ */
