@@ -13,6 +13,7 @@ import {
   SelectedItemType,
   ItemId,
   SelectedItemTypeVal,
+  parentGroupLookUp,
 } from "./types";
 import classes from "react-style-classes";
 import DropdownMenu from "./components/DropdownMenu";
@@ -52,134 +53,214 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
 
   const getConnectedItemByDirection = (
     obj: MenuGroup,
+    groupName: string,
     isForward = true
   ): SelectedItemType => {
-    const partialSelection: SelectedItemType = {};
-    const idKey = isForward ? "childId" : "parentId";
     const groupKey = isForward ? "childGroup" : "parentGroup";
-    try {
-      const { groupHeading, id } = obj;
-      let grpName: string | undefined = groupHeading;
-      let itemId: ItemId | undefined = id;
-      while (true) {
-        const itemObj: SelectedItemTypeVal = selectedItems?.[grpName]?.[itemId];
-        if (!itemObj) {
-          break;
-        }
-        grpName = itemObj[groupKey];
-        itemId = itemObj[idKey];
-        if (!grpName || !itemId) {
-          break;
-        }
-        partialSelection[grpName] = {
-          [itemId]: itemObj,
-        };
-      }
-    } catch (e) {
-      console.log("Issue while connecting the items", e);
+    if (!obj) {
+      return {};
     }
-    return partialSelection;
+    const itemObj = selectedItems?.[groupName]?.[obj?.id];
+
+    const currentLevelItem = {
+      [groupName]: {
+        [obj.id]: itemObj,
+      },
+    };
+    if (!itemObj) {
+      return currentLevelItem;
+    }
+    // getting prev/next item
+    const connectedId: ItemId | undefined = isForward
+      ? itemObj.childIds?.[0] // by default first child will be selected, if there are more than one children
+      : itemObj.parentId;
+    const connectedGroup = itemObj[groupKey];
+    if (!connectedId || !connectedGroup) {
+      return currentLevelItem;
+    }
+
+    console.log("adding", groupName, obj.id);
+    console.log(
+      "next",
+      connectedGroup,
+      selectedItems[connectedGroup][connectedId]
+    );
+
+    return {
+      ...currentLevelItem,
+      ...getConnectedItemByDirection(
+        selectedItems[connectedGroup][connectedId],
+        connectedGroup,
+        isForward
+      ),
+    };
   };
+
   const getConnectedItems = (
     obj: MenuGroup,
     groupHeading: string
   ): SelectedItemType => {
-    const prevPath = getConnectedItemByDirection(obj, false);
-    const forwardPath = getConnectedItemByDirection(obj);
+    const prevPath = getConnectedItemByDirection(obj, groupHeading, false);
+    const forwardPath = getConnectedItemByDirection(obj, groupHeading);
     const connectedPath = {
       ...prevPath,
       [groupHeading]: { [obj.id]: obj },
       ...forwardPath,
     };
-    console.log("connectedPath", prevPath, { groupHeading: obj }, forwardPath);
+    console.log(
+      "connectedPath",
+      prevPath,
+      { [groupHeading]: obj },
+      forwardPath
+    );
 
     return connectedPath;
   };
+
+  const parentGroupLookUp = useRef<parentGroupLookUp>({});
 
   const addItemSelection = (
     selectedItems: SelectedItemType,
     groupHeading: string,
     item: MenuGroup,
-    parentItemObj: MenuGroup,
+    parentId: ItemId,
     isMultiSelection: boolean
   ) => {
     console.log("adding item");
     let newSelectedItems = selectedItems;
     try {
-      const { options, ...itemRest } = item;
-      const { id: parentId, groupHeading: parentGroup } = parentItemObj;
+      const { options, groupHeading: childGroup, ...itemRest } = item;
       // console.log("parentGroup", parentGroup, parentId);
+      parentGroupLookUp.current[childGroup] = groupHeading;
+      // adding item details and its parent
+      const parentGroup = parentGroupLookUp.current[groupHeading];
+      console.log(
+        "parentGroup",
+        parentGroup,
+        "groupHeading",
+        groupHeading,
+        "id",
+        item.id
+      );
+
+      // cut the previous selections in the group if its not mulitselect
+      // already has some values in the current group, so need to clear them
+      if (!isMultiSelection && newSelectedItems?.[groupHeading]) {
+        console.log(
+          "found previous selections in the same group so clearing them up"
+        );
+
+        newSelectedItems = Object.values(
+          newSelectedItems?.[groupHeading]
+        ).reduce((acc, item) => {
+          return cutMDownItems(acc, groupHeading, item);
+        }, newSelectedItems);
+        console.log("======clean up completed=========");
+      }
 
       newSelectedItems = {
-        ...selectedItems,
+        ...newSelectedItems,
         [groupHeading]: {
-          ...(isMultiSelection ? selectedItems?.[groupHeading] : null),
-          [item.id]: { ...itemRest, parentId, parentGroup },
+          ...(isMultiSelection ? newSelectedItems?.[groupHeading] : null),
+          [item.id]: {
+            ...itemRest,
+            groupHeading: groupHeading,
+            parentId,
+            parentGroup,
+            childGroup,
+          },
         },
       };
-      if (selectedItems?.[parentGroup]?.[parentId]) {
+      console.log(
+        "new---1",
+        newSelectedItems,
+        "check",
+        isMultiSelection ? newSelectedItems?.[groupHeading] : null
+      );
+
+      // adding its children to its parent
+      if (newSelectedItems?.[parentGroup]?.[parentId]) {
         newSelectedItems = {
-          ...selectedItems,
+          ...newSelectedItems,
           [parentGroup]: {
-            ...selectedItems?.[parentGroup],
+            ...newSelectedItems?.[parentGroup],
             [parentId]: {
-              ...selectedItems[parentGroup][parentId],
+              ...newSelectedItems[parentGroup][parentId],
               childGroup: groupHeading,
-              childId: item.id,
+              childIds: [
+                ...(newSelectedItems[parentGroup][parentId]?.childIds || []),
+                item.id,
+              ],
             },
           },
         };
       }
+      console.log("new---2", newSelectedItems);
     } catch (e) {
       console.log("issue while adding item", e, selectedItems, item);
     }
     return newSelectedItems;
   };
-  const cutDownItems = (
-    obj: SelectedItemType,
+
+  const cutMDownItems = (
+    cummSelections: SelectedItemType,
     groupHeading: string,
-    id: ItemId
-  ) => {
+    item: MenuGroup
+  ): SelectedItemType => {
     console.log("removing item");
     try {
-      let grpName: string | undefined = groupHeading;
-      let itemId: ItemId | undefined = id;
-      while (grpName && itemId) {
-        console.log("removing", grpName, itemId);
-        const {
-          childId,
-          childGroup,
-        }: { childId?: ItemId; childGroup?: string } =
-          obj?.[grpName]?.[itemId] || {};
-        delete obj?.[grpName]?.[itemId];
-        grpName = childGroup;
-        itemId = childId;
+      console.log("selectedItems", cummSelections);
+      const { groupHeading: childGroupVer, id } = item;
+      const { childGroup, childIds }: SelectedItemTypeVal =
+        cummSelections?.[groupHeading]?.[id] || {};
+      console.log("childGroupVer", childGroupVer, childGroup);
+      console.log("cutting down ", groupHeading, id);
+
+      const updatedSelections = { ...cummSelections };
+      delete updatedSelections?.[groupHeading]?.[id];
+      console.log("selectedItems", updatedSelections);
+      if (childGroup && childIds) {
+        childIds?.forEach((childId) => {
+          cutMDownItems(
+            updatedSelections,
+            childGroup,
+            updatedSelections?.[childGroup]?.[childId]
+          );
+        });
       }
+      return updatedSelections;
     } catch (e) {
-      console.log("Issue while remove item", e, obj, id);
+      console.log("Issue while remove item", e);
+      return cummSelections;
     }
-    return obj;
   };
+
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const handleItemSelection = (
     item: MenuGroup,
     groupHeading: string,
-    parentItemObj: MenuGroup
+    parentId: ItemId
   ) => {
-    console.log("new selection", item);
+    console.log("new selection", item, groupHeading, parentId);
     const activeSelection = isMultiSelection ? activeItem : selectedItems;
     if (activeSelection?.[groupHeading]?.[item.id]) {
-      // delete selectedItems[groupHeading][item.id];
-      // return selectedItems;
-      const newSelectedItems = cutDownItems(
+      const newSelectedItems = cutMDownItems(
         selectedItems,
         groupHeading,
-        item.id
+        selectedItems[groupHeading][item.id]
       );
-      setSelectedItems(newSelectedItems);
+      console.log("finallll", newSelectedItems);
 
-      // set the active selection
-      const newActiveItem = cutDownItems(activeItem, groupHeading, item.id);
+      // setSelectedItems(selectedItems);
+
+      const newActiveItem = cutMDownItems(
+        activeItem,
+        groupHeading,
+        activeItem[groupHeading][item.id]
+      );
+
+      // console.log("finallll", newActiveItem);
+
       setActiveItem(newActiveItem);
     } else {
       // add item
@@ -196,7 +277,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
           activeItem,
           groupHeading,
           item,
-          parentItemObj,
+          parentId,
           false
         );
         setActiveItem(newActiveItem);
@@ -207,33 +288,11 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         selectedItems,
         groupHeading,
         item,
-        parentItemObj,
+        parentId,
         isMultiSelection
       );
       setSelectedItems(newSelectedItems);
     }
-
-    // console.log("isPreviouslySelected", isPreviouslySelected);
-    // const newActiveItem = isPreviouslySelected
-    //   ? cutDownItems(activeItem, groupHeading, item.id)
-    //   : addItemSelection(activeItem, groupHeading, item, parentItemObj, false);
-    // console.log("newActiveItem", newActiveItem);
-
-    // // TODO: handled only single selection
-    // if (selectedItems?.[groupHeading]?.[item.id]) {
-    //   // deselect
-    //   const { [groupHeading]: id, ...restSelected } = selectedItems;
-    //   setSelectedItems(restSelected);
-    // } else {
-    //   // add item
-    //   setSelectedItems({
-    //     ...selectedItems,
-    //     [groupHeading]: {
-    //       ...selectedItems?.[groupHeading],
-    //       [item.id]: { ...itemRest, parentItemObj },
-    //     },
-    //   });
-    // }
   };
   console.log("active item", activeItem);
 

@@ -62,7 +62,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 })}
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
-                  handleItemSelection(ele, groupHeading, parentItemObj)
+                  handleItemSelection(ele, groupHeading, parentItemObj.id)
                 }
               >
                 {label}

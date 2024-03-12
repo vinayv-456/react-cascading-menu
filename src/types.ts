@@ -24,6 +24,9 @@ export interface MenuGroup {
   options?: MenuGroup[];
 }
 
+export interface parentGroupLookUp {
+  [childGrp: string]: string;
+}
 export interface SelectedItemTypeVal {
   id: ItemId;
   label: string;
@@ -33,7 +36,7 @@ export interface SelectedItemTypeVal {
   parentGroup?: string;
   parentId?: ItemId;
   childGroup?: string;
-  childId?: ItemId;
+  childIds?: ItemId[];
 }
 
 export type ItemId = number | string;
@@ -77,6 +80,6 @@ export interface DPItemProps {
   handleItemSelection: (
     item: MenuGroup,
     groupHeading: string,
-    parentItemObj: MenuGroup
+    parentId: ItemId
   ) => void;
 }
