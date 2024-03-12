@@ -114,3 +114,8 @@ const classes = {
  * documentation(storybook)
  * testcases
  */
+
+/**
+ * issues:
+ * issues with inconsitent childIDs in activeItem or selectedItems which can cause huge bugs
+ */

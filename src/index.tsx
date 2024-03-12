@@ -151,13 +151,14 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         parentItem?.childIds?.[0] &&
         newSelectedItems?.[groupHeading]?.[parentItem?.childIds[0]]
       ) {
+        console.log("removing others as it is single selection");
         // "remove the prev selection in the group as it is single selection"
         newSelectedItems = cascadeSelectionRemovalWithProps(
           newSelectedItems,
           groupHeading,
           parentId,
           newSelectedItems?.[groupHeading]?.[parentItem?.childIds[0]],
-          { isParentUpdateRequired: true }
+          { isParentUpdateRequired: true, isMultiSelection }
         );
       }
 
@@ -247,6 +248,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
       return updatedSelections;
     } catch (e) {
       console.log("Issue while remove item", e);
+      setError("Issue while remove item");
       return cummSelections;
     }
   };
@@ -263,6 +265,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     additionalProps?: {
       isParentUpdateRequired?: boolean;
       getNextAvailableSelection?: boolean;
+      isMultiSelection?: boolean;
     }
   ): SelectedItemType => {
     const {
@@ -293,8 +296,11 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         );
 
         if (isParentUpdateRequired) {
-          cummSelections[parentGroup][parentId].childIds =
-            updatedChildren?.length ? [updatedChildren?.[0]] : [];
+          cummSelections[parentGroup][parentId].childIds = isMultiSelection
+            ? updatedChildren
+            : updatedChildren?.length
+            ? [updatedChildren[0]]
+            : [];
           // // need to be carefull as activeItem can have the capability to modify selectedItems object
           // parentItem.childIds = updatedChildren;
         }
@@ -355,7 +361,11 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         groupHeading,
         parentId,
         activeItem[groupHeading][item.id],
-        { isParentUpdateRequired: true, getNextAvailableSelection: true }
+        {
+          isParentUpdateRequired: true,
+          getNextAvailableSelection: true,
+          isMultiSelection: false,
+        }
       );
       console.log("finalll newActiveItem", newActiveItem);
       setActiveItem(newActiveItem);
@@ -365,7 +375,11 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         groupHeading,
         parentId,
         selectedItems[groupHeading][item.id],
-        { isParentUpdateRequired: true, getNextAvailableSelection: false }
+        {
+          isParentUpdateRequired: true,
+          getNextAvailableSelection: false,
+          isMultiSelection,
+        }
       );
       console.log("finallll", newSelectedItems);
       setSelectedItems(newSelectedItems);
