@@ -301,14 +301,6 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         if (getNextAvailableSelection) {
           const childId = updatedChildren?.[0];
           const childGroup = parentItem.childGroup;
-          console.log(
-            "chi",
-            childGroup,
-            childId,
-            parentItem,
-            parentItem?.childIds
-          );
-
           if (childId && childGroup && selectedItems[childGroup][childId]) {
             const otherPath = getConnectedItems(
               selectedItems[childGroup][childId],
@@ -318,6 +310,23 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
 
             return otherPath;
           }
+        }
+      } else if (!parentGroup && getNextAvailableSelection) {
+        /**
+         * if there is any other item in the same group having no parent i.e, in the first level
+         */
+        const nextAvailableItemId = Object.values(
+          selectedItems[groupHeading]
+        )?.find((ele) => ele.id !== item.id)?.id;
+        console.log("nextAvailableItemId", nextAvailableItemId);
+        if (nextAvailableItemId) {
+          const otherPath = getConnectedItems(
+            selectedItems[groupHeading][nextAvailableItemId],
+            groupHeading
+          );
+          console.log("returning new path", otherPath);
+
+          return otherPath;
         }
       }
       return updatedSelections;
