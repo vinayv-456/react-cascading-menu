@@ -81,7 +81,6 @@
 }
 
 
-/* Default styles for empty checkboxes */
 .dropdown-option.checkbox::before {
   content: "\f0fe";
   font-family: 'Font Awesome 5 Free';
@@ -101,6 +100,32 @@
 
 .dropdown-option.fade-active.checkbox::before   {
   content: "\f146";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
+}
+
+
+.dropdown-option.radio::before {
+  content: "\f111";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
+}
+
+
+.dropdown-option.active.radio::before   {
+  content: "\f192";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
+}
+
+.dropdown-option.fade-active.radio::before   {
+  content: "\f192";
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   font-size: 1.5rem; 
