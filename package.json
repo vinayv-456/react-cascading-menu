@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
     "build": "webpack --mode development",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
@@ -29,6 +31,7 @@
     "@babel/preset-react": "^7.16.5",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.10.0",
+    "gh-pages": "^6.1.1",
     "style-loader": "^3.3.4",
     "ts-loader": "^9.5.1",
     "webpack": "^5.90.3",
@@ -44,5 +47,5 @@
   "bugs": {
     "url": "https://github.com/vinayv-456/react-cascading-dropdown/issues"
   },
-  "homepage": "https://github.com/vinayv-456/react-cascading-dropdown#readme"
+  "homepage": "https://github.com/vinayv-456/react-cascading-dropdown"
 }
