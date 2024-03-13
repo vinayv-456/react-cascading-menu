@@ -82,4 +82,5 @@ export interface DPItemProps {
     groupHeading: string,
     parentId: ItemId
   ) => void;
+  level: number;
 }
