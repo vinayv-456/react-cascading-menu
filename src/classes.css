@@ -37,22 +37,21 @@
 }
 
 .fade-active{
-  background-color: red;
-  opacity: 0.4;
+  background-color: rgba(29, 29, 29, 0.8);
+  opacity: 0.7;
 }
 .active{
-  background-color: red;
+  background-color: rgba(29, 29, 29, 0.8);
 }
+.active > div, .fade-active > div{
+  color: #ccc;
+}
+
 .dropdown-group + .dropdown-group {
   left: 13rem;
   min-height: 100%;
   position: absolute;
   top: 0;
-}
-
-.dropdown-option:hover > .dropdown-group {
-  /* animation: fadeInShow .3s; */
-  display: block;
 }
 
 
@@ -82,8 +81,30 @@
 }
 
 
-.dropdown-option:hover:not(.disabled) {
-  background: rgba(0, 0, 0, .08);
+/* Default styles for empty checkboxes */
+.dropdown-option.checkbox::before {
+  content: "\f0fe";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
+}
+
+
+.dropdown-option.active.checkbox::before   {
+  content: "\f146";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
+}
+
+.dropdown-option.fade-active.checkbox::before   {
+  content: "\f146";
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 1.5rem; 
+  margin-right: 8px; 
 }
 
 .disabled {
@@ -115,10 +136,10 @@
   border-bottom-left-radius: 2px;
 }
 
-.dropdown-option:hover {
+/* .dropdown-option:hover {
   background-color: #f2f9fc;
   color: #333;
-}
+} */
 
 .dropdown-option.is-selected {
   background-color: #f2f9fc;

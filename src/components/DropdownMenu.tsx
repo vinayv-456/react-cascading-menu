@@ -16,6 +16,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
     showNext,
     handleItemSelection,
     level,
+    isMultiSelection,
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
   const { options: opt, ...parentItemObj } = menuGroup;
@@ -52,20 +53,30 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 key={ele.id}
                 className={classnames({
                   "dropdown-option": true,
+                  checkbox: isMultiSelection,
+                  radio: !isMultiSelection,
+                  "fade-active":
+                    !isActive &&
+                    selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                  active: isActive,
                 })}
+                onClick={() =>
+                  // TODO: use only the part of the parentItemObj
+                  handleItemSelection(ele, groupHeading, parentItemObj.id)
+                }
               >
                 <div
                   style={{ width: "100%" }}
-                  className={classnames({
-                    "fade-active":
-                      !isActive &&
-                      selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
-                    active: isActive,
-                  })}
-                  onClick={() =>
-                    // TODO: use only the part of the parentItemObj
-                    handleItemSelection(ele, groupHeading, parentItemObj.id)
-                  }
+                  // className={classnames({
+                  //   "fade-active":
+                  //     !isActive &&
+                  //     selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                  //   active: isActive,
+                  // })}
+                  // onClick={() =>
+                  //   // TODO: use only the part of the parentItemObj
+                  //   handleItemSelection(ele, groupHeading, parentItemObj.id)
+                  // }
                 >
                   {label}
                 </div>
@@ -90,6 +101,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 showNext={false}
                 handleItemSelection={handleItemSelection}
                 level={level + 1}
+                isMultiSelection={isMultiSelection}
               />
             )}
           </>

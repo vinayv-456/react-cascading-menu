@@ -17,6 +17,7 @@ import {
 } from "./types";
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Index = forwardRef<Ref, Props>((props, ref) => {
   const {
@@ -456,6 +457,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
             selectedItems={selectedItems}
             handleItemSelection={handleItemSelection}
             level={0}
+            isMultiSelection={isMultiSelection}
           />
         </div>
       </div>

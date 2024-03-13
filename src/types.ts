@@ -83,4 +83,5 @@ export interface DPItemProps {
     parentId: ItemId
   ) => void;
   level: number;
+  isMultiSelection: boolean;
 }
