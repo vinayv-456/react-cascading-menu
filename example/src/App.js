@@ -1,12 +1,16 @@
 import React from "react";
 import Index from "../../src/index.tsx"; // dynamic changes
+import { menuGroup } from "./constants.js";
 // import Index from "../../dist/bundle";
 
 const App = () => {
   return (
     <div>
-      <h1>Your React App</h1>
-      <Index />
+      <Index
+        menuGroup={menuGroup}
+        isMultiSelection={true}
+        displayValue="value"
+      />
     </div>
   );
 };
