@@ -77,18 +77,23 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     }
     const itemObj = selectedItems?.[groupName]?.[obj?.id];
 
-    const currentLevelItem = {
-      [groupName]: {
-        [obj.id]: itemObj,
-      },
-    };
     if (!itemObj) {
-      return currentLevelItem;
+      return {};
     }
-    // getting prev/next item
+
     const connectedId: ItemId | undefined = isForward
       ? itemObj.childIds?.[0] // by default first child will be selected, if there are more than one children
       : itemObj.parentId;
+
+    const currentLevelItem = {
+      [groupName]: {
+        [obj.id]: {
+          ...itemObj,
+          childIds: itemObj.childIds?.length ? [itemObj.childIds?.[0]] : [],
+        },
+      },
+    };
+    // getting prev/next item
     const connectedGroup = itemObj[groupKey];
     if (!connectedId || !connectedGroup) {
       return currentLevelItem;
@@ -271,6 +276,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     const {
       isParentUpdateRequired = false,
       getNextAvailableSelection = false,
+      isMultiSelection = false,
     } = additionalProps || {};
     // taking the orginal complete selections
     try {
@@ -296,7 +302,9 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         );
 
         if (isParentUpdateRequired) {
-          cummSelections[parentGroup][parentId].childIds = isMultiSelection
+          console.log("isMultiSelection", isMultiSelection, updatedChildren);
+
+          updatedSelections[parentGroup][parentId].childIds = isMultiSelection
             ? updatedChildren
             : updatedChildren?.length
             ? [updatedChildren[0]]
@@ -362,6 +370,9 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
         parentId,
         activeItem[groupHeading][item.id],
         {
+          // as it activeItem and going for next available selection no need to update the
+          // prev active item as it is anyway going to leave it
+          // TODO: update the conditions to use getNextAvailableSelection without requiring to update parent
           isParentUpdateRequired: true,
           getNextAvailableSelection: true,
           isMultiSelection: false,
@@ -444,6 +455,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
             activeItem={activeItem}
             selectedItems={selectedItems}
             handleItemSelection={handleItemSelection}
+            level={0}
           />
         </div>
       </div>
