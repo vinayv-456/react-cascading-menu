@@ -1,7 +1,7 @@
 import React from "react";
 import Index from "../../src/index.tsx"; // dynamic changes
 import { menuGroup } from "./constants.js";
-// import Index from "../../dist/bundle";
+import Index from "../../build/bundle.js";
 
 const App = () => {
   return (
