@@ -6,6 +6,7 @@
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
     "build": "webpack --mode development --entry ./example/src/index.js --output-path ./build",
+    "build-package": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"
