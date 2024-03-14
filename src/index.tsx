@@ -434,13 +434,13 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
       <span>{error}</span>
 
       <div ref={dropdownWrapperRef}>
-        <input
+        {/* <input
           type="text"
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
           autoComplete="off"
           ref={searchBoxRef}
-        />
+        /> */}
         <div
           className={classNames({
             "dropdown-menu": true,
