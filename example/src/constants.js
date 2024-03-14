@@ -1,74 +1,287 @@
 export const menuGroup = {
-  id: 111,
-  groupHeading: "cities",
+  id: "1_101",
+  groupHeading: "Country",
   options: [
     {
-      id: 201,
-      label: "Hyderabad-label",
-      value: "Hyderabad-value",
-      groupHeading: "Hyderabad tourist places",
+      id: "2_101",
+      label: "United States",
+      value: "United States",
+      groupHeading: "State",
       options: [
-        { id: 301, label: "charminar", value: "charminar" },
-        { id: 302, label: "Hussain Sagar Lake", value: "Hussain Sagar Lake" },
-        { id: 303, label: "NTR Gardens", value: "NTR Gardens" },
-        { id: 304, label: "Ramoji Film City", value: "Ramoji Film City" },
-        { id: 305, label: "Golconda Fort", value: "Golconda Fort" },
-        { id: 306, label: "Salar Jung Museum", value: "Salar Jung Museum" },
-        { id: 307, label: "Chowmahalla Palace", value: "Chowmahalla Palace" },
-        { id: 308, label: "Durgam Cheruvu", value: "Durgam Cheruvu" },
+        {
+          id: "3_101",
+          label: "New York",
+          value: "New York",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_101",
+              label: "New York City",
+              value: "New York City",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_101",
+                  label: "Statue of Liberty",
+                  value: "Statue of Liberty",
+                },
+                {
+                  id: "5_102",
+                  label: "Central Park",
+                  value: "Central Park",
+                },
+                {
+                  id: "5_103",
+                  label: "Empire State Building",
+                  value: "Empire State Building",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "3_102",
+          label: "California",
+          value: "California",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_104",
+              label: "Los Angeles",
+              value: "Los Angeles",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_105",
+                  label: "Hollywood Walk of Fame",
+                  value: "Hollywood Walk of Fame",
+                },
+                {
+                  id: "5_106",
+                  label: "Universal Studios Hollywood",
+                  value: "Universal Studios Hollywood",
+                },
+              ],
+            },
+            {
+              id: "4_105",
+              label: "San Francisco",
+              value: "San Francisco",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_107",
+                  label: "Golden Gate Bridge",
+                  value: "Golden Gate Bridge",
+                },
+                {
+                  id: "5_108",
+                  label: "Alcatraz Island",
+                  value: "Alcatraz Island",
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     {
-      id: 202,
-      label: "Vizag",
-      value: "Vizag",
-      groupHeading: "Vizag tourist places",
+      id: "2_102",
+      label: "France",
+      value: "France",
+      groupHeading: "State",
       options: [
-        { id: 401, label: "charminar", value: "charminar" },
         {
-          id: 402,
-          label: "Hussain Sagar Lake",
-          value: "Hussain Sagar Lake",
-        },
-        { id: 403, label: "NTR Gardens", value: "NTR Gardens" },
-        { id: 404, label: "Ramoji Film City", value: "Ramoji Film City" },
-        {
-          id: 405,
-          label: "Golconda Fort",
-          value: "Golconda Fort",
-          groupHeading: "Hyd tourist places",
+          id: "3_103",
+          label: "Île-de-France",
+          value: "Île-de-France",
+          groupHeading: "City",
           options: [
-            { id: 501, label: "charminar", value: "charminar" },
             {
-              id: 502,
-              label: "Hussain Sagar Lake",
-              value: "Hussain Sagar Lake",
+              id: "4_106",
+              label: "Paris",
+              value: "Paris",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_109",
+                  label: "Eiffel Tower",
+                  value: "Eiffel Tower",
+                },
+                {
+                  id: "5_110",
+                  label: "Louvre Museum",
+                  value: "Louvre Museum",
+                },
+              ],
             },
-            { id: 503, label: "NTR Gardens", value: "NTR Gardens" },
-            { id: 504, label: "Ramoji Film City", value: "Ramoji Film City" },
-            { id: 505, label: "Golconda Fort", value: "Golconda Fort" },
-            { id: 506, label: "Salar Jung Museum", value: "Salar Jung Museum" },
-            {
-              id: 507,
-              label: "Chowmahalla Palace",
-              value: "Chowmahalla Palace",
-            },
-            { id: 508, label: "Durgam Cheruvu", value: "Durgam Cheruvu" },
           ],
         },
-        { id: 406, label: "Salar Jung Museum", value: "Salar Jung Museum" },
         {
-          id: 407,
-          label: "Chowmahalla Palace",
-          value: "Chowmahalla Palace",
+          id: "3_104",
+          label: "Provence-Alpes-Côte d'Azur",
+          value: "Provence-Alpes-Côte d'Azur",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_107",
+              label: "Nice",
+              value: "Nice",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_111",
+                  label: "Promenade des Anglais",
+                  value: "Promenade des Anglais",
+                },
+                {
+                  id: "5_112",
+                  label: "Castle Hill",
+                  value: "Castle Hill",
+                },
+              ],
+            },
+          ],
         },
-        { id: 408, label: "Durgam Cheruvu", value: "Durgam Cheruvu" },
       ],
     },
-    { id: 203, label: "Chennai", value: "Chennai" },
-    { id: 204, label: "Benagaluru", value: "Benagaluru" },
-    { id: 205, label: "Mumbai", value: "Mumbai" },
-    { id: 206, label: "Delhi", value: "Delhi" },
-    { id: 207, label: "Pune-label", value: "Pune-value" },
+    {
+      id: "2_103",
+      label: "Italy",
+      value: "Italy",
+      groupHeading: "State",
+      options: [
+        {
+          id: "3_105",
+          label: "Lazio",
+          value: "Lazio",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_108",
+              label: "Rome",
+              value: "Rome",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_113",
+                  label: "Colosseum",
+                  value: "Colosseum",
+                },
+                {
+                  id: "5_114",
+                  label: "Vatican City",
+                  value: "Vatican City",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "3_106",
+          label: "Tuscany",
+          value: "Tuscany",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_109",
+              label: "Florence",
+              value: "Florence",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_115",
+                  label: "Florence Cathedral",
+                  value: "Florence Cathedral",
+                },
+                {
+                  id: "5_116",
+                  label: "Uffizi Gallery",
+                  value: "Uffizi Gallery",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "2_104",
+      label: "India",
+      value: "India",
+      groupHeading: "State",
+      options: [
+        {
+          id: "3_107",
+          label: "Maharashtra",
+          value: "Maharashtra",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_110",
+              label: "Mumbai",
+              value: "Mumbai",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_117",
+                  label: "Gateway of India",
+                  value: "Gateway of India",
+                },
+                {
+                  id: "5_118",
+                  label: "Marine Drive",
+                  value: "Marine Drive",
+                },
+              ],
+            },
+            {
+              id: "4_111",
+              label: "Pune",
+              value: "Pune",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_119",
+                  label: "Shaniwar Wada",
+                  value: "Shaniwar Wada",
+                },
+                {
+                  id: "5_120",
+                  label: "Aga Khan Palace",
+                  value: "Aga Khan Palace",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "3_108",
+          label: "Rajasthan",
+          value: "Rajasthan",
+          groupHeading: "City",
+          options: [
+            {
+              id: "4_112",
+              label: "Jaipur",
+              value: "Jaipur",
+              groupHeading: "Place",
+              options: [
+                {
+                  id: "5_121",
+                  label: "Hawa Mahal",
+                  value: "Hawa Mahal",
+                },
+                {
+                  id: "5_122",
+                  label: "Amer Fort",
+                  value: "Amer Fort",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ],
 };
