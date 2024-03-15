@@ -183,9 +183,25 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
 
     common = common ? `${common} => ${obj.label}` : obj.label;
     obj.options.forEach((newObj) => {
-      common + printSelections(newObj, common, result);
+      printSelections(newObj, common, result);
     });
   };
+
+  // another approch
+  // const printSelections = (obj: FormatedSelections) => {
+  //   if (!obj) {
+  //     return [];
+  //   }
+  //   if (!obj.options || obj.options?.length === 0) {
+  //     return [obj.label];
+  //   }
+  //   const allChildRes: string[] = obj.options.reduce((acc: string[], ele) => {
+  //     const childRes = printSelectionss(ele);
+  //     return [...acc, ...childRes];
+  //   }, []);
+
+  //   return allChildRes.map((e) => `${obj.label}=>${e}`);
+  // };
 
   useEffect(() => {
     const formatedSelections = getFormatedSelections();
@@ -198,6 +214,16 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
       return result;
     });
     setResults(res);
+
+    // another approch
+    // const ress = formatedSelections.map((ele: FormatedSelections | {}) => {
+    //   if (ele && Object.keys(ele)?.length !== 0) {
+    //     return printSelectionss(ele as FormatedSelections);
+    //   }
+    //   return [];
+    // });
+    // console.log("ress", ress);
+
     console.log("formatedSelections", formatedSelections);
   }, [selectedItems]);
 
