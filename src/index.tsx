@@ -14,6 +14,9 @@ import {
   ItemId,
   SelectedItemTypeVal,
   parentGroupLookUp,
+  Item,
+  FormatedSelections,
+  emptyObj,
 } from "./types";
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
@@ -130,6 +133,43 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     };
     return connectedPath;
   };
+
+  const getFormatedSelectionsHelper = (
+    groupName?: string,
+    id?: ItemId
+  ): FormatedSelections | {} => {
+    // if the object is not present then return empty obj
+    if (!groupName || !id || !selectedItems?.[groupName]?.[id]) {
+      return {};
+    }
+    const obj: SelectedItemTypeVal = selectedItems?.[groupName]?.[id];
+    const options =
+      obj.childIds?.reduce((acc: SelectedItemType[], childId) => {
+        return [...acc, getFormatedSelectionsHelper(obj.childGroup, childId)];
+      }, []) || [];
+
+    return {
+      ...obj,
+      options,
+    };
+  };
+
+  const getFormatedSelections = () => {
+    const mainGroupName = menuGroup.groupHeading;
+
+    const formatedselections: (FormatedSelections | {})[] = menuGroup.options
+      ? menuGroup.options?.reduce((acc: SelectedItemType[], opt) => {
+          return [...acc, getFormatedSelectionsHelper(mainGroupName, opt.id)];
+        }, [])
+      : [];
+
+    return formatedselections;
+  };
+
+  useEffect(() => {
+    const formatedSelections = getFormatedSelections();
+    console.log("formatedSelections", formatedSelections);
+  }, [selectedItems]);
 
   const addItemSelection = (
     selectedItems: SelectedItemType,

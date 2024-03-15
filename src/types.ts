@@ -27,6 +27,20 @@ export interface MenuGroup {
 export interface parentGroupLookUp {
   [childGrp: string]: string;
 }
+
+export interface FormatedSelections {
+  id: number;
+  label: string;
+  value: string;
+  groupHeading: string;
+  parentGroup?: string;
+  parentId?: ItemId;
+  childGroup?: string;
+  childIds?: ItemId[];
+  options: SelectedItemTypeVal[];
+}
+
+export type emptyObj = {};
 export interface SelectedItemTypeVal {
   id: ItemId;
   label: string;
