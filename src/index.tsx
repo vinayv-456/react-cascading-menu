@@ -48,6 +48,8 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
+  const [results, setResults] = useState<string[][]>();
+
   useImperativeHandle(ref, () => ({
     test: () => {},
   }));
@@ -166,8 +168,36 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     return formatedselections;
   };
 
+  const printSelections = (
+    obj: FormatedSelections,
+    common: string,
+    result: string[]
+  ): void => {
+    if (!obj) {
+      return;
+    }
+    if (!obj.options || obj.options?.length === 0) {
+      result.push(common ? common + "=>" + obj.label : obj.label);
+      return;
+    }
+
+    common = common ? `${common} => ${obj.label}` : obj.label;
+    obj.options.forEach((newObj) => {
+      common + printSelections(newObj, common, result);
+    });
+  };
+
   useEffect(() => {
     const formatedSelections = getFormatedSelections();
+    const res = formatedSelections.map((ele: FormatedSelections | {}) => {
+      const result: string[] = [];
+      if (ele && Object.keys(ele)?.length !== 0) {
+        printSelections(ele as FormatedSelections, "", result);
+        return result;
+      }
+      return result;
+    });
+    setResults(res);
     console.log("formatedSelections", formatedSelections);
   }, [selectedItems]);
 
@@ -467,8 +497,9 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     }
   };
   console.log("active item", activeItem);
-
   console.log("selectedItems", selectedItems);
+  console.log("res", results);
+
   return (
     <>
       <span>{error}</span>
@@ -501,6 +532,8 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
           />
         </div>
       </div>
+      {/* print selections */}
+      {results?.map((res) => res.map((res2) => <li>{res2}</li>))}
     </>
   );
 });

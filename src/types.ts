@@ -37,7 +37,7 @@ export interface FormatedSelections {
   parentId?: ItemId;
   childGroup?: string;
   childIds?: ItemId[];
-  options: SelectedItemTypeVal[];
+  options: FormatedSelections[] | null;
 }
 
 export type emptyObj = {};
