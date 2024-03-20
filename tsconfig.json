@@ -19,10 +19,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     // "noEmit": true,
+    "noEmit": false,
+    "outDir": "./build",
     "jsx": "react",
     "noImplicitAny": true,
-    "outDir": "./ts-dist/",
     // "jsx": "react-jsx"
+    "declaration": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
