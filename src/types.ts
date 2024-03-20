@@ -21,7 +21,7 @@ export interface MenuGroup {
   label: string;
   value: string;
   groupHeading: string;
-  options?: MenuGroup[];
+  options?: MenuGroup[] | null;
 }
 
 export interface parentGroupLookUp {
@@ -50,7 +50,7 @@ export interface SelectedItemTypeVal {
   parentGroup?: string;
   parentId?: ItemId;
   childGroup?: string;
-  childIds?: ItemId[];
+  childIds?: ItemId[] | null;
 }
 
 export type ItemId = number | string;
@@ -67,15 +67,15 @@ export interface Ref {
 
 export interface Props {
   menuGroup: MenuGroup;
-  selectedItems: Item;
-  isObject: boolean;
-  displayValue: string;
-  groupby: string;
+  selectedItems?: Item;
+  isObject?: boolean;
+  displayValue?: string;
+  groupby?: string;
   caseSensitiveSearch?: boolean;
   isMultiSelection: boolean;
   keepSearchTerm?: boolean;
-  emptyRecordMsg: string;
-  selectionLimit: number;
+  emptyRecordMsg?: string;
+  selectionLimit?: number;
   targetClassNames?: ClassNames;
   showCheckbox?: boolean;
   closeIconType?: string;

@@ -25,14 +25,14 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 const Index = forwardRef<Ref, Props>((props, ref) => {
   const {
     menuGroup,
-    selectedItems: preSelectedItems,
-    isObject,
-    displayValue,
-    groupby,
-    caseSensitiveSearch,
-    isMultiSelection,
+    selectedItems: preSelectedItems = {},
+    isObject = true,
+    displayValue = "label",
+    groupby = "label",
+    caseSensitiveSearch = true,
+    isMultiSelection = false,
     keepSearchTerm,
-    emptyRecordMsg,
+    emptyRecordMsg = "No Items",
     selectionLimit,
     targetClassNames,
     showCheckbox,
@@ -130,7 +130,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     const forwardPath = getConnectedItemByDirection(obj, groupHeading);
     const connectedPath = {
       ...prevPath,
-      [groupHeading]: { [obj.id]: obj },
+      [groupHeading]: { [obj.id]: selectedItems?.[groupHeading]?.[obj?.id] },
       ...forwardPath,
     };
     return connectedPath;
@@ -239,7 +239,7 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
     console.log("starting with", newSelectedItems);
     try {
       const { options, groupHeading: childGroup, ...itemRest } = item;
-      if (!parentGroupLookUp.current?.[childGroup]) {
+      if (childGroup && !parentGroupLookUp.current?.[childGroup]) {
         // adding the group lookup
         parentGroupLookUp.current[childGroup] = groupHeading;
       }
@@ -565,13 +565,3 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
 });
 
 export default Index;
-
-Index.defaultProps = {
-  isObject: true,
-  displayValue: "label",
-  groupby: "label",
-  caseSensitiveSearch: true,
-  isMultiSelection: false,
-  emptyRecordMsg: "No Items",
-  selectedItems: {},
-};

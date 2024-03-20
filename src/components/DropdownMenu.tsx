@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import classes from "react-style-classes";
 import classnames from "classnames";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
@@ -42,7 +41,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           {groupHeading}
         </span>
         {options?.length === 0 ? (
-          <div className={classes("dropdown-noresults")}> {emptyRecordMsg}</div>
+          <div className="dropdown-noresults"> {emptyRecordMsg}</div>
         ) : null}
         {options?.map((ele: Item) => {
           const label = isObject ? ele?.[displayValue] : ele;
