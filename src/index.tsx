@@ -20,11 +20,10 @@ import {
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 export interface CascadingMenuRef {
-  getSelection: () => void;
+  getSelection: () => ({} | FormatedSelections)[];
+  getAllItemsSelected: () => string[];
 }
-
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
