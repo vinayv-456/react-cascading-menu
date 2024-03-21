@@ -61,10 +61,6 @@ export interface SelectedItemType {
   };
 }
 
-export interface Ref {
-  test: () => void;
-}
-
 export interface Props {
   menuGroup: MenuGroup;
   selectedItems?: Item;

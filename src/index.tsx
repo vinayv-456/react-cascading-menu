@@ -9,7 +9,6 @@ import React, {
 import {
   MenuGroup,
   Props,
-  Ref,
   SelectedItemType,
   ItemId,
   SelectedItemTypeVal,
@@ -22,7 +21,11 @@ import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-const Index = forwardRef<Ref, Props>((props, ref) => {
+export interface CascadingMenuRef {
+  getSelection: () => void;
+}
+
+const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
     selectedItems: preSelectedItems = {},
@@ -51,7 +54,9 @@ const Index = forwardRef<Ref, Props>((props, ref) => {
   const [results, setResults] = useState<string[][]>();
 
   useImperativeHandle(ref, () => ({
-    test: () => {},
+    getSelection: () => {
+      return getFormatedSelections();
+    },
   }));
 
   useEffect(() => {
