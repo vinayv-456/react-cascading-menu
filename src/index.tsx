@@ -49,13 +49,19 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const [selectedItems, setSelectedItems] =
     useState<SelectedItemType>(preSelectedItems);
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
+  const [formatedSelections, setFormatedSelections] = useState<
+    ({} | FormatedSelections)[]
+  >([]);
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
   const [results, setResults] = useState<string[][]>();
 
   useImperativeHandle(ref, () => ({
     getSelection: () => {
-      return getFormatedSelections();
+      return formatedSelections;
+    },
+    getAllItemsSelected: () => {
+      return getAllItems(formatedSelections);
     },
   }));
 
@@ -192,8 +198,39 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     });
   };
 
-  // another approch
-  // const printSelections = (obj: FormatedSelections) => {
+  const getAllItemsHelper = (obj: FormatedSelections): string[] => {
+    if (!obj.options?.length) return [obj.label];
+    else {
+      const childItems = obj.options.reduce((acc: string[], e) => {
+        return [...acc, ...getAllItemsHelper(e)];
+      }, []);
+      return [obj.label, ...childItems];
+    }
+  };
+
+  const getAllItems = (
+    formatedSelections: (FormatedSelections | {})[]
+  ): string[] => {
+    if (!formatedSelections?.length) {
+      return [];
+    }
+    return formatedSelections.reduce(
+      (acc: string[], ele: FormatedSelections | {}) => {
+        if (!Object.keys(ele).length) {
+          return acc;
+        }
+        let result: string[] = [];
+        if (ele && Object.keys(ele)?.length !== 0) {
+          result = getAllItemsHelper(ele as FormatedSelections);
+        }
+        return [...acc, ...result];
+      },
+      []
+    );
+  };
+
+  // print results using bottom-up approch
+  // const printSelections2 = (obj: FormatedSelections) => {
   //   if (!obj) {
   //     return [];
   //   }
@@ -201,17 +238,17 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   //     return [obj.label];
   //   }
   //   const allChildRes: string[] = obj.options.reduce((acc: string[], ele) => {
-  //     const childRes = printSelectionss(ele);
+  //     const childRes = printSelections2(ele);
   //     return [...acc, ...childRes];
   //   }, []);
 
   //   return allChildRes.map((e) => `${obj.label}=>${e}`);
   // };
-
   useEffect(() => {
-    const formatedSelections = getFormatedSelections();
-    const res = formatedSelections.map((ele: FormatedSelections | {}) => {
-      const result: string[] = [];
+    const formatedSelectionsVal = getFormatedSelections();
+    setFormatedSelections(formatedSelectionsVal);
+    const res = formatedSelectionsVal.map((ele: FormatedSelections | {}) => {
+      let result: string[] = [];
       if (ele && Object.keys(ele)?.length !== 0) {
         printSelections(ele as FormatedSelections, "", result);
         return result;
