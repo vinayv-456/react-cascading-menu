@@ -22,7 +22,7 @@ import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
-  getAllItemsSelected: () => string[];
+  getAllItemsSelected: () => string[][];
 }
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
@@ -209,23 +209,20 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   const getAllItems = (
     formatedSelections: (FormatedSelections | {})[]
-  ): string[] => {
+  ): string[][] => {
     if (!formatedSelections?.length) {
       return [];
     }
-    return formatedSelections.reduce(
-      (acc: string[], ele: FormatedSelections | {}) => {
-        if (!Object.keys(ele).length) {
-          return acc;
-        }
-        let result: string[] = [];
-        if (ele && Object.keys(ele)?.length !== 0) {
-          result = getAllItemsHelper(ele as FormatedSelections);
-        }
-        return [...acc, ...result];
-      },
-      []
-    );
+    return formatedSelections.map((ele: FormatedSelections | {}) => {
+      if (!Object.keys(ele).length) {
+        return [];
+      }
+      let result: string[] = [];
+      if (ele && Object.keys(ele)?.length !== 0) {
+        result = getAllItemsHelper(ele as FormatedSelections);
+      }
+      return result;
+    });
   };
 
   // print results using bottom-up approch
