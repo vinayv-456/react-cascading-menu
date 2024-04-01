@@ -38,6 +38,7 @@ export interface FormatedSelections {
   childGroup?: string;
   childIds?: ItemId[];
   options: FormatedSelections[] | null;
+  splitAt?: boolean;
 }
 
 export type emptyObj = {};
@@ -51,6 +52,7 @@ export interface SelectedItemTypeVal {
   parentId?: ItemId;
   childGroup?: string;
   childIds?: ItemId[] | null;
+  splitAt?: boolean;
 }
 
 export type ItemId = number | string;
@@ -92,6 +94,7 @@ export interface DPItemProps {
     groupHeading: string,
     parentId: ItemId
   ) => void;
+  handleGroupSelection: (groupHeading: string, parentId: ItemId) => void;
   level: number;
   isMultiSelection: boolean;
 }
