@@ -20,8 +20,10 @@ import {
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { getParentGroup } from "./utils";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
+  getAllItemsSelectedBySplit: () => string[][][];
   getAllItemsSelected: () => string[][];
 }
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
@@ -61,6 +63,9 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     },
     getAllItemsSelected: () => {
       return getAllItems(formatedSelections);
+    },
+    getAllItemsSelectedBySplit: () => {
+      return getAllItemsBySplit(formatedSelections);
     },
   }));
 
@@ -220,6 +225,65 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       let result: string[] = [];
       if (ele && Object.keys(ele)?.length !== 0) {
         result = getAllItemsHelper(ele as FormatedSelections);
+      }
+      return result;
+    });
+  };
+
+  const getAllItemsHelperBySplit = (ele: FormatedSelections): string[][] => {
+    if (ele.splitAt === true) {
+      // single level spread into a single container
+      const childrenRes = ele.options?.reduce(
+        (acc: string[][], child) => [
+          ...acc,
+          ...getAllItemsHelperBySplit(child),
+        ],
+        []
+      );
+      // append parent to all the childs
+      return childrenRes?.map((e) => [ele.label, ...e]) || [[ele.label]];
+    } else {
+      // 2 level spread if length=0
+      const likeTerms: string[] =
+        ele.options?.reduce((acc: string[], child) => {
+          const childResult = getAllItemsHelperBySplit(child);
+          if (childResult.length === 1) {
+            return [...acc, ...childResult[0]];
+          }
+          return acc;
+        }, []) || [];
+
+      const unlikeTerms: string[][] =
+        ele.options?.reduce((acc: string[][], child) => {
+          const childResult = getAllItemsHelperBySplit(child);
+          if (childResult.length > 1) {
+            return [...acc, ...childResult];
+          }
+          return acc;
+        }, []) || [];
+
+      // append parent to all the childs
+      return (
+        [...unlikeTerms, likeTerms]?.map((e) => [ele.label, ...e]) || [
+          [ele.label],
+        ]
+      );
+    }
+  };
+
+  const getAllItemsBySplit = (
+    formatedSelections: (FormatedSelections | {})[]
+  ): string[][][] => {
+    if (!formatedSelections?.length) {
+      return [[[]]];
+    }
+    return formatedSelections.map((ele: FormatedSelections | {}) => {
+      if (!Object.keys(ele).length) {
+        return [];
+      }
+      let result: string[][] = [];
+      if (ele && Object.keys(ele)?.length !== 0) {
+        result = getAllItemsHelperBySplit(ele as FormatedSelections);
       }
       return result;
     });
@@ -560,6 +624,33 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       }
     }
   };
+
+  const handleGroupSelection = (groupHeading: string, parentId: ItemId) => {
+    // setting splitAt in selectedItems
+    const parentGroup = getParentGroup(selectedItems, groupHeading, parentId);
+    if (parentGroup) {
+      const newSelectedItems = {
+        ...selectedItems,
+      };
+      newSelectedItems[parentGroup][parentId].splitAt = true;
+      setSelectedItems(newSelectedItems);
+    }
+
+    // setting splitAt property at activeItem
+    const parentGroupActive = getParentGroup(
+      activeItem,
+      groupHeading,
+      parentId
+    );
+    if (parentGroupActive) {
+      const newActiveItem = {
+        ...activeItem,
+      };
+      newActiveItem[parentGroupActive][parentId].splitAt = true;
+      setActiveItem(newActiveItem);
+    }
+  };
+
   console.log("active item", activeItem);
   console.log("selectedItems", selectedItems);
   console.log("res", results);
@@ -591,6 +682,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             activeItem={activeItem}
             selectedItems={selectedItems}
             handleItemSelection={handleItemSelection}
+            handleGroupSelection={handleGroupSelection}
             level={0}
             isMultiSelection={isMultiSelection}
           />

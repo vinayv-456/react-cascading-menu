@@ -14,6 +14,12 @@ const App = () => {
   const fetchSelectionItems = () => {
     console.log("get selections", ref.current?.getSelection());
   };
+  const fetchSelectionItemsAtSplit = () => {
+    console.log(
+      "get selection by split",
+      ref.current?.getAllItemsSelectedBySplit()
+    );
+  };
   return (
     <div>
       <Index
@@ -25,6 +31,9 @@ const App = () => {
       <button onClick={fetchSelectionItems}>get selections</button>
       <button onClick={fetchSelectionItemsLabels}>
         get selections as label array
+      </button>
+      <button onClick={fetchSelectionItemsAtSplit}>
+        get selections as label array at split
       </button>
     </div>
   );

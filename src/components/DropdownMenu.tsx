@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import classnames from "classnames";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
+import { getParentGroup } from "../utils";
 
 const DropdownMenu: React.FC<DPItemProps> = (props) => {
   const {
@@ -14,6 +15,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
     emptyRecordMsg,
     showNext,
     handleItemSelection,
+    handleGroupSelection,
     level,
     isMultiSelection,
   } = props;
@@ -39,6 +41,15 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           })}
         >
           {groupHeading}
+          <input
+            type="radio"
+            checked={
+              activeItem?.[
+                getParentGroup(activeItem, groupHeading, parentItemObj.id)
+              ]?.[parentItemObj.id]?.splitAt || false
+            }
+            onClick={() => handleGroupSelection(groupHeading, parentItemObj.id)}
+          />
         </span>
         {options?.length === 0 ? (
           <div className="dropdown-noresults"> {emptyRecordMsg}</div>
@@ -99,6 +110,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 emptyRecordMsg={emptyRecordMsg}
                 showNext={false}
                 handleItemSelection={handleItemSelection}
+                handleGroupSelection={handleGroupSelection}
                 level={level + 1}
                 isMultiSelection={isMultiSelection}
               />
