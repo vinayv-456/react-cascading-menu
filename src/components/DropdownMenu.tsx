@@ -43,11 +43,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           {groupHeading}
           <input
             type="radio"
-            checked={
-              activeItem?.[
-                getParentGroup(activeItem, groupHeading, parentItemObj.id)
-              ]?.[parentItemObj.id]?.splitAt || false
-            }
+            checked={activeItem?.[parentItemObj.id]?.splitAt || false}
             onClick={() => handleGroupSelection(groupHeading, parentItemObj.id)}
           />
         </span>
@@ -56,7 +52,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
         ) : null}
         {options?.map((ele: Item) => {
           const label = isObject ? ele?.[displayValue] : ele;
-          const isActive = activeItem?.[groupHeading]?.[ele.id]?.id === ele.id;
+          const isActive = activeItem?.[ele.id]?.id === ele.id;
           return (
             <>
               <div
@@ -66,8 +62,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                   checkbox: isMultiSelection,
                   radio: !isMultiSelection,
                   "fade-active":
-                    !isActive &&
-                    selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                    !isActive && selectedItems?.[ele.id]?.id === ele.id,
                   active: isActive,
                 })}
                 onClick={() =>
@@ -96,7 +91,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
         })}
       </div>
       {options?.map((ele: Item) => {
-        const isSubMenuActive = activeItem?.[groupHeading]?.[ele.id];
+        const isSubMenuActive = activeItem?.[ele.id];
         return (
           <>
             {isSubMenuActive && (
