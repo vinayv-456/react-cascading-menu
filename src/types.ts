@@ -1,3 +1,7 @@
+export const KEYWORDS = {
+  NO_PARENT: "NO_PARENT",
+};
+
 type ItemObj = {
   label: string;
   value: string;
@@ -58,9 +62,9 @@ export interface SelectedItemTypeVal {
 export type ItemId = number | string;
 
 export interface SelectedItemType {
-  [grpHeading: string]: {
-    [id: ItemId]: SelectedItemTypeVal;
-  };
+  // [grpHeading: string]: {
+  [id: ItemId]: SelectedItemTypeVal;
+  // };
 }
 
 export interface Props {
