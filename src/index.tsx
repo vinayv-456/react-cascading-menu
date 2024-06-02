@@ -16,7 +16,6 @@ import {
   Item,
   FormatedSelections,
   emptyObj,
-  KEYWORDS,
 } from "./types";
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
