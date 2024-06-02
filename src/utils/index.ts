@@ -1,4 +1,4 @@
-import { ItemId, SelectedItemType } from "../types";
+import { Item, ItemId, SelectedItemType } from "../types";
 
 export const getParentGroup = (
   item: SelectedItemType,
@@ -12,4 +12,15 @@ export const getParentGroup = (
     );
   }
   return "";
+};
+
+export const initParentSelectedItem = (id: ItemId, groupHeading: string) => {
+  return {
+    id,
+    label: "",
+    value: "",
+    groupHeading: "",
+    childGroup: groupHeading,
+    childIds: [],
+  };
 };
