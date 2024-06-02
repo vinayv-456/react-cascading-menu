@@ -21,7 +21,7 @@ import {
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getParentGroup } from "./utils";
+import { getParentGroup, initParentSelectedItem } from "./utils";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -90,10 +90,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   const getConnectedItemByDirection = (
     obj: MenuGroup,
-    groupName: string,
     isForward = true
   ): SelectedItemType => {
-    const groupKey = isForward ? "childGroup" : "parentGroup";
     if (!obj) {
       return {};
     }
@@ -114,21 +112,16 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       },
     };
     // getting prev/next item
-    const connectedGroup = itemObj[groupKey];
-    if (!connectedId || !connectedGroup) {
+    if (!connectedId) {
       return currentLevelItem;
     }
 
-    console.log("adding", groupName, obj.id);
-    console.log("next", connectedGroup, selectedItems[connectedId]);
+    console.log("adding", obj.id);
+    console.log("next", selectedItems[connectedId]);
 
     return {
       ...currentLevelItem,
-      ...getConnectedItemByDirection(
-        selectedItems[connectedId],
-        connectedGroup,
-        isForward
-      ),
+      ...getConnectedItemByDirection(selectedItems[connectedId], isForward),
     };
   };
 
@@ -136,8 +129,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     obj: MenuGroup,
     groupHeading: string
   ): SelectedItemType => {
-    const prevPath = getConnectedItemByDirection(obj, groupHeading, false);
-    const forwardPath = getConnectedItemByDirection(obj, groupHeading);
+    const prevPath = getConnectedItemByDirection(obj, false);
+    const forwardPath = getConnectedItemByDirection(obj);
     const connectedPath = {
       ...prevPath,
       [obj.id]: selectedItems?.[obj?.id],
@@ -324,17 +317,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     console.log("formatedSelections", formatedSelections);
   }, [selectedItems]);
 
-  const getSelectionsWithNoParent = (
-    selectedItems: SelectedItemType
-  ): SelectedItemType => {
-    // handle items with no parent
-    const menuItemsWithNoParent = menuGroup.options;
-    return Object.entries(selectedItems).reduce((acc, item) => {
-      const [key, value] = item;
-      const orphanItem = menuItemsWithNoParent?.some((e) => e.id === key);
-      return orphanItem ? acc : { ...acc, [key]: value };
-    }, {});
-  };
   const addItemSelection = (
     selectedItems: SelectedItemType,
     groupHeading: string,
@@ -354,9 +336,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       const parentGroup = parentGroupLookUp.current?.[groupHeading];
       const parentItem = newSelectedItems?.[parentId];
 
-      if (!isMultiSelection && parentId === KEYWORDS.NO_PARENT) {
-        newSelectedItems = getSelectionsWithNoParent(newSelectedItems);
-      }
       // cut the previous selections in the group if its not mulitselect
       // already has some values in the current group, so need to clear them
       if (
@@ -375,7 +354,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         );
       }
 
-      // check if the child is already present in the parent childIDS
+      // removal of the current id from childIDs in its parent...
       const isAlreadySelected = parentItem?.childIds?.some(
         (e) => e === item.id
       );
@@ -398,6 +377,13 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             childGroup,
           },
         };
+        // init the parent item for the first group elements
+        if (!parentItem) {
+          newSelectedItems = {
+            ...newSelectedItems,
+            [parentId]: initParentSelectedItem(parentId, groupHeading),
+          };
+        }
 
         // adding its children to its parent
         if (newSelectedItems?.[parentId]) {
@@ -405,7 +391,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             ? newSelectedItems[parentId]?.childIds || []
             : [];
           console.log("prev", prevChildIds, "new addition", item.id);
-
           newSelectedItems = {
             ...newSelectedItems,
             [parentId]: {
@@ -484,7 +469,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     try {
       // TODO: why don't use parentLookup
       // get the parent group
-      let parentGroup = cummSelections?.[item.id]?.parentGroup;
       const updatedSelections = cascadeSelectionRemoval(
         { ...cummSelections }, // TODO: check this before used selectedItems
         groupHeading,
@@ -492,7 +476,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       );
       // if there are other elements in the same group then make it active
       // made this complex as i'm following the selection order
-      if (parentGroup && isParentUpdateRequired) {
+      if (isParentUpdateRequired) {
         // need to use selectedItems(cummulative selections) as there will be only child in activeItem
         const parentItem: SelectedItemTypeVal = selectedItems[parentId];
         // removing the child from the parent
@@ -501,17 +485,14 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           (e) => e !== item.id
         );
 
-        if (isParentUpdateRequired) {
-          console.log("isMultiSelection", isMultiSelection, updatedChildren);
+        updatedSelections[parentId].childIds = isMultiSelection
+          ? updatedChildren
+          : updatedChildren?.length
+          ? [updatedChildren[0]]
+          : [];
+        // // need to be carefull as activeItem can have the capability to modify selectedItems object
+        // parentItem.childIds = updatedChildren;
 
-          updatedSelections[parentId].childIds = isMultiSelection
-            ? updatedChildren
-            : updatedChildren?.length
-            ? [updatedChildren[0]]
-            : [];
-          // // need to be carefull as activeItem can have the capability to modify selectedItems object
-          // parentItem.childIds = updatedChildren;
-        }
         if (getNextAvailableSelection) {
           const childId = updatedChildren?.[0];
           const childGroup = parentItem.childGroup;
@@ -525,7 +506,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             return otherPath;
           }
         }
-      } else if (!parentGroup && getNextAvailableSelection) {
+      } else if (getNextAvailableSelection) {
         /**
          * if there is any other item in the same group having no parent i.e, in the first level
          */
@@ -604,7 +585,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         setActiveItem(newActiveItem);
       } else {
         // extending the active path
-        const pId = menuGroup.id === parentId ? KEYWORDS.NO_PARENT : parentId;
+        const pId = parentId;
         const newActiveItem = addItemSelection(
           activeItem,
           groupHeading,
