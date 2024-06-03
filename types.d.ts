@@ -1,6 +1,3 @@
-export declare const KEYWORDS: {
-    NO_PARENT: string;
-};
 type ItemObj = {
     label: string;
     value: string;
