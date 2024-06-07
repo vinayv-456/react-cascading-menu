@@ -87,6 +87,46 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     };
   }, [error]);
 
+  // print results using bottom-up approch
+  // const printSelections2 = (obj: FormatedSelections) => {
+  //   if (!obj) {
+  //     return [];
+  //   }
+  //   if (!obj.options || obj.options?.length === 0) {
+  //     return [obj.label];
+  //   }
+  //   const allChildRes: string[] = obj.options.reduce((acc: string[], ele) => {
+  //     const childRes = printSelections2(ele);
+  //     return [...acc, ...childRes];
+  //   }, []);
+
+  //   return allChildRes.map((e) => `${obj.label}=>${e}`);
+  // };
+  useEffect(() => {
+    const formatedSelectionsVal = getFormatedSelections();
+    setFormatedSelections(formatedSelectionsVal);
+    const res = formatedSelectionsVal.map((ele: FormatedSelections | {}) => {
+      let result: string[] = [];
+      if (ele && Object.keys(ele)?.length !== 0) {
+        printSelections(ele as FormatedSelections, "", result);
+        return result;
+      }
+      return result;
+    });
+    setResults(res);
+
+    // another approch
+    // const ress = formatedSelections.map((ele: FormatedSelections | {}) => {
+    //   if (ele && Object.keys(ele)?.length !== 0) {
+    //     return printSelectionss(ele as FormatedSelections);
+    //   }
+    //   return [];
+    // });
+    // console.log("ress", ress);
+
+    console.log("formatedSelections", formatedSelections);
+  }, [selectedItems]);
+
   const getConnectedItemByDirection = (
     obj: MenuGroup,
     isForward = true
@@ -275,46 +315,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       return result;
     });
   };
-
-  // print results using bottom-up approch
-  // const printSelections2 = (obj: FormatedSelections) => {
-  //   if (!obj) {
-  //     return [];
-  //   }
-  //   if (!obj.options || obj.options?.length === 0) {
-  //     return [obj.label];
-  //   }
-  //   const allChildRes: string[] = obj.options.reduce((acc: string[], ele) => {
-  //     const childRes = printSelections2(ele);
-  //     return [...acc, ...childRes];
-  //   }, []);
-
-  //   return allChildRes.map((e) => `${obj.label}=>${e}`);
-  // };
-  useEffect(() => {
-    const formatedSelectionsVal = getFormatedSelections();
-    setFormatedSelections(formatedSelectionsVal);
-    const res = formatedSelectionsVal.map((ele: FormatedSelections | {}) => {
-      let result: string[] = [];
-      if (ele && Object.keys(ele)?.length !== 0) {
-        printSelections(ele as FormatedSelections, "", result);
-        return result;
-      }
-      return result;
-    });
-    setResults(res);
-
-    // another approch
-    // const ress = formatedSelections.map((ele: FormatedSelections | {}) => {
-    //   if (ele && Object.keys(ele)?.length !== 0) {
-    //     return printSelectionss(ele as FormatedSelections);
-    //   }
-    //   return [];
-    // });
-    // console.log("ress", ress);
-
-    console.log("formatedSelections", formatedSelections);
-  }, [selectedItems]);
 
   const addItemSelection = (
     selectedItems: SelectedItemType,
