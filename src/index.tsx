@@ -606,30 +606,20 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   };
 
-  const handleGroupSelection = (groupHeading: string, parentId: ItemId) => {
+  const handleGroupSelection = (parentId: ItemId) => {
     // setting splitAt in selectedItems
-    const parentGroup = getParentGroup(selectedItems, groupHeading, parentId);
-    if (parentGroup) {
-      const newSelectedItems = {
-        ...selectedItems,
-      };
-      newSelectedItems[parentId].splitAt = true;
-      setSelectedItems(newSelectedItems);
-    }
+    const newSelectedItems = {
+      ...selectedItems,
+    };
+    newSelectedItems[parentId].splitAt = true;
+    setSelectedItems(newSelectedItems);
 
     // setting splitAt property at activeItem
-    const parentGroupActive = getParentGroup(
-      activeItem,
-      groupHeading,
-      parentId
-    );
-    if (parentGroupActive) {
-      const newActiveItem = {
-        ...activeItem,
-      };
-      newActiveItem[parentId].splitAt = true;
-      setActiveItem(newActiveItem);
-    }
+    const newActiveItem = {
+      ...activeItem,
+    };
+    newActiveItem[parentId].splitAt = true;
+    setActiveItem(newActiveItem);
   };
 
   console.log("active item", activeItem);
