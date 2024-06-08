@@ -44,7 +44,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           <input
             type="radio"
             checked={activeItem?.[parentItemObj.id]?.splitAt || false}
-            onClick={() => handleGroupSelection(groupHeading, parentItemObj.id)}
+            onClick={() => handleGroupSelection(parentItemObj.id)}
           />
         </span>
         {options?.length === 0 ? (

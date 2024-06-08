@@ -94,7 +94,13 @@ export interface DPItemProps {
     groupHeading: string,
     parentId: ItemId
   ) => void;
-  handleGroupSelection: (groupHeading: string, parentId: ItemId) => void;
+  handleGroupSelection: (parentId: ItemId) => void;
   level: number;
   isMultiSelection: boolean;
+}
+
+export interface mvpSelectedProps {
+  label: string;
+  id: ItemId;
+  value: string;
 }
