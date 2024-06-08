@@ -77,8 +77,13 @@ export interface DPItemProps {
     emptyRecordMsg: string;
     showNext: boolean;
     handleItemSelection: (item: MenuGroup, groupHeading: string, parentId: ItemId) => void;
-    handleGroupSelection: (groupHeading: string, parentId: ItemId) => void;
+    handleGroupSelection: (parentId: ItemId) => void;
     level: number;
     isMultiSelection: boolean;
+}
+export interface mvpSelectedProps {
+    label: string;
+    id: ItemId;
+    value: string;
 }
 export {};
