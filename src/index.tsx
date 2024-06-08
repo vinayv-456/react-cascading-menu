@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -16,11 +17,13 @@ import {
   Item,
   FormatedSelections,
   emptyObj,
+  mvpSelectedProps,
 } from "./types";
 import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
+import Tags from "./components/Tags";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -55,11 +58,10 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   >([]);
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
-  const [results, setResults] = useState<string[][]>();
 
   useImperativeHandle(ref, () => ({
     getSelection: () => {
-      return formatedSelections;
+      return getFormatedSelections();
     },
     getAllItemsSelected: () => {
       return getAllItems(formatedSelections);
@@ -102,30 +104,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   //   return allChildRes.map((e) => `${obj.label}=>${e}`);
   // };
-  useEffect(() => {
-    const formatedSelectionsVal = getFormatedSelections();
-    setFormatedSelections(formatedSelectionsVal);
-    const res = formatedSelectionsVal.map((ele: FormatedSelections | {}) => {
-      let result: string[] = [];
-      if (ele && Object.keys(ele)?.length !== 0) {
-        printSelections(ele as FormatedSelections, "", result);
-        return result;
-      }
-      return result;
-    });
-    setResults(res);
-
-    // another approch
-    // const ress = formatedSelections.map((ele: FormatedSelections | {}) => {
-    //   if (ele && Object.keys(ele)?.length !== 0) {
-    //     return printSelectionss(ele as FormatedSelections);
-    //   }
-    //   return [];
-    // });
-    // console.log("ress", ress);
-
-    console.log("formatedSelections", formatedSelections);
-  }, [selectedItems]);
 
   const getConnectedItemByDirection = (
     obj: MenuGroup,
@@ -164,10 +142,125 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     };
   };
 
-  const getConnectedItems = (
-    obj: MenuGroup,
-    groupHeading: string
-  ): SelectedItemType => {
+  const getLeafNodes = (id: ItemId): mvpSelectedProps[][] => {
+    try {
+      const { label, id: nodeId, value } = selectedItems[id];
+      if (!selectedItems[id].childIds?.length) {
+        return [[{ label, id: nodeId, value }]];
+      }
+
+      // children paths
+      const childrenRes =
+        selectedItems[id].childIds?.reduce(
+          (
+            acc: mvpSelectedProps[][],
+            childId: ItemId
+          ): mvpSelectedProps[][] => {
+            const { label, id: nodeId, value } = selectedItems[childId];
+            return [...acc, ...getLeafNodes(nodeId)];
+          },
+          []
+        ) || [];
+
+      // add parent to all its children
+      return childrenRes?.map((sol) => {
+        return [{ label, id: nodeId, value }, ...sol];
+      });
+    } catch (e) {
+      console.log("error in getting the lead nodes", e);
+    }
+    return [];
+  };
+
+  const leafNodes = useMemo(() => {
+    console.log("recalulating leafs...");
+    return getLeafNodes(menuGroup.id);
+  }, [selectedItems]);
+
+  const getNextAvailableSelection = (id: ItemId): ItemId => {
+    const parentId = selectedItems[id].parentId;
+
+    if (parentId) {
+      // get the next index
+      const children = selectedItems[parentId].childIds || [];
+      const length = children?.length - 1;
+      const currentNodeIndex = children?.findIndex((itemId) => itemId === id);
+      // console.log(
+      //   "currentNodeIndex",
+      //   currentNodeIndex,
+      //   length,
+      //   children,
+      //   parentId
+      // );
+
+      if (length === 0 && currentNodeIndex === 0) {
+        return getNextAvailableSelection(parentId);
+      }
+      return currentNodeIndex + 1 <= length
+        ? children[currentNodeIndex + 1]
+        : children[currentNodeIndex - 1];
+    }
+    // TODO: control, cannot come here as parentId is madatory
+    return -1;
+  };
+
+  const handleTagRemoval = (selectionPath: mvpSelectedProps[]) => {
+    try {
+      let newActiveItem = activeItem;
+      const leafId = selectionPath[selectionPath.length - 1].id;
+      const isCurrentActiveNodeRemoved = activeItem[leafId] && true;
+      if (isCurrentActiveNodeRemoved) {
+        const nextId = getNextAvailableSelection(leafId);
+        if (nextId == -1) {
+          // no next item available
+          newActiveItem = {};
+        } else {
+          const obj = selectedItems[nextId];
+          newActiveItem = getConnectedItems(obj);
+        }
+      }
+
+      // check and change if active item is being removed
+      const newSelectedItems = { ...selectedItems };
+      const arr = selectionPath.slice().reverse();
+      for (let i = 0; i < arr.length; i++) {
+        // if the path has another child break, as node will be used for these children
+        if ((newSelectedItems[arr[i].id].childIds || [])?.length >= 1) {
+          break;
+        } else {
+          // remove the key from the childIds list in its parent's node
+          const idTobeRemoved = arr[i].id;
+          const parentIdOfremovedKey = newSelectedItems[idTobeRemoved].parentId;
+          if (parentIdOfremovedKey) {
+            const childIds =
+              newSelectedItems[parentIdOfremovedKey].childIds || [];
+            newSelectedItems[parentIdOfremovedKey].childIds = childIds.filter(
+              (id) => id !== idTobeRemoved
+            );
+          }
+          // delete the key
+          delete newSelectedItems[arr[i].id];
+        }
+      }
+      setSelectedItems(newSelectedItems);
+      setActiveItem(newActiveItem);
+    } catch (e) {
+      console.log("error in tag removal", e);
+    }
+  };
+
+  const handleSelectionPopulation = (selectionPath: mvpSelectedProps[]) => {
+    const newActiveItem = selectionPath.reduce(
+      (acc: SelectedItemType, item: mvpSelectedProps): SelectedItemType => {
+        const { label, id } = item;
+        return { ...acc, [id]: selectedItems[id] };
+      },
+      {}
+    );
+    setActiveItem(newActiveItem);
+  };
+
+  const getConnectedItems = (obj: MenuGroup): SelectedItemType => {
     const prevPath = getConnectedItemByDirection(obj, false);
     const forwardPath = getConnectedItemByDirection(obj);
     const connectedPath = {
@@ -208,25 +301,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       : [];
 
     return formatedselections;
-  };
-
-  const printSelections = (
-    obj: FormatedSelections,
-    common: string,
-    result: string[]
-  ): void => {
-    if (!obj) {
-      return;
-    }
-    if (!obj.options || obj.options?.length === 0) {
-      result.push(common ? common + "=>" + obj.label : obj.label);
-      return;
-    }
-
-    common = common ? `${common} => ${obj.label}` : obj.label;
-    obj.options.forEach((newObj) => {
-      printSelections(newObj, common, result);
-    });
   };
 
   const getAllItemsHelper = (obj: FormatedSelections): string[] => {
@@ -493,13 +567,11 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         // parentItem.childIds = updatedChildren;
 
         if (getNextAvailableSelection) {
+          // TODO: update fetching the next available selection
           const childId = updatedChildren?.[0];
           const childGroup = parentItem.childGroup;
           if (childId && childGroup && selectedItems[childId]) {
-            const otherPath = getConnectedItems(
-              selectedItems[childId],
-              childGroup
-            );
+            const otherPath = getConnectedItems(selectedItems[childId]);
             console.log("returning new path", otherPath);
 
             return otherPath;
@@ -517,7 +589,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         // if (nextAvailableItemId) {
         //   const otherPath = getConnectedItems(
         //     selectedItems[nextAvailableItemId],
-        //     groupHeading
         //   );
         //   console.log("returning new path", otherPath);
         //   return otherPath;
@@ -580,7 +651,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       );
       if (isPreviouslySelected) {
         // activating already selected path
-        const newActiveItem = getConnectedItems(item, groupHeading);
+        const newActiveItem = getConnectedItems(item);
         setActiveItem(newActiveItem);
       } else {
         // extending the active path
@@ -624,7 +695,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   console.log("active item", activeItem);
   console.log("selectedItems", selectedItems);
-  console.log("res", results);
 
   return (
     <>
@@ -638,6 +708,15 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
+        <div className="tag-container">
+          <span>tags slot</span>
+          {/* render the tag list */}
+          <Tags
+            leafNodes={leafNodes}
+            handleTagRemoval={handleTagRemoval}
+            handleSelectionPopulation={handleSelectionPopulation}
+          />
+        </div>
         <div
           className={classNames({
             "dropdown-menu": true,
@@ -659,8 +738,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           />
         </div>
       </div>
-      {/* print selections */}
-      {results?.map((res) => res.map((res2) => <li>{res2}</li>))}
     </>
   );
 });

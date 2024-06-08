@@ -218,3 +218,35 @@
   border-color: transparent transparent #999;
   border-width: 0 5px 5px;
 } */
+
+.tag-container{
+  background-color: azure;
+  width: 100vw;
+  min-height: 100px;
+  max-height: 125px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-hover{
+  position: absolute;
+  display: none;
+  background-color: cadetblue;
+  cursor: pointer;
+  /* max-width: 30vw; */
+}
+
+.tag-item{
+  position: relative;
+  min-width: 80px;
+  border: 1px solid black;
+  border-radius: 8px;
+  height: fit-content;
+  padding: 10px;
+  margin-right: 5px;
+}
+
+.tag-label:hover + .tag-hover {
+  display: block;
+}

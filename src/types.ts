@@ -98,3 +98,9 @@ export interface DPItemProps {
   level: number;
   isMultiSelection: boolean;
 }
+
+export interface mvpSelectedProps {
+  label: string;
+  id: ItemId;
+  value: string;
+}
