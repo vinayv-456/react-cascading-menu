@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { ThemeProvider } from "styled-components";
 import {
   MenuGroup,
   Props,
@@ -19,11 +20,13 @@ import {
   emptyObj,
   mvpSelectedProps,
 } from "./types";
-import DropdownMenu from "./components/DropdownMenu";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
+import { theme } from "./theme";
+import MenuGroupComp from "./components/MenuGroup";
+import { DropdownMenu } from "./styles";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -697,9 +700,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   console.log("selectedItems", selectedItems);
 
   return (
-    <>
+    <ThemeProvider theme={theme.material}>
       <span>{error}</span>
-
       <div ref={dropdownWrapperRef}>
         {/* <input
           type="text"
@@ -717,12 +719,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleSelectionPopulation={handleSelectionPopulation}
           />
         </div>
-        <div
-          className={classNames({
-            "dropdown-menu": true,
-          })}
-        >
-          <DropdownMenu
+        <DropdownMenu>
+          <MenuGroupComp
             menuGroup={menuGroup}
             isObject={isObject}
             displayValue={displayValue}
@@ -735,9 +733,9 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleGroupSelection={handleGroupSelection}
             level={0}
           />
-        </div>
+        </DropdownMenu>
       </div>
-    </>
+    </ThemeProvider>
   );
 });
 
