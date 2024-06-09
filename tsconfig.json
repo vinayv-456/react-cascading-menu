@@ -26,6 +26,6 @@
     // "jsx": "react-jsx"
     "declaration": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "custom.d.ts" ],
   "exclude": ["node_modules"]
 }
