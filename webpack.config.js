@@ -1,5 +1,9 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const createStyledComponentsTransformer =
+  require("typescript-plugin-styled-components").default;
+
+const styledComponentsTransformer = createStyledComponentsTransformer();
 
 module.exports = {
   // mode: "development", // 'production' or 'development'
@@ -35,12 +39,30 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: {
+          loader: "ts-loader",
+          options: {
+            getCustomTransformers: () => ({
+              before: [styledComponentsTransformer],
+            }),
+          },
+        },
         exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgo: false,
+            },
+          },
+        ],
       },
     ],
   },

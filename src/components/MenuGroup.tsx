@@ -3,8 +3,10 @@ import classnames from "classnames";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
 import { getParentGroup } from "../utils";
+import { DropdownGroup, DropdownNoresults, DropdownOption } from "../styles";
+import Icons, { ICONS } from "../icons";
 
-const DropdownMenu: React.FC<DPItemProps> = (props) => {
+const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   const {
     menuGroup,
     isObject,
@@ -34,12 +36,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
 
   return (
     <>
-      <div
-        className={classnames({
-          "dropdown-group": true,
-        })}
-        style={{ left: `${level * 14}rem` }}
-      >
+      <DropdownGroup left={level * 15}>
         {/* TODO: removed split option, need to review it */}
         {/* <span
           className={classnames({
@@ -54,23 +51,24 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           />
         </span> */}
         {options?.length === 0 ? (
-          <div className="dropdown-noresults"> {emptyRecordMsg}</div>
+          <DropdownNoresults> {emptyRecordMsg}</DropdownNoresults>
         ) : null}
+        <div className="grp-heading">{menuGroup.groupHeading}</div>
         {options?.map((ele: Item) => {
           const label = isObject ? ele?.[displayValue] : ele;
           const isActive = activeItem?.[ele.id]?.id === ele.id;
+          const fadeActive =
+            !isActive && selectedItems?.[ele.id]?.id === ele.id;
           return (
             <>
-              <div
+              <DropdownOption
                 key={ele.id}
-                className={classnames({
-                  "dropdown-option": true,
-                  checkbox: isMultiSelection,
-                  radio: !isMultiSelection,
-                  "fade-active":
-                    !isActive && selectedItems?.[ele.id]?.id === ele.id,
-                  active: isActive,
-                })}
+                fadeActive={fadeActive}
+                active={isActive}
+                // className={`${!isMultiSelection ? "radio" : ""} ${
+                //   isMultiSelection ? "checkbox" : ""
+                // } opt-label`}
+                className="opt-label"
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
                   handleItemSelection(
@@ -81,6 +79,10 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                   )
                 }
               >
+                <SelectionIcon
+                  isMultiSelection={isMultiSelection}
+                  isChecked={isActive || fadeActive}
+                />
                 <div
                   style={{ width: "100%" }}
                   // className={classnames({
@@ -96,17 +98,17 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 >
                   {label}
                 </div>
-              </div>
+              </DropdownOption>
             </>
           );
         })}
-      </div>
+      </DropdownGroup>
       {options?.map((ele: Item) => {
         const isSubMenuActive = activeItem?.[ele.id];
         return (
           <>
             {isSubMenuActive && (
-              <DropdownMenu
+              <MenuGroupComp
                 menuGroup={ele}
                 activeItem={activeItem}
                 selectedItems={selectedItems}
@@ -127,8 +129,36 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
   );
 };
 
-export default DropdownMenu;
+export default MenuGroupComp;
 
-DropdownMenu.defaultProps = {
+interface SelectionIconProps {
+  isMultiSelection: boolean;
+  isChecked: boolean;
+}
+const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
+  return (
+    <>
+      {isMultiSelection ? (
+        <>
+          {isChecked ? (
+            <Icons icon={ICONS.CHECKBOX_CHECKED} width={35} height={28} />
+          ) : (
+            <Icons icon={ICONS.CHECKBOX_UNCHECKED} width={35} height={28} />
+          )}
+        </>
+      ) : (
+        <>
+          {isChecked ? (
+            <Icons icon={ICONS.RADIO_CHECKED} width={35} height={28} />
+          ) : (
+            <Icons icon={ICONS.RADIO_UNCHECKED} width={35} height={28} />
+          )}
+        </>
+      )}
+    </>
+  );
+};
+
+MenuGroupComp.defaultProps = {
   showNext: true,
 };
