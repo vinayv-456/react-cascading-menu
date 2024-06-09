@@ -1,6 +1,7 @@
 export const menuGroup = {
   id: "1_101",
   groupHeading: "Country",
+  isMultiSelection: false,
   options: [
     {
       id: "2_101",
@@ -19,6 +20,7 @@ export const menuGroup = {
               label: "New York City",
               value: "New York City",
               groupHeading: "Place",
+              isMultiSelection: false,
               options: [
                 {
                   id: "5_101",

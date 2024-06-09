@@ -22,6 +22,7 @@ export interface MenuGroup {
   value: string;
   groupHeading: string;
   options?: MenuGroup[] | null;
+  isMultiSelection?: boolean;
 }
 
 export interface parentGroupLookUp {
@@ -92,11 +93,11 @@ export interface DPItemProps {
   handleItemSelection: (
     item: MenuGroup,
     groupHeading: string,
-    parentId: ItemId
+    parentId: ItemId,
+    isMultiSelection: boolean
   ) => void;
   handleGroupSelection: (parentId: ItemId) => void;
   level: number;
-  isMultiSelection: boolean;
 }
 
 export interface mvpSelectedProps {
