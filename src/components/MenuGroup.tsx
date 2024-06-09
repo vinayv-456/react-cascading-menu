@@ -3,8 +3,9 @@ import classnames from "classnames";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
 import { getParentGroup } from "../utils";
+import { DropdownGroup, DropdownNoresults, DropdownOption } from "../styles";
 
-const DropdownMenu: React.FC<DPItemProps> = (props) => {
+const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   const {
     menuGroup,
     isObject,
@@ -34,12 +35,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
 
   return (
     <>
-      <div
-        className={classnames({
-          "dropdown-group": true,
-        })}
-        style={{ left: `${level * 14}rem` }}
-      >
+      <DropdownGroup left={level * 14}>
         {/* TODO: removed split option, need to review it */}
         {/* <span
           className={classnames({
@@ -54,23 +50,20 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
           />
         </span> */}
         {options?.length === 0 ? (
-          <div className="dropdown-noresults"> {emptyRecordMsg}</div>
+          <DropdownNoresults> {emptyRecordMsg}</DropdownNoresults>
         ) : null}
         {options?.map((ele: Item) => {
           const label = isObject ? ele?.[displayValue] : ele;
           const isActive = activeItem?.[ele.id]?.id === ele.id;
           return (
             <>
-              <div
+              <DropdownOption
                 key={ele.id}
-                className={classnames({
-                  "dropdown-option": true,
-                  checkbox: isMultiSelection,
-                  radio: !isMultiSelection,
-                  "fade-active":
-                    !isActive && selectedItems?.[ele.id]?.id === ele.id,
-                  active: isActive,
-                })}
+                fadeActive={!isActive && selectedItems?.[ele.id]?.id === ele.id}
+                active={isActive}
+                className={`${!isMultiSelection ? "radio" : ""} ${
+                  isMultiSelection ? "checkbox" : ""
+                }`}
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
                   handleItemSelection(
@@ -96,17 +89,17 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 >
                   {label}
                 </div>
-              </div>
+              </DropdownOption>
             </>
           );
         })}
-      </div>
+      </DropdownGroup>
       {options?.map((ele: Item) => {
         const isSubMenuActive = activeItem?.[ele.id];
         return (
           <>
             {isSubMenuActive && (
-              <DropdownMenu
+              <MenuGroupComp
                 menuGroup={ele}
                 activeItem={activeItem}
                 selectedItems={selectedItems}
@@ -127,8 +120,8 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
   );
 };
 
-export default DropdownMenu;
+export default MenuGroupComp;
 
-DropdownMenu.defaultProps = {
+MenuGroupComp.defaultProps = {
   showNext: true,
 };
