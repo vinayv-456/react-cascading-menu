@@ -17,10 +17,15 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
     handleItemSelection,
     handleGroupSelection,
     level,
-    isMultiSelection,
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
   const { options: opt, ...parentItemObj } = menuGroup;
+
+  // choose the default value via prop
+  const isMultiSelection =
+    menuGroup.isMultiSelection !== undefined
+      ? menuGroup.isMultiSelection
+      : true;
 
   /**
    *
@@ -35,7 +40,8 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
         })}
         style={{ left: `${level * 14}rem` }}
       >
-        <span
+        {/* TODO: removed split option, need to review it */}
+        {/* <span
           className={classnames({
             "dropdown-heading": true,
           })}
@@ -46,7 +52,7 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
             checked={activeItem?.[parentItemObj.id]?.splitAt || false}
             onClick={() => handleGroupSelection(parentItemObj.id)}
           />
-        </span>
+        </span> */}
         {options?.length === 0 ? (
           <div className="dropdown-noresults"> {emptyRecordMsg}</div>
         ) : null}
@@ -67,7 +73,12 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 })}
                 onClick={() =>
                   // TODO: use only the part of the parentItemObj
-                  handleItemSelection(ele, groupHeading, parentItemObj.id)
+                  handleItemSelection(
+                    ele,
+                    groupHeading,
+                    parentItemObj.id,
+                    isMultiSelection
+                  )
                 }
               >
                 <div
@@ -107,7 +118,6 @@ const DropdownMenu: React.FC<DPItemProps> = (props) => {
                 handleItemSelection={handleItemSelection}
                 handleGroupSelection={handleGroupSelection}
                 level={level + 1}
-                isMultiSelection={isMultiSelection}
               />
             )}
           </>

@@ -37,7 +37,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     displayValue = "label",
     groupby = "label",
     caseSensitiveSearch = true,
-    isMultiSelection = false,
     keepSearchTerm,
     emptyRecordMsg = "No Items",
     selectionLimit,
@@ -607,7 +606,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const handleItemSelection = (
     item: MenuGroup,
     groupHeading: string,
-    parentId: ItemId
+    parentId: ItemId,
+    isMultiSelection: boolean
   ) => {
     console.log("new selection", item, groupHeading, parentId);
     const activeSelection = isMultiSelection ? activeItem : selectedItems;
@@ -734,7 +734,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleItemSelection={handleItemSelection}
             handleGroupSelection={handleGroupSelection}
             level={0}
-            isMultiSelection={isMultiSelection}
           />
         </div>
       </div>
