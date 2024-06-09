@@ -700,7 +700,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   console.log("selectedItems", selectedItems);
 
   return (
-    <ThemeProvider theme={theme.material}>
+    <ThemeProvider theme={theme.minimalistic}>
       <span>{error}</span>
       <div ref={dropdownWrapperRef}>
         {/* <input
@@ -711,7 +711,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           ref={searchBoxRef}
         /> */}
         <div className="tag-container">
-          <span>tags slot</span>
           {/* render the tag list */}
           <Tags
             leafNodes={leafNodes}

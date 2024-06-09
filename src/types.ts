@@ -1,3 +1,5 @@
+import { FunctionComponent, SVGAttributes } from "react";
+
 type ItemObj = {
   label: string;
   value: string;
@@ -104,4 +106,8 @@ export interface mvpSelectedProps {
   label: string;
   id: ItemId;
   value: string;
+}
+
+export interface IconType {
+  [iconUrl: string]: FunctionComponent<SVGAttributes<SVGElement>>;
 }

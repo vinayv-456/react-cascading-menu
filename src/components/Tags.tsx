@@ -2,7 +2,7 @@ import React from "react";
 import { mvpSelectedProps } from "../types";
 import "../classes.css";
 import { TagContainer, TagHover, TagItem, TagLabel } from "../styles";
-
+import Icons, { ICONS } from "../icons";
 interface Props {
   leafNodes: mvpSelectedProps[][];
   handleTagRemoval: (selectionPath: mvpSelectedProps[]) => void;
@@ -29,9 +29,12 @@ function Tags(props: Props) {
                 return `${e.label} => `;
               })}
             </TagHover>
-            <button onClick={() => handleTagRemoval(selectionPath)}>
-              remove
-            </button>
+            <span
+              className="cancel-icon"
+              onClick={() => handleTagRemoval(selectionPath)}
+            >
+              <Icons icon={ICONS.CANCEL} />
+            </span>
           </TagItem>
         );
       })}

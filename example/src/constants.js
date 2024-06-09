@@ -1,7 +1,6 @@
 export const menuGroup = {
   id: "1_101",
   groupHeading: "Country",
-  isMultiSelection: false,
   options: [
     {
       id: "2_101",

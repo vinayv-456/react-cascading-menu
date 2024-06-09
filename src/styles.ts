@@ -9,7 +9,7 @@ export interface StyledCompProps {
 }
 
 export const DropdownMenu = styled.div`
-  width: 100%;
+  /* width: 100%; */
   position: relative;
   margin: 0;
   padding: 0.25rem 0;
@@ -27,17 +27,23 @@ export const DropdownMenu = styled.div`
   list-style-type: none;
   text-decoration: inherit;
   text-transform: inherit;
+  box-shadow: #d1d9e6 8px 8px 16px, #d1d9e6 -8px -8px 16px;
 `;
 
 export const DropdownGroup = styled.div<StyledCompProps>`
   left: ${(props) => `${props.left}rem`};
   background-color: ${(props) => props.theme.background};
-  min-width: 15rem;
-  width: max-content;
+  width: 15rem;
+  word-wrap: none;
+  /* width: max-content; */
   height: 10rem;
   max-height: 20rem;
   overflow-y: auto;
   box-sizing: border-box;
+  padding-right: 1rem;
+  max-width: 20rem;
+  overflow-x: auto;
+  border-right: 3px dotted #f6f6f6;
 
   & + & {
     /* left: 13rem; */
@@ -45,10 +51,26 @@ export const DropdownGroup = styled.div<StyledCompProps>`
     position: absolute;
     top: 0;
   }
+  & .grp-heading {
+    padding: 10px;
+    font-weight: bold;
+  }
+  & .opt-label {
+    margin-bottom: 1px;
+    & div {
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
 `;
 
 export const DropdownOption = styled.div<StyledCompProps>`
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
+  background-color: #efefef;
   color: rgba(51, 51, 51, 0.8);
   cursor: pointer;
   align-items: center;
@@ -60,24 +82,10 @@ export const DropdownOption = styled.div<StyledCompProps>`
   ${(props) =>
     props.fadeActive &&
     css`
-      background-color: rgba(29, 29, 29, 0.8);
+      background-color: ${(props) => props.theme.selected};
       opacity: 0.7;
       & > div {
         color: #ccc;
-      }
-      &.checkbox::before {
-        content: "\\f146";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 1.5rem;
-        margin-right: 8px;
-      }
-      &.radio::before {
-        content: "\\f192";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 1.5rem;
-        margin-right: 8px;
       }
     `}
 
@@ -85,41 +93,11 @@ export const DropdownOption = styled.div<StyledCompProps>`
   ${(props) =>
     props.active &&
     css`
-      background-color: rgba(29, 29, 29, 0.8);
+      background-color: ${(props) => props.theme.selected};
       & > div {
         color: #ccc;
       }
-      &.checkbox::before {
-        content: "\\f146";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 1.5rem;
-        margin-right: 8px;
-      }
-      &.radio::before {
-        content: "\\f192";
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 1.5rem;
-        margin-right: 8px;
-      }
     `}
-
-  &.checkbox::before {
-    content: "\\f0fe";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    font-size: 1.5rem;
-    margin-right: 8px;
-  }
-
-  &.radio::before {
-    content: "\\f111";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    font-size: 1.5rem;
-    margin-right: 8px;
-  }
 `;
 
 export const DropdownNoresults = styled.div<StyledCompProps>`
@@ -131,23 +109,28 @@ export const DropdownNoresults = styled.div<StyledCompProps>`
 `;
 
 export const TagContainer = styled.div`
-  background-color: azure;
   width: 100vw;
   min-height: 100px;
   max-height: 125px;
   overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
+  padding: 5px;
 `;
 
 export const TagItem = styled.div`
+  display: flex;
+  align-items: center;
   position: relative;
   min-width: 80px;
   border: 1px solid black;
   border-radius: 8px;
-  height: fit-content;
-  padding: 10px;
+  height: 20px;
+  padding: 5px;
   margin-right: 5px;
+  & .cancel-icon {
+    padding: 8px 5px;
+  }
 `;
 
 export const TagHover = styled.span`

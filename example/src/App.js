@@ -28,6 +28,9 @@ const App = () => {
         isMultiSelection={true}
         displayValue="value"
       />
+      <br />
+      <br />
+
       <button onClick={fetchSelectionItems}>get selections</button>
       <button onClick={fetchSelectionItemsLabels}>
         get selections as label array
