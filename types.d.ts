@@ -1,3 +1,4 @@
+import { FunctionComponent, SVGAttributes } from "react";
 type ItemObj = {
     label: string;
     value: string;
@@ -19,6 +20,7 @@ export interface MenuGroup {
     value: string;
     groupHeading: string;
     options?: MenuGroup[] | null;
+    isMultiSelection?: boolean;
 }
 export interface parentGroupLookUp {
     [childGrp: string]: string;
@@ -76,14 +78,16 @@ export interface DPItemProps {
     groupby: string;
     emptyRecordMsg: string;
     showNext: boolean;
-    handleItemSelection: (item: MenuGroup, groupHeading: string, parentId: ItemId) => void;
+    handleItemSelection: (item: MenuGroup, groupHeading: string, parentId: ItemId, isMultiSelection: boolean) => void;
     handleGroupSelection: (parentId: ItemId) => void;
     level: number;
-    isMultiSelection: boolean;
 }
 export interface mvpSelectedProps {
     label: string;
     id: ItemId;
     value: string;
+}
+export interface IconType {
+    [iconUrl: string]: FunctionComponent<SVGAttributes<SVGElement>>;
 }
 export {};
