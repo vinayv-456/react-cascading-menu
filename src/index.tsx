@@ -27,6 +27,7 @@ import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
 import { DropdownMenu } from "./styles";
+import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -173,6 +174,43 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
     return [];
   };
+
+  interface LeafObj {
+    label: string;
+    leafNode: MenuGroup;
+  }
+  const getAllLeafNodes = (treeObj: MenuGroup): LeafObj[] => {
+    try {
+      const { label, options } = treeObj;
+      if (!options?.length) {
+        return [{ label, leafNode: treeObj }];
+      }
+
+      const childRes = options?.reduce(
+        (acc: LeafObj[], obj: MenuGroup): LeafObj[] => {
+          return [...acc, ...getAllLeafNodes(obj)];
+        },
+        []
+      );
+
+      return childRes.map((e) => {
+        const { label, leafNode } = e;
+        return {
+          label: treeObj.label ? `${treeObj.label}=>${label}` : label,
+          leafNode: leafNode || {},
+        };
+      });
+    } catch (e) {
+      console.log("error in finding all the leafs", e);
+    }
+    // not necessary, will not be able to reach this
+    return [{ label: treeObj.label, leafNode: treeObj }];
+  };
+
+  const allItems = useMemo(() => {
+    return getAllLeafNodes(menuGroup);
+  }, [menuGroup]);
+  console.log("=======allItems------------", allItems);
 
   const leafNodes = useMemo(() => {
     console.log("recalulating leafs...");
@@ -710,6 +748,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
+        <Search menuGroup={menuGroup} />
         <div className="tag-container">
           {/* render the tag list */}
           <Tags
