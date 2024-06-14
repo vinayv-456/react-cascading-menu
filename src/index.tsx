@@ -751,7 +751,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
-        <Search allItems={allItems} />
+        <Search menuGroup={menuGroup} allItems={allItems} />
         <div className="tag-container">
           {/* render the tag list */}
           <Tags

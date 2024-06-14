@@ -145,3 +145,7 @@ export const TagLabel = styled.span`
     display: block;
   }
 `;
+
+export const SearchItem = styled.div`
+  border-bottom: 1px solid black;
+`;
