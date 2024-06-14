@@ -19,6 +19,7 @@ import {
   FormatedSelections,
   emptyObj,
   mvpSelectedProps,
+  CompleteObj,
 } from "./types";
 import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -175,40 +176,42 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     return [];
   };
 
-  interface LeafObj {
-    label: string;
-    leafNode: MenuGroup;
-  }
-  const getAllLeafNodes = (treeObj: MenuGroup): LeafObj[] => {
+  const getAllLeafNodes = (
+    treeObj: MenuGroup,
+    index: number
+  ): CompleteObj[] => {
     try {
       const { label, options } = treeObj;
       if (!options?.length) {
-        return [{ label, leafNode: treeObj }];
+        return [{ label, indexes: [index] }];
       }
 
-      const childRes = options?.reduce(
-        (acc: LeafObj[], obj: MenuGroup): LeafObj[] => {
-          return [...acc, ...getAllLeafNodes(obj)];
+      const childRes = options.reduce(
+        (acc: CompleteObj[], item, index: number): CompleteObj[] => {
+          return [...acc, ...getAllLeafNodes(item, index)];
         },
         []
       );
 
       return childRes.map((e) => {
-        const { label, leafNode } = e;
+        const { label, indexes } = e;
+        if (!treeObj.label) {
+          return e;
+        }
         return {
-          label: treeObj.label ? `${treeObj.label}=>${label}` : label,
-          leafNode: leafNode || {},
+          label: `${treeObj.label}=>${label}`,
+          indexes: [index, ...indexes],
         };
       });
     } catch (e) {
       console.log("error in finding all the leafs", e);
     }
     // not necessary, will not be able to reach this
-    return [{ label: treeObj.label, leafNode: treeObj }];
+    return [{ label: treeObj.label, indexes: [index] }];
   };
 
   const allItems = useMemo(() => {
-    return getAllLeafNodes(menuGroup);
+    return getAllLeafNodes(menuGroup, -1);
   }, [menuGroup]);
   console.log("=======allItems------------", allItems);
 
@@ -748,7 +751,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
-        <Search menuGroup={menuGroup} />
+        <Search allItems={allItems} />
         <div className="tag-container">
           {/* render the tag list */}
           <Tags
