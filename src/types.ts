@@ -111,3 +111,8 @@ export interface mvpSelectedProps {
 export interface IconType {
   [iconUrl: string]: FunctionComponent<SVGAttributes<SVGElement>>;
 }
+
+export interface CompleteObj {
+  label: string;
+  indexes: number[];
+}
