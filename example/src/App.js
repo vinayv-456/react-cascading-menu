@@ -21,7 +21,7 @@ const App = () => {
     );
   };
   return (
-    <div>
+    <div style={{ background: "red", width: "50vw", height: "50vh" }}>
       <Index
         ref={ref}
         menuGroup={menuGroup}

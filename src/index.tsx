@@ -26,7 +26,7 @@ import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
-import { DropdownMenu } from "./styles";
+import { DropdownMenu, MainContainer } from "./styles";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -702,7 +702,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   return (
     <ThemeProvider theme={theme.minimalistic}>
       <span>{error}</span>
-      <div ref={dropdownWrapperRef}>
+      <MainContainer ref={dropdownWrapperRef}>
         {/* <input
           type="text"
           value={searchVal}
@@ -733,7 +733,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             level={0}
           />
         </DropdownMenu>
-      </div>
+      </MainContainer>
     </ThemeProvider>
   );
 });

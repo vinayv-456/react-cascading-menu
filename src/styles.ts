@@ -8,8 +8,16 @@ export interface StyledCompProps {
   radio?: boolean;
 }
 
+export const MainContainer = styled.div`
+  width: 100%;
+  height: max(300px, 100%);
+  display: flex;
+  flex-direction: column;
+`;
+
 export const DropdownMenu = styled.div`
   /* width: 100%; */
+  flex: 1;
   position: relative;
   margin: 0;
   padding: 0.25rem 0;
@@ -33,7 +41,7 @@ export const DropdownMenu = styled.div`
 export const DropdownGroup = styled.div<StyledCompProps>`
   left: ${(props) => `${props.left}rem`};
   background-color: ${(props) => props.theme.background};
-  width: 15rem;
+  width: 13rem;
   word-wrap: none;
   /* width: max-content; */
   height: 10rem;
@@ -52,11 +60,21 @@ export const DropdownGroup = styled.div<StyledCompProps>`
     top: 0;
   }
   & .grp-heading {
-    padding: 10px;
+    padding: 8px;
     font-weight: bold;
+    position: fixed;
+    z-index: 100;
+    width: calc(13rem - 40px);
+    background-color: ${(props) => props.theme.background};
+  }
+  & .grp-opts {
+    position: absolute;
+    top: 40px;
+    width: 100%;
   }
   & .opt-label {
     margin-bottom: 1px;
+    width: 100%;
     & div {
       text-decoration: none;
       overflow: hidden;
@@ -76,7 +94,7 @@ export const DropdownOption = styled.div<StyledCompProps>`
   align-items: center;
   display: flex;
   min-height: 2.5rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0rem 1.5rem;
 
   /* fadeActive stylings */
   ${(props) =>
