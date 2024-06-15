@@ -21,7 +21,6 @@ import {
   mvpSelectedProps,
   CompleteObj,
 } from "./types";
-import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
@@ -754,18 +753,14 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     ][]) {
       const newChildId = value?.childIds?.[0];
       // childIds updation: has parent but no child so add childId to childIds list
-      if (
-        newSelectedItems[key] &&
-        newChildId &&
-        !newSelectedItems[newChildId]
-      ) {
+      if (selectedItems[key] && newChildId && !selectedItems[newChildId]) {
         // if (newChildId && !newSelectedItems[key].childIds?.includes(newChildId)) {
         newSelectedItems[key].childIds = [
           ...(newSelectedItems[key].childIds || []),
           newChildId,
         ];
         // }
-      } else if (!newSelectedItems[key]) {
+      } else if (!selectedItems[key]) {
         // direct addition as no id exist
         newSelectedItems[key] = value;
       }
