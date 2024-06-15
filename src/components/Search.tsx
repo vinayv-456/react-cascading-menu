@@ -7,7 +7,6 @@ import {
   SelectedItemTypeVal,
 } from "../types";
 import useDebounce from "../hooks/useDebounce";
-import { SearchItem } from "../styles";
 import Dropdown from "./Dropdown";
 
 interface Props {
@@ -124,17 +123,25 @@ function Search(props: Props) {
     setSearchResults(matchedResults);
   };
 
-  const renderItem = (item: SearchResObj) => {
+  const renderItem = (item: SearchResObj, searchTerm: string) => {
     return {
       key: item.label,
       label: item.label,
       renderComp: () => {
         const { label, labelsPath, indexesPath } = item;
+        const arr = labelsPath.slice(0, indexesPath.length);
         return (
-          <SearchItem>
-            <div>{label}</div>
-            <div>{labelsPath.slice(0, indexesPath.length).join(" => ")}</div>
-          </SearchItem>
+          <div>
+            {arr.map((e, index) => {
+              const val = index !== arr.length - 1 ? `${e} =>` : e;
+              if (
+                e.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                searchTerm.toLowerCase().includes(e.toLowerCase())
+              )
+                return <span style={{ fontWeight: "bold" }}>{val}</span>;
+              return <span>{val}</span>;
+            })}
+          </div>
         );
       },
     };

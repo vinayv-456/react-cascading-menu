@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useDebounce from "../hooks/useDebounce";
+import useOnClickOutside from "../hooks/useClickoutside";
 
 const DropdownContainer = styled.div`
   position: relative;
-  width: 200px;
+  width: 400px;
+  z-index: 100;
+  margin-bottom: 5px;
 `;
 
 const SearchInput = styled.input`
@@ -16,7 +19,7 @@ const SearchInput = styled.input`
 const DropdownList = styled.ul`
   position: absolute;
   width: 100%;
-  max-height: 150px;
+  max-height: 200px;
   overflow-y: auto;
   background: white;
   border: 1px solid #ccc;
@@ -39,7 +42,10 @@ interface DropdownProps<T> {
   items: T[];
   handleItemClick: (opt: T) => void;
   handleSearchChange: (val: string) => void;
-  renderItem: (item: T) => {
+  renderItem: (
+    item: T,
+    searchTerm: string
+  ) => {
     label: string;
     key: number | string;
     renderComp: () => React.JSX.Element;
@@ -55,6 +61,8 @@ const Dropdown = <T extends {}>({
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -66,10 +74,17 @@ const Dropdown = <T extends {}>({
   const handleSearchItemClick = (item: T) => {
     setIsOpen(false);
     handleItemClick(item);
+    setSearchTerm("");
   };
 
+  const handleClickOutside = () => {
+    setIsOpen(false);
+  };
+
+  useOnClickOutside(dropdownRef, handleClickOutside);
+
   return (
-    <DropdownContainer>
+    <DropdownContainer ref={dropdownRef}>
       <SearchInput
         type="text"
         value={searchTerm}
@@ -78,8 +93,9 @@ const Dropdown = <T extends {}>({
       />
       {isOpen && (
         <DropdownList>
+          {searchTerm && !items.length && <span>No Results</span>}
           {items.map((item: T) => {
-            const { key, label, renderComp } = renderItem(item);
+            const { key, label, renderComp } = renderItem(item, searchTerm);
             return (
               <DropdownListItem
                 key={key}

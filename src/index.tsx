@@ -26,7 +26,7 @@ import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
-import { DropdownMenu } from "./styles";
+import { MenuGroupContainer } from "./styles";
 import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
@@ -788,15 +788,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           allItems={allItems}
           handleBulkAddition={handleBulkAddition}
         />
-        <div className="tag-container">
-          {/* render the tag list */}
-          <Tags
-            leafNodes={leafNodes}
-            handleTagRemoval={handleTagRemoval}
-            handleSelectionPopulation={handleSelectionPopulation}
-          />
-        </div>
-        <DropdownMenu>
+        <MenuGroupContainer>
           <MenuGroupComp
             menuGroup={menuGroup}
             isObject={isObject}
@@ -810,7 +802,15 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleGroupSelection={handleGroupSelection}
             level={0}
           />
-        </DropdownMenu>
+        </MenuGroupContainer>
+        <div className="tag-container">
+          {/* render the tag list */}
+          <Tags
+            leafNodes={leafNodes}
+            handleTagRemoval={handleTagRemoval}
+            handleSelectionPopulation={handleSelectionPopulation}
+          />
+        </div>
       </div>
     </ThemeProvider>
   );

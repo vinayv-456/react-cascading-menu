@@ -8,14 +8,14 @@ export interface StyledCompProps {
   radio?: boolean;
 }
 
-export const DropdownMenu = styled.div`
+export const MenuGroupContainer = styled.div`
   /* width: 100%; */
   position: relative;
   margin: 0;
   padding: 0.25rem 0;
   box-sizing: border-box;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 10;
   -webkit-overflow-scrolling: touch;
   color: #000;
   font-family: Roboto, sans-serif;
@@ -144,8 +144,4 @@ export const TagLabel = styled.span`
   &:hover + ${TagHover} {
     display: block;
   }
-`;
-
-export const SearchItem = styled.div`
-  border-bottom: 1px solid black;
 `;
