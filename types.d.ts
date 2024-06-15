@@ -48,6 +48,7 @@ export interface SelectedItemTypeVal {
     childGroup?: string;
     childIds?: ItemId[] | null;
     splitAt?: boolean;
+    isMultiSelection?: boolean;
 }
 export type ItemId = number | string;
 export interface SelectedItemType {
@@ -89,5 +90,9 @@ export interface mvpSelectedProps {
 }
 export interface IconType {
     [iconUrl: string]: FunctionComponent<SVGAttributes<SVGElement>>;
+}
+export interface CompleteObj {
+    label: string;
+    indexes: number[];
 }
 export {};
