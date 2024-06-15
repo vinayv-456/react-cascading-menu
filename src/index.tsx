@@ -19,14 +19,15 @@ import {
   FormatedSelections,
   emptyObj,
   mvpSelectedProps,
+  CompleteObj,
 } from "./types";
-import classNames from "classnames";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
-import { DropdownMenu } from "./styles";
+import { MenuGroupContainer } from "./styles";
+import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelectedBySplit: () => string[][][];
@@ -173,6 +174,45 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
     return [];
   };
+
+  const getAllLeafNodes = (
+    treeObj: MenuGroup,
+    index: number
+  ): CompleteObj[] => {
+    try {
+      const { label, options } = treeObj;
+      if (!options?.length) {
+        return [{ label, indexes: [index] }];
+      }
+
+      const childRes = options.reduce(
+        (acc: CompleteObj[], item, index: number): CompleteObj[] => {
+          return [...acc, ...getAllLeafNodes(item, index)];
+        },
+        []
+      );
+
+      return childRes.map((e) => {
+        const { label, indexes } = e;
+        if (!treeObj.label) {
+          return e;
+        }
+        return {
+          label: `${treeObj.label}=>${label}`,
+          indexes: [index, ...indexes],
+        };
+      });
+    } catch (e) {
+      console.log("error in finding all the leafs", e);
+    }
+    // not necessary, will not be able to reach this
+    return [{ label: treeObj.label, indexes: [index] }];
+  };
+
+  const allItems = useMemo(() => {
+    return getAllLeafNodes(menuGroup, -1);
+  }, [menuGroup]);
+  console.log("=======allItems------------", allItems);
 
   const leafNodes = useMemo(() => {
     console.log("recalulating leafs...");
@@ -696,6 +736,52 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setActiveItem(newActiveItem);
   };
 
+  const handleBulkAddition = (items: SelectedItemType, leafId: ItemId) => {
+    // make the item as active
+    setActiveItem(items);
+
+    // insertion/updation in selectedItems
+    if (selectedItems[leafId]) {
+      return;
+    }
+
+    const newSelectedItems = { ...selectedItems };
+    const deafultSelectionType = true; // TODO: default isMultiSelection
+
+    // if the item is not present in the selections
+    for (const [key, value] of Object.entries(items) as [
+      ItemId,
+      SelectedItemTypeVal
+    ][]) {
+      const newChildId = value?.childIds?.[0];
+
+      // childIds updation: has parent but no child so add childId to childIds list
+      if (selectedItems[key] && newChildId && !selectedItems[newChildId]) {
+        const selectionTypeDefined = value.isMultiSelection;
+        const isMultiSelection =
+          selectionTypeDefined === undefined
+            ? deafultSelectionType
+            : selectionTypeDefined;
+
+        // remove prev childs if it is not mult selection
+        if (!isMultiSelection) {
+          newSelectedItems[key].childIds?.forEach((id) => {
+            delete newSelectedItems[id];
+          });
+        }
+
+        newSelectedItems[key].childIds = isMultiSelection
+          ? [...(newSelectedItems[key].childIds || []), newChildId]
+          : [newChildId];
+      } else if (!selectedItems[key]) {
+        // direct addition as no id exist
+        newSelectedItems[key] = value;
+      }
+    }
+
+    setSelectedItems(newSelectedItems);
+  };
+
   console.log("active item", activeItem);
   console.log("selectedItems", selectedItems);
 
@@ -710,15 +796,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
-        <div className="tag-container">
-          {/* render the tag list */}
-          <Tags
-            leafNodes={leafNodes}
-            handleTagRemoval={handleTagRemoval}
-            handleSelectionPopulation={handleSelectionPopulation}
-          />
-        </div>
-        <DropdownMenu>
+        <Search
+          menuGroup={menuGroup}
+          allItems={allItems}
+          handleBulkAddition={handleBulkAddition}
+        />
+        <MenuGroupContainer>
           <MenuGroupComp
             menuGroup={menuGroup}
             isObject={isObject}
@@ -732,7 +815,15 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleGroupSelection={handleGroupSelection}
             level={0}
           />
-        </DropdownMenu>
+        </MenuGroupContainer>
+        <div className="tag-container">
+          {/* render the tag list */}
+          <Tags
+            leafNodes={leafNodes}
+            handleTagRemoval={handleTagRemoval}
+            handleSelectionPopulation={handleSelectionPopulation}
+          />
+        </div>
       </div>
     </ThemeProvider>
   );
