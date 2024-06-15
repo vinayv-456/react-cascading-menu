@@ -25,6 +25,8 @@ function Search(props: Props) {
   const { allItems, menuGroup, handleBulkAddition } = props;
   const [searchInp, setSearchInp] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResObj[]>([]);
+
+  // format the selected item to SelectedItemType
   const formSelection = (searchItemSelection: SearchResObj) => {
     const { indexesPath } = searchItemSelection;
     let obj: MenuGroup;
@@ -82,20 +84,23 @@ function Search(props: Props) {
     }
     const matchedResults: SearchResObj[] = [];
     const searchValue = searchVal.toLowerCase();
-    const higherLevResults = allItems.filter((e) =>
-      e.label.toLowerCase().includes(searchValue)
-    );
     let recentResults: number[][] = [];
     let currentResults: number[][] = [];
-    // TODO: need to check the results again
-    higherLevResults.forEach((res) => {
+    allItems.forEach((res) => {
       const { label, indexes } = res;
+      if (!label.toLowerCase().includes(searchValue)) {
+        return;
+      }
       const labelArr = label.split("=>");
       recentResults = currentResults.length ? currentResults : recentResults;
       currentResults = [];
       labelArr.forEach((e, index) => {
-        const arg1 = e.trim().toLowerCase();
-        const arg2 = searchValue;
+        const arg1 = labelArr
+          .slice(0, index + 1)
+          .join("=>")
+          .toLowerCase(); // e.trim().toLowerCase();
+        const arg2 = searchValue.toLowerCase();
+
         if (arg1.includes(arg2)) {
           const indexesPath = indexes.slice(0, index + 1);
           currentResults.push(indexesPath);
