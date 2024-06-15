@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   CompleteObj,
+  ItemId,
   MenuGroup,
   SelectedItemType,
   SelectedItemTypeVal,
@@ -11,6 +12,7 @@ import { SearchItem } from "../styles";
 interface Props {
   allItems: CompleteObj[];
   menuGroup: MenuGroup;
+  handleBulkAddition: (selectedItems: SelectedItemType, leadId: ItemId) => void;
 }
 
 interface SearchResObj {
@@ -20,14 +22,15 @@ interface SearchResObj {
 }
 
 function Search(props: Props) {
-  const { allItems, menuGroup } = props;
+  const { allItems, menuGroup, handleBulkAddition } = props;
   const [searchInp, setSearchInp] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResObj[]>([]);
   const formSelection = (searchItemSelection: SearchResObj) => {
-    const { label, labelsPath, indexesPath } = searchItemSelection;
+    const { indexesPath } = searchItemSelection;
     let obj: MenuGroup;
     let nextObj: MenuGroup = menuGroup;
-    const res = indexesPath.reduce(
+    let leafId: ItemId = -1;
+    let res = indexesPath.reduce(
       (acc: SelectedItemType, index: number): SelectedItemType => {
         obj = nextObj;
         const parentId = obj.id;
@@ -37,6 +40,7 @@ function Search(props: Props) {
         if (acc[parentId]) {
           acc[parentId].childIds = [id];
         }
+        leafId = id;
         return {
           ...acc,
           [id]: {
@@ -52,8 +56,23 @@ function Search(props: Props) {
       },
       {}
     );
-    console.log("selected", res);
-    // TODO: set the result to active item and selected items
+    const topChildId = menuGroup.options?.[indexesPath[0]].id;
+    // also, add the top most parent, which is not part of indexes
+    res = {
+      ...res,
+      [menuGroup.id]: {
+        id: menuGroup.id,
+        label: "",
+        value: "",
+        groupHeading: "",
+        childGroup: menuGroup.groupHeading,
+        childIds: topChildId ? [topChildId] : null,
+      },
+    };
+    // console.log("selected", res);
+    if (leafId !== -1) {
+      handleBulkAddition(res, leafId);
+    }
   };
 
   const handleSearch = (searchVal: string) => {

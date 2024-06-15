@@ -737,6 +737,43 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setActiveItem(newActiveItem);
   };
 
+  const handleBulkAddition = (items: SelectedItemType, leafId: ItemId) => {
+    // make the item as active
+    setActiveItem(items);
+
+    // insertion/updation in selectedItems
+    if (selectedItems[leafId]) {
+      return;
+    }
+
+    const newSelectedItems = { ...selectedItems };
+    // if the item is not present in the selections
+    for (const [key, value] of Object.entries(items) as [
+      ItemId,
+      SelectedItemTypeVal
+    ][]) {
+      const newChildId = value?.childIds?.[0];
+      // childIds updation: has parent but no child so add childId to childIds list
+      if (
+        newSelectedItems[key] &&
+        newChildId &&
+        !newSelectedItems[newChildId]
+      ) {
+        // if (newChildId && !newSelectedItems[key].childIds?.includes(newChildId)) {
+        newSelectedItems[key].childIds = [
+          ...(newSelectedItems[key].childIds || []),
+          newChildId,
+        ];
+        // }
+      } else if (!newSelectedItems[key]) {
+        // direct addition as no id exist
+        newSelectedItems[key] = value;
+      }
+    }
+
+    setSelectedItems(newSelectedItems);
+  };
+
   console.log("active item", activeItem);
   console.log("selectedItems", selectedItems);
 
@@ -751,7 +788,11 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           autoComplete="off"
           ref={searchBoxRef}
         /> */}
-        <Search menuGroup={menuGroup} allItems={allItems} />
+        <Search
+          menuGroup={menuGroup}
+          allItems={allItems}
+          handleBulkAddition={handleBulkAddition}
+        />
         <div className="tag-container">
           {/* render the tag list */}
           <Tags
