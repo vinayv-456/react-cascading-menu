@@ -7,7 +7,6 @@ export interface StyledCompProps {
   checkbox?: boolean;
   radio?: boolean;
 }
-
 export const MainContainer = styled.div`
   width: 100%;
   height: max(300px, 100%);
@@ -15,7 +14,7 @@ export const MainContainer = styled.div`
   flex-direction: column;
 `;
 
-export const DropdownMenu = styled.div`
+export const MenuGroupContainer = styled.div`
   /* width: 100%; */
   flex: 1;
   position: relative;
@@ -23,7 +22,7 @@ export const DropdownMenu = styled.div`
   padding: 0.25rem 0;
   box-sizing: border-box;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 10;
   -webkit-overflow-scrolling: touch;
   color: #000;
   font-family: Roboto, sans-serif;
