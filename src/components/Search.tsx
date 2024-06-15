@@ -36,7 +36,8 @@ function Search(props: Props) {
       (acc: SelectedItemType, index: number): SelectedItemType => {
         obj = nextObj;
         const parentId = obj.id;
-        const { id, label, value, groupHeading } = obj.options?.[index] || {};
+        const { id, label, value, groupHeading, isMultiSelection } =
+          obj.options?.[index] || {};
         if (!obj.options?.[index] || !id || !label || !value) return acc;
         nextObj = obj.options?.[index];
         if (acc[parentId]) {
@@ -53,6 +54,7 @@ function Search(props: Props) {
             parentId,
             groupHeading: obj.groupHeading,
             childGroup: groupHeading,
+            isMultiSelection,
           },
         };
       },

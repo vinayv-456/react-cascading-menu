@@ -746,20 +746,33 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
 
     const newSelectedItems = { ...selectedItems };
+    const deafultSelectionType = true; // TODO: default isMultiSelection
+
     // if the item is not present in the selections
     for (const [key, value] of Object.entries(items) as [
       ItemId,
       SelectedItemTypeVal
     ][]) {
       const newChildId = value?.childIds?.[0];
+
       // childIds updation: has parent but no child so add childId to childIds list
       if (selectedItems[key] && newChildId && !selectedItems[newChildId]) {
-        // if (newChildId && !newSelectedItems[key].childIds?.includes(newChildId)) {
-        newSelectedItems[key].childIds = [
-          ...(newSelectedItems[key].childIds || []),
-          newChildId,
-        ];
-        // }
+        const selectionTypeDefined = value.isMultiSelection;
+        const isMultiSelection =
+          selectionTypeDefined === undefined
+            ? deafultSelectionType
+            : selectionTypeDefined;
+
+        // remove prev childs if it is not mult selection
+        if (!isMultiSelection) {
+          newSelectedItems[key].childIds?.forEach((id) => {
+            delete newSelectedItems[id];
+          });
+        }
+
+        newSelectedItems[key].childIds = isMultiSelection
+          ? [...(newSelectedItems[key].childIds || []), newChildId]
+          : [newChildId];
       } else if (!selectedItems[key]) {
         // direct addition as no id exist
         newSelectedItems[key] = value;
