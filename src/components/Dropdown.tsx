@@ -87,6 +87,7 @@ const Dropdown = <T extends {}>({
     <DropdownContainer ref={dropdownRef}>
       <SearchInput
         type="text"
+        placeholder="search for items"
         value={searchTerm}
         onChange={handleSearch}
         onFocus={() => setIsOpen(true)}
