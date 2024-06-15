@@ -8,6 +8,7 @@ import {
 } from "../types";
 import useDebounce from "../hooks/useDebounce";
 import { SearchItem } from "../styles";
+import Dropdown from "./Dropdown";
 
 interface Props {
   allItems: CompleteObj[];
@@ -122,29 +123,29 @@ function Search(props: Props) {
     });
     setSearchResults(matchedResults);
   };
-  const debouncedSearchVal = useDebounce<string>(searchInp, 1000);
 
-  useEffect(() => {
-    handleSearch(debouncedSearchVal);
-  }, [debouncedSearchVal]);
-
-  return (
-    <div>
-      <input
-        type="text"
-        value={searchInp}
-        onChange={(e) => setSearchInp(e.target.value)}
-      />
-      {searchResults.map((e) => {
-        const { label, labelsPath, indexesPath } = e;
+  const renderItem = (item: SearchResObj) => {
+    return {
+      key: item.label,
+      label: item.label,
+      renderComp: () => {
+        const { label, labelsPath, indexesPath } = item;
         return (
-          <SearchItem onClick={() => formSelection(e)}>
+          <SearchItem>
             <div>{label}</div>
             <div>{labelsPath.slice(0, indexesPath.length).join(" => ")}</div>
           </SearchItem>
         );
-      })}
-    </div>
+      },
+    };
+  };
+  return (
+    <Dropdown<SearchResObj>
+      items={searchResults}
+      handleSearchChange={handleSearch}
+      handleItemClick={formSelection}
+      renderItem={renderItem}
+    />
   );
 }
 
