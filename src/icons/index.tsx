@@ -5,6 +5,7 @@ import checkboxChecked from "./checkbox-check.svg";
 import checkboxUnchecked from "./checkbox-unchecked.svg";
 import radioChecked from "./radio-button-checked.svg";
 import radioUnchecked from "./radio-button-unchecked.svg";
+import { IconCon } from "../styles";
 
 export const ICONS = {
   CANCEL: "cancel",
@@ -25,15 +26,16 @@ interface Props {
   icon: string;
   width?: number;
   height?: number;
+  applytheme?: boolean;
 }
 
 const Icons = (props: Props) => {
-  const { icon, width = 12, height = 12 } = props;
+  const { icon, width = 12, height = 12, applytheme = true } = props;
   const Svg = icons[icon];
   return (
-    <span style={{ paddingRight: "5px" }}>
+    <IconCon applytheme={applytheme}>
       <Svg width={width} height={height} />
-    </span>
+    </IconCon>
   );
 };
 

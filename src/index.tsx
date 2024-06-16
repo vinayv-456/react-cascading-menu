@@ -20,6 +20,7 @@ import {
   emptyObj,
   mvpSelectedProps,
   CompleteObj,
+  MODES,
 } from "./types";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
@@ -37,17 +38,10 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     menuGroup,
     selectedItems: preSelectedItems = {},
     width = "100%",
-    height = "100%",
-    isObject = true,
+    height = "360px",
     displayValue = "label",
-    groupby = "label",
-    caseSensitiveSearch = true,
-    keepSearchTerm,
-    emptyRecordMsg = "No Items",
-    selectionLimit,
-    showCheckbox,
-    closeIconType,
-    disablePreSelectedValues,
+    theme: themeMode = MODES.LIGHT,
+    selectionColor = "#007BFF",
   } = props;
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedItems, setSelectedItems] =
@@ -640,9 +634,9 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
     setSelectedItems(newSelectedItems);
   };
-
+  const themeDefined = { ...theme[themeMode], selected: selectionColor };
   return (
-    <ThemeProvider theme={theme.minimalistic}>
+    <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
       <MainContainer width={width} height={height} ref={dropdownWrapperRef}>
         <Search
@@ -653,10 +647,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         <MenuGroupContainer>
           <MenuGroupComp
             menuGroup={menuGroup}
-            isObject={isObject}
             displayValue={displayValue}
-            groupby={groupby}
-            emptyRecordMsg={emptyRecordMsg}
             showNext={true}
             activeItem={activeItem}
             selectedItems={selectedItems}

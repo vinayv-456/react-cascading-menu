@@ -8,12 +8,9 @@ import Icons, { ICONS } from "../icons";
 const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   const {
     menuGroup,
-    isObject,
     activeItem,
     selectedItems,
     displayValue,
-    groupby,
-    emptyRecordMsg,
     showNext,
     handleItemSelection,
     level,
@@ -35,13 +32,10 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   return (
     <>
       <DropdownGroup width={width} left={level * width}>
-        {options?.length === 0 ? (
-          <DropdownNoresults> {emptyRecordMsg}</DropdownNoresults>
-        ) : null}
         <div className="grp-heading">{menuGroup.groupHeading}</div>
         <div className="grp-opts">
           {options?.map((ele: Item) => {
-            const label = isObject ? ele?.[displayValue] : ele;
+            const label = ele?.[displayValue];
             const isActive = activeItem?.[ele.id]?.id === ele.id;
             const fadeActive =
               !isActive && selectedItems?.[ele.id]?.id === ele.id;
@@ -84,10 +78,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                 menuGroup={ele}
                 activeItem={activeItem}
                 selectedItems={selectedItems}
-                isObject={isObject}
                 displayValue={displayValue}
-                groupby={groupby}
-                emptyRecordMsg={emptyRecordMsg}
                 showNext={false}
                 handleItemSelection={handleItemSelection}
                 level={level + 1}
@@ -112,17 +103,37 @@ const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
       {isMultiSelection ? (
         <>
           {isChecked ? (
-            <Icons icon={ICONS.CHECKBOX_CHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.CHECKBOX_CHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           ) : (
-            <Icons icon={ICONS.CHECKBOX_UNCHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.CHECKBOX_UNCHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           )}
         </>
       ) : (
         <>
           {isChecked ? (
-            <Icons icon={ICONS.RADIO_CHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.RADIO_CHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           ) : (
-            <Icons icon={ICONS.RADIO_UNCHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.RADIO_UNCHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           )}
         </>
       )}

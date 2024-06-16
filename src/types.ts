@@ -54,32 +54,29 @@ export interface SelectedItemType {
   // };
 }
 
+export enum MODES {
+  LIGHT = "light",
+  DARK = "dark",
+}
+/**
+ * update:
+ *  selectionLimit?: number;
+ */
 export interface Props {
   menuGroup: MenuGroup;
   selectedItems?: Item;
   width?: string;
   height?: string;
-  isObject?: boolean;
-  displayValue?: string;
-  groupby?: string;
-  caseSensitiveSearch?: boolean;
-  isMultiSelection: boolean;
-  keepSearchTerm?: boolean;
-  emptyRecordMsg?: string;
-  selectionLimit?: number;
-  showCheckbox?: boolean;
-  closeIconType?: string;
-  disablePreSelectedValues?: boolean;
+  displayValue?: string; // read label using this property of menugroup
+  theme?: MODES.LIGHT | MODES.DARK;
+  selectionColor?: string;
 }
 
 export interface DPItemProps {
   menuGroup: MenuGroup;
   activeItem: SelectedItemType;
   selectedItems: SelectedItemType;
-  isObject: boolean;
   displayValue: string;
-  groupby: string;
-  emptyRecordMsg: string;
   showNext: boolean;
   handleItemSelection: (
     item: MenuGroup,

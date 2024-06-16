@@ -30,6 +30,7 @@ const App = () => {
         displayValue="value"
         width="70%"
         height="400px"
+        theme="light"
       />
       <br />
       <br />
