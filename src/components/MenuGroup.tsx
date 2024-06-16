@@ -107,14 +107,14 @@ const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
               icon={ICONS.CHECKBOX_CHECKED}
               width={35}
               height={28}
-              applytheme={false}
+              applytheme={false.toString()}
             />
           ) : (
             <Icons
               icon={ICONS.CHECKBOX_UNCHECKED}
               width={35}
               height={28}
-              applytheme={false}
+              applytheme={false.toString()}
             />
           )}
         </>
@@ -125,14 +125,14 @@ const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
               icon={ICONS.RADIO_CHECKED}
               width={35}
               height={28}
-              applytheme={false}
+              applytheme={false.toString()}
             />
           ) : (
             <Icons
               icon={ICONS.RADIO_UNCHECKED}
               width={35}
               height={28}
-              applytheme={false}
+              applytheme={false.toString()}
             />
           )}
         </>

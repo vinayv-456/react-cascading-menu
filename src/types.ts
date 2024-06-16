@@ -64,7 +64,7 @@ export enum MODES {
  */
 export interface Props {
   menuGroup: MenuGroup;
-  selectedItems?: Item;
+  selectedItems?: FormatedSelections[];
   width?: string;
   height?: string;
   displayValue?: string; // read label using this property of menugroup
