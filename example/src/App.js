@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Index from "../../src/index.tsx"; // dynamic changes
 import { menuGroup } from "./constants.js";
 // import Index from "../../dist/bundle";
+import "./styles.css";
 
 const App = () => {
   const ref = useRef();
@@ -31,13 +32,15 @@ const App = () => {
       <br />
       <br />
 
-      <button onClick={fetchSelectionItems}>get selections</button>
-      <button onClick={fetchSelectionItemsLabels}>
+      <button className="btn" onClick={fetchSelectionItems}>
+        get selections
+      </button>
+      <button className="btn" onClick={fetchSelectionItemsLabels}>
         get selections as label array
       </button>
-      <button onClick={fetchSelectionItemsAtSplit}>
+      {/* <button onClick={fetchSelectionItemsAtSplit}>
         get selections as label array at split
-      </button>
+      </button> */}
     </div>
   );
 };
