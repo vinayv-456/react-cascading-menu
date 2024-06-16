@@ -112,17 +112,37 @@ const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
       {isMultiSelection ? (
         <>
           {isChecked ? (
-            <Icons icon={ICONS.CHECKBOX_CHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.CHECKBOX_CHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           ) : (
-            <Icons icon={ICONS.CHECKBOX_UNCHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.CHECKBOX_UNCHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           )}
         </>
       ) : (
         <>
           {isChecked ? (
-            <Icons icon={ICONS.RADIO_CHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.RADIO_CHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           ) : (
-            <Icons icon={ICONS.RADIO_UNCHECKED} width={35} height={28} />
+            <Icons
+              icon={ICONS.RADIO_UNCHECKED}
+              width={35}
+              height={28}
+              applytheme={false}
+            />
           )}
         </>
       )}

@@ -8,6 +8,7 @@ export interface StyledCompProps {
   active?: string;
   checkbox?: boolean;
   radio?: boolean;
+  applytheme?: boolean;
 }
 export const MainContainer = styled.div<StyledCompProps>`
   width: ${(props) => props.width};
@@ -15,6 +16,7 @@ export const MainContainer = styled.div<StyledCompProps>`
   min-height: 200px;
   display: flex;
   flex-direction: column;
+  background-color: ${({ theme }) => theme.background2};
 `;
 
 export const MenuGroupContainer = styled.div`
@@ -35,7 +37,7 @@ export const MenuGroupContainer = styled.div`
   list-style-type: none;
   text-decoration: inherit;
   text-transform: inherit;
-  box-shadow: #d1d9e6 8px 8px 16px, #d1d9e6 -8px -8px 16px;
+  /* box-shadow: #d1d9e6 8px 8px 16px, #d1d9e6 -8px -8px 16px; */
 `;
 
 export const DropdownGroup = styled.div<StyledCompProps>`
@@ -66,6 +68,7 @@ export const DropdownGroup = styled.div<StyledCompProps>`
     z-index: 100;
     width: 100%;
     background-color: ${(props) => props.theme.background};
+    color: ${({ theme }) => theme.text};
   }
   & .grp-opts {
     top: 40px;
@@ -87,8 +90,8 @@ export const DropdownOption = styled.div<StyledCompProps>`
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  background-color: #efefef;
-  color: rgba(51, 51, 51, 0.8);
+  background-color: ${({ theme }) => theme.background2};
+  color: ${({ theme }) => theme.text};
   cursor: pointer;
   align-items: center;
   display: flex;
@@ -147,17 +150,21 @@ export const TagItem = styled.div`
   padding: 5px;
   margin-right: 5px;
   cursor: pointer;
+  background-color: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text2};
+
   & .cancel-icon {
     padding: 8px 5px;
   }
 `;
 
 export const TagHover = styled.span`
+  display: none;
   position: absolute;
   top: 100%;
-  display: none;
+  z-index: 1000;
   background-color: ${({ theme }) => theme.selected};
-  opacity: 0.7;
+  /* opacity: 0.7; */
   border-radius: 5px;
   padding: 3px;
   width: 200px;
@@ -166,5 +173,12 @@ export const TagHover = styled.span`
 export const TagLabel = styled.span`
   &:hover + ${TagHover} {
     display: block;
+  }
+`;
+
+export const IconCon = styled.span<StyledCompProps>`
+  padding-right: 5px;
+  svg g {
+    fill: ${({ theme, applytheme }) => (applytheme ? theme.text : "")};
   }
 `;

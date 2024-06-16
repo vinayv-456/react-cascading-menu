@@ -14,6 +14,8 @@ const SearchInput = styled.input`
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  background-color: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
 `;
 
 const DropdownList = styled.ul`
@@ -27,6 +29,8 @@ const DropdownList = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
+  background-color: ${({ theme }) => theme.background2};
+  color: ${({ theme }) => theme.text2};
 `;
 
 const DropdownListItem = styled.li`
@@ -34,7 +38,7 @@ const DropdownListItem = styled.li`
   cursor: pointer;
 
   &:hover {
-    background: #f0f0f0;
+    background-color: ${({ theme }) => theme.background};
   }
 `;
 

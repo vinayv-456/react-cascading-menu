@@ -20,6 +20,7 @@ import {
   emptyObj,
   mvpSelectedProps,
   CompleteObj,
+  MODES,
 } from "./types";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { getParentGroup, initParentSelectedItem } from "./utils";
@@ -48,6 +49,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     showCheckbox,
     closeIconType,
     disablePreSelectedValues,
+    theme: themeMode = MODES.LIGHT,
+    selectionColor = "#007BFF",
   } = props;
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedItems, setSelectedItems] =
@@ -640,9 +643,9 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
     setSelectedItems(newSelectedItems);
   };
-
+  const themeDefined = { ...theme[themeMode], selected: selectionColor };
   return (
-    <ThemeProvider theme={theme.minimalistic}>
+    <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
       <MainContainer width={width} height={height} ref={dropdownWrapperRef}>
         <Search

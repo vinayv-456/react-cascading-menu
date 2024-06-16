@@ -30,6 +30,8 @@ const App = () => {
         displayValue="value"
         width="70%"
         height="400px"
+        theme="light"
+        selectionColor="#BB86FC"
       />
       <br />
       <br />

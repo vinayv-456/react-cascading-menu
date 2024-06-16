@@ -54,6 +54,10 @@ export interface SelectedItemType {
   // };
 }
 
+export enum MODES {
+  LIGHT = "light",
+  DARK = "dark",
+}
 export interface Props {
   menuGroup: MenuGroup;
   selectedItems?: Item;
@@ -70,6 +74,8 @@ export interface Props {
   showCheckbox?: boolean;
   closeIconType?: string;
   disablePreSelectedValues?: boolean;
+  theme?: MODES.LIGHT | MODES.DARK;
+  selectionColor?: string;
 }
 
 export interface DPItemProps {
