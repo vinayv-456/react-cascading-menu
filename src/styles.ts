@@ -14,6 +14,7 @@ export const MainContainer = styled.div<StyledCompProps>`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   min-height: 200px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.background2};

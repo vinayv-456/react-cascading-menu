@@ -38,17 +38,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     menuGroup,
     selectedItems: preSelectedItems = {},
     width = "100%",
-    height = "100%",
-    isObject = true,
+    height = "360px",
     displayValue = "label",
-    groupby = "label",
-    caseSensitiveSearch = true,
-    keepSearchTerm,
-    emptyRecordMsg = "No Items",
-    selectionLimit,
-    showCheckbox,
-    closeIconType,
-    disablePreSelectedValues,
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
   } = props;
@@ -656,10 +647,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         <MenuGroupContainer>
           <MenuGroupComp
             menuGroup={menuGroup}
-            isObject={isObject}
             displayValue={displayValue}
-            groupby={groupby}
-            emptyRecordMsg={emptyRecordMsg}
             showNext={true}
             activeItem={activeItem}
             selectedItems={selectedItems}
