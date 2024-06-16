@@ -789,13 +789,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     <ThemeProvider theme={theme.minimalistic}>
       <span>{error}</span>
       <MainContainer ref={dropdownWrapperRef}>
-        {/* <input
-          type="text"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          autoComplete="off"
-          ref={searchBoxRef}
-        /> */}
         <Search
           menuGroup={menuGroup}
           allItems={allItems}
@@ -816,6 +809,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             level={0}
           />
         </MenuGroupContainer>
+        {/* render the tag list */}
+        <Tags
+          leafNodes={leafNodes}
+          handleTagRemoval={handleTagRemoval}
+          handleSelectionPopulation={handleSelectionPopulation}
+        />
       </MainContainer>
     </ThemeProvider>
   );

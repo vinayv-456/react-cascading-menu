@@ -29,14 +29,14 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
       ? menuGroup.isMultiSelection
       : true;
 
+  const width = 13;
   /**
    *
    * Handled the selection of item
    */
-
   return (
     <>
-      <DropdownGroup left={level * 13}>
+      <DropdownGroup width={width} left={level * width}>
         {/* TODO: removed split option, need to review it */}
         {/* <span
           className={classnames({
@@ -107,9 +107,10 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
       </DropdownGroup>
       {options?.map((ele: Item) => {
         const isSubMenuActive = activeItem?.[ele.id];
+        const hasOptions = ele.options;
         return (
           <>
-            {isSubMenuActive && (
+            {isSubMenuActive && hasOptions && (
               <MenuGroupComp
                 menuGroup={ele}
                 activeItem={activeItem}

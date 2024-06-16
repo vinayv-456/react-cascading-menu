@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 
 export interface StyledCompProps {
   left?: number;
+  width?: number;
   fadeActive?: boolean;
   active?: boolean;
   checkbox?: boolean;
@@ -15,11 +16,9 @@ export const MainContainer = styled.div`
 `;
 
 export const MenuGroupContainer = styled.div`
-  /* width: 100%; */
   flex: 1;
   position: relative;
   margin: 0;
-  padding: 0.25rem 0;
   box-sizing: border-box;
   overflow-y: auto;
   z-index: 10;
@@ -38,42 +37,41 @@ export const MenuGroupContainer = styled.div`
 `;
 
 export const DropdownGroup = styled.div<StyledCompProps>`
+  position: absolute;
   left: ${(props) => `${props.left}rem`};
   background-color: ${(props) => props.theme.background};
-  width: 13rem;
+  width: ${(props) => `${props.width}rem`};
   word-wrap: none;
   /* width: max-content; */
   height: 10rem;
   max-height: 20rem;
   overflow-y: auto;
-  box-sizing: border-box;
-  padding-right: 1rem;
   max-width: 20rem;
   overflow-x: auto;
   border-right: 3px dotted #f6f6f6;
+  height: 100%;
 
   & + & {
     /* left: 13rem; */
-    min-height: 100%;
     position: absolute;
     top: 0;
   }
   & .grp-heading {
+    position: sticky;
+    top: 0px;
     padding: 8px;
     font-weight: bold;
-    position: fixed;
     z-index: 100;
-    width: calc(13rem - 40px);
+    width: 100%;
     background-color: ${(props) => props.theme.background};
   }
   & .grp-opts {
-    position: absolute;
     top: 40px;
     width: 100%;
   }
   & .opt-label {
     margin-bottom: 1px;
-    width: 100%;
+    width: ${(props) => props.width};
     & div {
       text-decoration: none;
       overflow: hidden;
@@ -126,7 +124,7 @@ export const DropdownNoresults = styled.div<StyledCompProps>`
 `;
 
 export const TagContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   min-height: 100px;
   max-height: 125px;
   overflow-y: auto;
