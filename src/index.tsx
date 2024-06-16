@@ -437,6 +437,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     item: MenuGroup
   ): SelectedItemType => {
     try {
+      if (!item) return {};
       const { id } = item;
       const updatedSelections = cummSelections;
       const { childGroup, childIds }: SelectedItemTypeVal =

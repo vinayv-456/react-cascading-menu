@@ -17,6 +17,7 @@ function Tags(props: Props) {
       {leafNodes.map((selectionPath) => {
         const leafIndex = selectionPath.length - 1;
         const leafNode = selectionPath[leafIndex];
+        if (!leafNode.label) return;
         return (
           <TagItem key={leafNode.id}>
             <TagLabel onClick={() => handleSelectionPopulation(selectionPath)}>
