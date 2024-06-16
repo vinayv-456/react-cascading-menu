@@ -3,16 +3,6 @@ type ItemObj = {
     label: string;
     value: string;
 };
-export interface ClassNames {
-    baseClassName?: string;
-    controlClassName?: string;
-    placeholderClassName?: string;
-    menuClassName?: string;
-    arrowClassName?: string;
-    arrowClosed?: string;
-    arrowOpen?: string;
-    className?: string;
-}
 export type Item = ItemObj | string | any;
 export interface MenuGroup {
     id: ItemId;
@@ -35,7 +25,6 @@ export interface FormatedSelections {
     childGroup?: string;
     childIds?: ItemId[];
     options: FormatedSelections[] | null;
-    splitAt?: boolean;
 }
 export type emptyObj = {};
 export interface SelectedItemTypeVal {
@@ -47,7 +36,6 @@ export interface SelectedItemTypeVal {
     parentId?: ItemId;
     childGroup?: string;
     childIds?: ItemId[] | null;
-    splitAt?: boolean;
     isMultiSelection?: boolean;
 }
 export type ItemId = number | string;
@@ -57,6 +45,8 @@ export interface SelectedItemType {
 export interface Props {
     menuGroup: MenuGroup;
     selectedItems?: Item;
+    width?: string;
+    height?: string;
     isObject?: boolean;
     displayValue?: string;
     groupby?: string;
@@ -65,7 +55,6 @@ export interface Props {
     keepSearchTerm?: boolean;
     emptyRecordMsg?: string;
     selectionLimit?: number;
-    targetClassNames?: ClassNames;
     showCheckbox?: boolean;
     closeIconType?: string;
     disablePreSelectedValues?: boolean;
@@ -80,7 +69,6 @@ export interface DPItemProps {
     emptyRecordMsg: string;
     showNext: boolean;
     handleItemSelection: (item: MenuGroup, groupHeading: string, parentId: ItemId, isMultiSelection: boolean) => void;
-    handleGroupSelection: (parentId: ItemId) => void;
     level: number;
 }
 export interface mvpSelectedProps {
