@@ -5,17 +5,6 @@ type ItemObj = {
   value: string;
 };
 
-export interface ClassNames {
-  baseClassName?: string;
-  controlClassName?: string;
-  placeholderClassName?: string;
-  menuClassName?: string;
-  arrowClassName?: string;
-  arrowClosed?: string;
-  arrowOpen?: string;
-  className?: string;
-}
-
 export type Item = ItemObj | string | any; // any - as item can any number of key-value pairs
 
 export interface MenuGroup {
@@ -41,7 +30,6 @@ export interface FormatedSelections {
   childGroup?: string;
   childIds?: ItemId[];
   options: FormatedSelections[] | null;
-  splitAt?: boolean;
 }
 
 export type emptyObj = {};
@@ -55,7 +43,6 @@ export interface SelectedItemTypeVal {
   parentId?: ItemId;
   childGroup?: string;
   childIds?: ItemId[] | null;
-  splitAt?: boolean;
   isMultiSelection?: boolean; // used during bulk addition
 }
 
@@ -70,6 +57,8 @@ export interface SelectedItemType {
 export interface Props {
   menuGroup: MenuGroup;
   selectedItems?: Item;
+  width?: string;
+  height?: string;
   isObject?: boolean;
   displayValue?: string;
   groupby?: string;
@@ -78,7 +67,6 @@ export interface Props {
   keepSearchTerm?: boolean;
   emptyRecordMsg?: string;
   selectionLimit?: number;
-  targetClassNames?: ClassNames;
   showCheckbox?: boolean;
   closeIconType?: string;
   disablePreSelectedValues?: boolean;
@@ -99,7 +87,6 @@ export interface DPItemProps {
     parentId: ItemId,
     isMultiSelection: boolean
   ) => void;
-  handleGroupSelection: (parentId: ItemId) => void;
   level: number;
 }
 

@@ -22,12 +22,14 @@ const App = () => {
     );
   };
   return (
-    <div style={{ width: "65vw", height: "50vh" }}>
+    <div>
       <Index
         ref={ref}
         menuGroup={menuGroup}
         isMultiSelection={true}
         displayValue="value"
+        width="70%"
+        height="400px"
       />
       <br />
       <br />
@@ -38,6 +40,7 @@ const App = () => {
       <button className="btn" onClick={fetchSelectionItemsLabels}>
         get selections as label array
       </button>
+      <span>(Check console logs for results)</span>
       {/* <button onClick={fetchSelectionItemsAtSplit}>
         get selections as label array at split
       </button> */}

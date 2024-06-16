@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import classnames from "classnames";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
 import { getParentGroup } from "../utils";
@@ -17,7 +16,6 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
     emptyRecordMsg,
     showNext,
     handleItemSelection,
-    handleGroupSelection,
     level,
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
@@ -37,19 +35,6 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   return (
     <>
       <DropdownGroup width={width} left={level * width}>
-        {/* TODO: removed split option, need to review it */}
-        {/* <span
-          className={classnames({
-            "dropdown-heading": true,
-          })}
-        >
-          {groupHeading}
-          <input
-            type="radio"
-            checked={activeItem?.[parentItemObj.id]?.splitAt || false}
-            onClick={() => handleGroupSelection(parentItemObj.id)}
-          />
-        </span> */}
         {options?.length === 0 ? (
           <DropdownNoresults> {emptyRecordMsg}</DropdownNoresults>
         ) : null}
@@ -60,15 +45,13 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
             const isActive = activeItem?.[ele.id]?.id === ele.id;
             const fadeActive =
               !isActive && selectedItems?.[ele.id]?.id === ele.id;
+
             return (
-              <>
+              <React.Fragment key={ele.id}>
                 <DropdownOption
                   key={ele.id}
-                  fadeActive={fadeActive}
-                  active={isActive}
-                  // className={`${!isMultiSelection ? "radio" : ""} ${
-                  //   isMultiSelection ? "checkbox" : ""
-                  // } opt-label`}
+                  fadeactive={fadeActive.toString()}
+                  active={isActive.toString()}
                   className="opt-label"
                   onClick={() =>
                     // TODO: use only the part of the parentItemObj
@@ -84,23 +67,9 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                     isMultiSelection={isMultiSelection}
                     isChecked={isActive || fadeActive}
                   />
-                  <div
-                    style={{ width: "100%" }}
-                    // className={classnames({
-                    //   "fade-active":
-                    //     !isActive &&
-                    //     selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
-                    //   active: isActive,
-                    // })}
-                    // onClick={() =>
-                    //   // TODO: use only the part of the parentItemObj
-                    //   handleItemSelection(ele, groupHeading, parentItemObj.id)
-                    // }
-                  >
-                    {label}
-                  </div>
+                  <div style={{ width: "100%" }}>{label}</div>
                 </DropdownOption>
-              </>
+              </React.Fragment>
             );
           })}
         </div>
@@ -109,7 +78,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
         const isSubMenuActive = activeItem?.[ele.id];
         const hasOptions = ele.options;
         return (
-          <>
+          <React.Fragment key={ele.id}>
             {isSubMenuActive && hasOptions && (
               <MenuGroupComp
                 menuGroup={ele}
@@ -121,11 +90,10 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                 emptyRecordMsg={emptyRecordMsg}
                 showNext={false}
                 handleItemSelection={handleItemSelection}
-                handleGroupSelection={handleGroupSelection}
                 level={level + 1}
               />
             )}
-          </>
+          </React.Fragment>
         );
       })}
     </>

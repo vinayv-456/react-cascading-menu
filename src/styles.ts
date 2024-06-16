@@ -2,15 +2,17 @@ import styled, { css } from "styled-components";
 
 export interface StyledCompProps {
   left?: number;
-  width?: number;
-  fadeActive?: boolean;
-  active?: boolean;
+  width?: number | string;
+  height?: number | string;
+  fadeactive?: string;
+  active?: string;
   checkbox?: boolean;
   radio?: boolean;
 }
-export const MainContainer = styled.div`
-  width: 100%;
-  height: max(300px, 100%);
+export const MainContainer = styled.div<StyledCompProps>`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  min-height: 200px;
   display: flex;
   flex-direction: column;
 `;
@@ -95,7 +97,7 @@ export const DropdownOption = styled.div<StyledCompProps>`
 
   /* fadeActive stylings */
   ${(props) =>
-    props.fadeActive &&
+    props.fadeactive === "true" &&
     css`
       background-color: ${(props) => props.theme.selected};
       opacity: 0.7;
@@ -106,7 +108,7 @@ export const DropdownOption = styled.div<StyledCompProps>`
 
   /* active stylings */
   ${(props) =>
-    props.active &&
+    props.active === "true" &&
     css`
       background-color: ${(props) => props.theme.selected};
       & > div {

@@ -6,7 +6,6 @@ import {
   SelectedItemType,
   SelectedItemTypeVal,
 } from "../types";
-import useDebounce from "../hooks/useDebounce";
 import Dropdown from "./Dropdown";
 
 interface Props {
@@ -23,7 +22,6 @@ interface SearchResObj {
 
 function Search(props: Props) {
   const { allItems, menuGroup, handleBulkAddition } = props;
-  const [searchInp, setSearchInp] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResObj[]>([]);
 
   // format the selected item to SelectedItemType
@@ -73,7 +71,6 @@ function Search(props: Props) {
         childIds: topChildId ? [topChildId] : null,
       },
     };
-    // console.log("selected", res);
     if (leafId !== -1) {
       handleBulkAddition(res, leafId);
     }
