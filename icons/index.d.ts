@@ -10,6 +10,7 @@ interface Props {
     icon: string;
     width?: number;
     height?: number;
+    applytheme?: string;
 }
 declare const Icons: (props: Props) => React.JSX.Element;
 export default Icons;

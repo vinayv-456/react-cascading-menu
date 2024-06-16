@@ -42,31 +42,28 @@ export type ItemId = number | string;
 export interface SelectedItemType {
     [id: ItemId]: SelectedItemTypeVal;
 }
+export declare enum MODES {
+    LIGHT = "light",
+    DARK = "dark"
+}
+/**
+ * update:
+ *  selectionLimit?: number;
+ */
 export interface Props {
     menuGroup: MenuGroup;
-    selectedItems?: Item;
+    selectedItems?: FormatedSelections[];
     width?: string;
     height?: string;
-    isObject?: boolean;
     displayValue?: string;
-    groupby?: string;
-    caseSensitiveSearch?: boolean;
-    isMultiSelection: boolean;
-    keepSearchTerm?: boolean;
-    emptyRecordMsg?: string;
-    selectionLimit?: number;
-    showCheckbox?: boolean;
-    closeIconType?: string;
-    disablePreSelectedValues?: boolean;
+    theme?: MODES.LIGHT | MODES.DARK;
+    selectionColor?: string;
 }
 export interface DPItemProps {
     menuGroup: MenuGroup;
     activeItem: SelectedItemType;
     selectedItems: SelectedItemType;
-    isObject: boolean;
     displayValue: string;
-    groupby: string;
-    emptyRecordMsg: string;
     showNext: boolean;
     handleItemSelection: (item: MenuGroup, groupHeading: string, parentId: ItemId, isMultiSelection: boolean) => void;
     level: number;

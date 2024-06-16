@@ -1,45 +1,20 @@
 export declare const theme: {
+    light: {
+        background: string;
+        background2: string;
+        text: string;
+        text2: string;
+        hover: string;
+        selected: string;
+        borders: string;
+    };
     dark: {
         background: string;
+        background2: string;
         text: string;
+        text2: string;
         hover: string;
         selected: string;
-        borders: string;
-    };
-    material: {
-        background: string;
-        text: string;
-        hover: string;
-        selected: string;
-        Shadows: string;
-    };
-    flat: {
-        background: string;
-        text: string;
-        hover: string;
-        selected: string;
-        borders: string;
-    };
-    neumorphism: {
-        background: string;
-        text: string;
-        hover: string;
-        selected: string;
-        Shadows: string;
-    };
-    minimalistic: {
-        background: string;
-        text: string;
-        hover: string;
-        selected: string;
-        borders: string;
-    };
-    futuristic: {
-        background: string;
-        text: string;
-        hover: string;
-        selected: string;
-        glow: string;
         borders: string;
     };
 };
