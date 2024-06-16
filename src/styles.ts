@@ -131,6 +131,7 @@ export const TagContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   padding: 5px;
+  margin-top: 10px;
 `;
 
 export const TagItem = styled.div`
@@ -143,6 +144,7 @@ export const TagItem = styled.div`
   height: 20px;
   padding: 5px;
   margin-right: 5px;
+  cursor: pointer;
   & .cancel-icon {
     padding: 8px 5px;
   }
@@ -150,9 +152,13 @@ export const TagItem = styled.div`
 
 export const TagHover = styled.span`
   position: absolute;
+  top: 100%;
   display: none;
-  background-color: cadetblue;
-  cursor: pointer;
+  background-color: ${({ theme }) => theme.selected};
+  opacity: 0.7;
+  border-radius: 5px;
+  padding: 3px;
+  width: 200px;
 `;
 
 export const TagLabel = styled.span`
