@@ -1,4 +1,10 @@
-import { Item, ItemId, SelectedItemType } from "../types";
+import {
+  FormatedSelections,
+  Item,
+  ItemId,
+  MenuGroup,
+  SelectedItemType,
+} from "../types";
 
 export const getParentGroup = (
   item: SelectedItemType,
@@ -22,4 +28,74 @@ export const initParentSelectedItem = (id: ItemId, groupHeading: string) => {
     childGroup: groupHeading,
     childIds: [],
   };
+};
+
+/**
+ * convert FormatedSelections to SelectedItemType
+ * also, add the top most parent of menugroup to connect all
+ */
+export const fromatPreSelections = (
+  menuGroup: MenuGroup,
+  selections: FormatedSelections[] | null
+) => {
+  const calSelectedItems: SelectedItemType =
+    formatPreSelectionHelper(selections);
+  const calActiveItems = formatPreSelectionHelper(selections, false);
+
+  if (!selections) return { calcSelectedItems: {}, calcActiveItems: {} };
+
+  // add top most child to connect all the children to single node
+  const childIds: ItemId[] = selections.reduce(
+    (acc: ItemId[], ele: FormatedSelections): ItemId[] => {
+      if (!ele.id) return acc;
+      return [...acc, ele.id];
+    },
+    []
+  );
+  // console.log("childIds", childIds);
+
+  const topParentObj = initParentSelectedItem(
+    menuGroup.id,
+    menuGroup.groupHeading
+  );
+
+  const calcSelectedItems = {
+    [menuGroup.id]: {
+      ...topParentObj,
+      childIds,
+    },
+    ...calSelectedItems,
+  };
+
+  const calcActiveItems = {
+    [menuGroup.id]: {
+      ...topParentObj,
+      childIds: childIds.length ? [childIds[0]] : [],
+    },
+    ...calActiveItems,
+  };
+
+  return { calcSelectedItems, calcActiveItems };
+};
+/**
+ * convert FormatedSelections to SelectedItemType
+ */
+export const formatPreSelectionHelper = (
+  selections: FormatedSelections[] | null,
+  isSingle: boolean = true
+): SelectedItemType => {
+  if (!selections) return {};
+  const res = selections.reduce((acc1, ele1) => {
+    const { options, ...rest } = ele1;
+    if (!ele1.id) return acc1;
+    return {
+      ...acc1,
+      [ele1.id]: rest,
+      ...formatPreSelectionHelper(
+        isSingle ? options : options?.[0] ? [options?.[0]] : [],
+        isSingle
+      ),
+    };
+  }, {});
+  return res;
 };

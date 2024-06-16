@@ -7,6 +7,7 @@ import {
   SelectedItemTypeVal,
 } from "../types";
 import Dropdown from "./Dropdown";
+import { initParentSelectedItem } from "../utils";
 
 interface Props {
   allItems: CompleteObj[];
@@ -63,11 +64,7 @@ function Search(props: Props) {
     res = {
       ...res,
       [menuGroup.id]: {
-        id: menuGroup.id,
-        label: "",
-        value: "",
-        groupHeading: "",
-        childGroup: menuGroup.groupHeading,
+        ...initParentSelectedItem(menuGroup.id, menuGroup.groupHeading),
         childIds: topChildId ? [topChildId] : null,
       },
     };

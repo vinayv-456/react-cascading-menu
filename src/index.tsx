@@ -23,7 +23,11 @@ import {
   MODES,
 } from "./types";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { getParentGroup, initParentSelectedItem } from "./utils";
+import {
+  fromatPreSelections,
+  getParentGroup,
+  initParentSelectedItem,
+} from "./utils";
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
@@ -36,7 +40,7 @@ export interface CascadingMenuRef {
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
-    selectedItems: preSelectedItems = {},
+    selectedItems: preSelectedItems = [],
     width = "100%",
     height = "360px",
     displayValue = "label",
@@ -44,11 +48,19 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     selectionColor = "#007BFF",
   } = props;
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
-  const [selectedItems, setSelectedItems] =
-    useState<SelectedItemType>(preSelectedItems);
+  const [selectedItems, setSelectedItems] = useState<SelectedItemType>({});
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
+      menuGroup,
+      preSelectedItems
+    );
+    setSelectedItems(calcSelectedItems);
+    setActiveItem(calcActiveItems);
+  }, [preSelectedItems]);
 
   useImperativeHandle(ref, () => ({
     getSelection: () => {
