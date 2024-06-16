@@ -1,15 +1,15 @@
 {
   "name": "react-cascading-menu",
   "version": "1.0.0",
-  "description": "",
+  "description": "React-Cascading-Menu is a multi-selectable cascading menu component for React, providing horizontal navigation and global search for efficient option selection.",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
-    "build": "webpack --mode development --entry ./example/src/index.js --output-path ./build",
-    "build-package": "webpack --mode production",
+    "build-example": "webpack --mode development --entry ./example/src/index.js --output-path ./build-example",
+    "build": "webpack --mode production --entry ./src/index.tsx --output-path ./build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "gh-deploy": "gh-pages -d build-example",
+    "deploy": "yarn run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
@@ -48,8 +48,13 @@
     "type": "git",
     "url": "git+https://github.com/vinayv-456/react-cascading-dropdown.git"
   },
+  "keywords": [
+    "cascading",
+    "menu",
+    "react"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/vinayv-456/react-cascading-dropdown/issues"
   },
