@@ -26,11 +26,11 @@ interface Props {
   icon: string;
   width?: number;
   height?: number;
-  applytheme?: boolean;
+  applytheme?: string;
 }
 
 const Icons = (props: Props) => {
-  const { icon, width = 12, height = 12, applytheme = true } = props;
+  const { icon, width = 12, height = 12, applytheme = "true" } = props;
   const Svg = icons[icon];
   return (
     <IconCon applytheme={applytheme}>

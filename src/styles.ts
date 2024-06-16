@@ -8,7 +8,7 @@ export interface StyledCompProps {
   active?: string;
   checkbox?: boolean;
   radio?: boolean;
-  applytheme?: boolean;
+  applytheme?: string;
 }
 export const MainContainer = styled.div<StyledCompProps>`
   width: ${(props) => props.width};
@@ -180,6 +180,7 @@ export const TagLabel = styled.span`
 export const IconCon = styled.span<StyledCompProps>`
   padding-right: 5px;
   svg g {
-    fill: ${({ theme, applytheme }) => (applytheme ? theme.text : "")};
+    fill: ${({ theme, applytheme }) =>
+      applytheme === "true" ? theme.text : ""};
   }
 `;
