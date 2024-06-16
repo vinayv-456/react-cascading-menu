@@ -26,7 +26,7 @@ import { getParentGroup, initParentSelectedItem } from "./utils";
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
-import { MenuGroupContainer } from "./styles";
+import { MenuGroupContainer, MainContainer } from "./styles";
 import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
@@ -788,14 +788,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   return (
     <ThemeProvider theme={theme.minimalistic}>
       <span>{error}</span>
-      <div ref={dropdownWrapperRef}>
-        {/* <input
-          type="text"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          autoComplete="off"
-          ref={searchBoxRef}
-        /> */}
+      <MainContainer ref={dropdownWrapperRef}>
         <Search
           menuGroup={menuGroup}
           allItems={allItems}
@@ -816,15 +809,13 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             level={0}
           />
         </MenuGroupContainer>
-        <div className="tag-container">
-          {/* render the tag list */}
-          <Tags
-            leafNodes={leafNodes}
-            handleTagRemoval={handleTagRemoval}
-            handleSelectionPopulation={handleSelectionPopulation}
-          />
-        </div>
-      </div>
+        {/* render the tag list */}
+        <Tags
+          leafNodes={leafNodes}
+          handleTagRemoval={handleTagRemoval}
+          handleSelectionPopulation={handleSelectionPopulation}
+        />
+      </MainContainer>
     </ThemeProvider>
   );
 });

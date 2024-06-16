@@ -10,6 +10,11 @@
   display: flex;
 } */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 .disabled {
   color: #9e9e9e;

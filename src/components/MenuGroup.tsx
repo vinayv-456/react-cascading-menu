@@ -29,14 +29,14 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
       ? menuGroup.isMultiSelection
       : true;
 
+  const width = 13;
   /**
    *
    * Handled the selection of item
    */
-
   return (
     <>
-      <DropdownGroup left={level * 15}>
+      <DropdownGroup width={width} left={level * width}>
         {/* TODO: removed split option, need to review it */}
         {/* <span
           className={classnames({
@@ -54,60 +54,63 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
           <DropdownNoresults> {emptyRecordMsg}</DropdownNoresults>
         ) : null}
         <div className="grp-heading">{menuGroup.groupHeading}</div>
-        {options?.map((ele: Item) => {
-          const label = isObject ? ele?.[displayValue] : ele;
-          const isActive = activeItem?.[ele.id]?.id === ele.id;
-          const fadeActive =
-            !isActive && selectedItems?.[ele.id]?.id === ele.id;
-          return (
-            <>
-              <DropdownOption
-                key={ele.id}
-                fadeActive={fadeActive}
-                active={isActive}
-                // className={`${!isMultiSelection ? "radio" : ""} ${
-                //   isMultiSelection ? "checkbox" : ""
-                // } opt-label`}
-                className="opt-label"
-                onClick={() =>
-                  // TODO: use only the part of the parentItemObj
-                  handleItemSelection(
-                    ele,
-                    groupHeading,
-                    parentItemObj.id,
-                    isMultiSelection
-                  )
-                }
-              >
-                <SelectionIcon
-                  isMultiSelection={isMultiSelection}
-                  isChecked={isActive || fadeActive}
-                />
-                <div
-                  style={{ width: "100%" }}
-                  // className={classnames({
-                  //   "fade-active":
-                  //     !isActive &&
-                  //     selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
-                  //   active: isActive,
-                  // })}
-                  // onClick={() =>
-                  //   // TODO: use only the part of the parentItemObj
-                  //   handleItemSelection(ele, groupHeading, parentItemObj.id)
-                  // }
+        <div className="grp-opts">
+          {options?.map((ele: Item) => {
+            const label = isObject ? ele?.[displayValue] : ele;
+            const isActive = activeItem?.[ele.id]?.id === ele.id;
+            const fadeActive =
+              !isActive && selectedItems?.[ele.id]?.id === ele.id;
+            return (
+              <>
+                <DropdownOption
+                  key={ele.id}
+                  fadeActive={fadeActive}
+                  active={isActive}
+                  // className={`${!isMultiSelection ? "radio" : ""} ${
+                  //   isMultiSelection ? "checkbox" : ""
+                  // } opt-label`}
+                  className="opt-label"
+                  onClick={() =>
+                    // TODO: use only the part of the parentItemObj
+                    handleItemSelection(
+                      ele,
+                      groupHeading,
+                      parentItemObj.id,
+                      isMultiSelection
+                    )
+                  }
                 >
-                  {label}
-                </div>
-              </DropdownOption>
-            </>
-          );
-        })}
+                  <SelectionIcon
+                    isMultiSelection={isMultiSelection}
+                    isChecked={isActive || fadeActive}
+                  />
+                  <div
+                    style={{ width: "100%" }}
+                    // className={classnames({
+                    //   "fade-active":
+                    //     !isActive &&
+                    //     selectedItems?.[groupHeading]?.[ele.id]?.id === ele.id,
+                    //   active: isActive,
+                    // })}
+                    // onClick={() =>
+                    //   // TODO: use only the part of the parentItemObj
+                    //   handleItemSelection(ele, groupHeading, parentItemObj.id)
+                    // }
+                  >
+                    {label}
+                  </div>
+                </DropdownOption>
+              </>
+            );
+          })}
+        </div>
       </DropdownGroup>
       {options?.map((ele: Item) => {
         const isSubMenuActive = activeItem?.[ele.id];
+        const hasOptions = ele.options;
         return (
           <>
-            {isSubMenuActive && (
+            {isSubMenuActive && hasOptions && (
               <MenuGroupComp
                 menuGroup={ele}
                 activeItem={activeItem}
