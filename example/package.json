@@ -4,19 +4,14 @@
   "description": "React-Cascading-Menu is a multi-selectable cascading menu component for React, providing horizontal navigation and global search for efficient option selection.",
   "main": "build",
   "scripts": {
-    "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
-    "build-example": "webpack --mode development --entry ./example/src/index.js --output-path ./build-example",
-    "build": "webpack --mode production --entry ./src/index.tsx --output-path ./build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "gh-deploy": "gh-pages -d build-example",
-    "deploy": "yarn run build"
-  },
-  "peerDependencies": {
-    "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
+    "start": "webpack serve --mode development --open --static ./public --entry ./src/index.js",
+    "build-example": "webpack --mode development --entry ./src/index.js --output-path ../build-example",
+    "gh-deploy": "gh-pages -d build-example"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "react": "17.0.2",
+    "react-dom": "^17.0.2",
     "styled-components": "^6.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

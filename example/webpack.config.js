@@ -6,26 +6,12 @@ const createStyledComponentsTransformer =
 const styledComponentsTransformer = createStyledComponentsTransformer();
 
 module.exports = {
-  mode: "production",
-  entry: "./src/index.tsx",
-  output: {
-    path: path.resolve(__dirname, "build"),
-    filename: "index.js",
-    libraryTarget: "commonjs2",
-  },
-  externals: {
-    react: "react",
-    "react-dom": "react-dom",
-  },
   resolve: {
-    alias: {
-      "react-cascading-menu": path.resolve(__dirname, "build"),
-    },
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./example/public/index.html",
+      template: "./public/index.html",
       inject: "body", // This injects the script tags in the body of the HTML
     }),
   ],

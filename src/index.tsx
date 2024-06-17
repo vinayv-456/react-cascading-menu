@@ -47,7 +47,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
   } = props;
-  const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const [selectedItems, setSelectedItems] = useState<SelectedItemType>({});
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
@@ -651,7 +650,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   return (
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
-      <MainContainer width={width} height={height} ref={dropdownWrapperRef}>
+      <MainContainer width={width} height={height}>
         <Search
           menuGroup={menuGroup}
           allItems={allItems}
