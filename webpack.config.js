@@ -21,26 +21,10 @@ module.exports = {
     alias: {
       "react-cascading-menu": path.resolve(__dirname, "build"),
     },
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".ts", ".tsx"],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: "./example/public/index.html",
-      inject: "body", // This injects the script tags in the body of the HTML
-    }),
-  ],
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-          },
-        },
-      },
       {
         test: /\.tsx?$/,
         use: {

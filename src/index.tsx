@@ -22,7 +22,6 @@ import {
   CompleteObj,
   MODES,
 } from "./types";
-import "@fortawesome/fontawesome-free/css/all.min.css";
 import {
   fromatPreSelections,
   getParentGroup,
@@ -51,6 +50,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
+  // console.log("testing-2");
 
   useEffect(() => {
     const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
