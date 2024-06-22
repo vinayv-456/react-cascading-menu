@@ -536,9 +536,16 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         if (getNextAvailableSelection) {
           // TODO: update fetching the next available selection
           const childId = updatedChildren?.[0];
-          const childGroup = parentItem.childGroup;
-          if (childId && childGroup && selectedItems[childId]) {
+          if (childId && selectedItems[childId]) {
             const otherPath = getConnectedItems(selectedItems[childId]);
+            // TODO: need improvement, redendent code
+            // fix the chidIds in parent again as the current result
+            // doesn't use the previous updations
+            otherPath[parentId].childIds = isMultiSelection
+              ? updatedChildren
+              : updatedChildren?.length
+              ? [updatedChildren[0]]
+              : [];
             return otherPath;
           }
         }
@@ -764,6 +771,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   };
 
   const themeDefined = { ...theme[themeMode], selected: selectionColor };
+  // console.log("selected", selectedItems, activeItem);
+
   return (
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
