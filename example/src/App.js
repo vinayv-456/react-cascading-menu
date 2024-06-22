@@ -28,7 +28,7 @@ const App = () => {
         // selectedItems={preSelection}
         isMultiSelection={true}
         displayValue="value"
-        width="25%"
+        width="60%"
         height="400px"
         theme="light"
       />

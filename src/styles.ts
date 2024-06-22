@@ -158,15 +158,19 @@ export const TagItem = styled.div`
   min-width: 80px;
   border: 1px solid black;
   border-radius: 8px;
-  height: 20px;
-  padding: 5px;
-  margin-right: 5px;
+  height: fit-content;
+  padding-left: 5px;
+  justify-content: space-between;
   cursor: pointer;
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text2};
 
   & .cancel-icon {
     padding: 8px 5px;
+  }
+  & + & {
+    margin-left: 3px;
+    margin-bottom: 3px;
   }
 `;
 
