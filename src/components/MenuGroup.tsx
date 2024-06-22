@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
 import { getParentGroup } from "../utils";
-import { DropdownGroup, DropdownNoresults, DropdownOption } from "../styles";
+import {
+  DropdownGroup,
+  DropdownNoresults,
+  DropdownOption,
+  FlexContainer,
+} from "../styles";
 import Icons, { ICONS } from "../icons";
 
 const MenuGroupComp: React.FC<DPItemProps> = (props) => {
@@ -13,6 +18,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
     displayValue,
     showNext,
     handleItemSelection,
+    handleMultipleChildrenSel,
     level,
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
@@ -25,6 +31,26 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
       : true;
 
   const width = 13;
+  const [allItemsChecked, setAllItemsChecked] = useState(false);
+  const handleSelectAll = () => {
+    setAllItemsChecked((prev: boolean) => {
+      handleMultipleChildrenSel(options || [], groupId, groupHeading, !prev);
+      return !prev;
+    });
+  };
+
+  // tick the allItemsChecked checkbox based on the options count
+  const checkIfAllItemChecked = useMemo(() => {
+    if (!options) {
+      return false;
+    }
+    return options?.every((e) => selectedItems[e.id]);
+  }, [selectedItems]);
+
+  useEffect(() => {
+    setAllItemsChecked(checkIfAllItemChecked);
+  }, [checkIfAllItemChecked]);
+
   /**
    *
    * Handled the selection of item
@@ -32,7 +58,17 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   return (
     <>
       <DropdownGroup width={width} left={level * width}>
-        <div className="grp-heading">{menuGroup.groupHeading}</div>
+        <FlexContainer className="jc ai">
+          <div className="grp-heading">{menuGroup.groupHeading}</div>
+          {isMultiSelection && options && (
+            <div onClick={handleSelectAll}>
+              <SelectionIcon
+                isMultiSelection={options ? options.length > 0 : false}
+                isChecked={allItemsChecked}
+              />
+            </div>
+          )}
+        </FlexContainer>
         <div className="grp-opts">
           {options?.map((ele: Item) => {
             const label = ele?.[displayValue];
@@ -81,6 +117,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                 displayValue={displayValue}
                 showNext={false}
                 handleItemSelection={handleItemSelection}
+                handleMultipleChildrenSel={handleMultipleChildrenSel}
                 level={level + 1}
               />
             )}
