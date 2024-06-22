@@ -50,16 +50,35 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const parentGroupLookUp = useRef<parentGroupLookUp>({});
   const [error, setError] = useState("");
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const menuLevelDetails = useRef<{ shouldScroll: boolean }>({
+    shouldScroll: false,
+  });
   // console.log("testing-2");
 
   useEffect(() => {
-    const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
-      menuGroup,
-      preSelectedItems
-    );
-    setSelectedItems(calcSelectedItems);
-    setActiveItem(calcActiveItems);
+    if (Object.keys(preSelectedItems).length) {
+      const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
+        menuGroup,
+        preSelectedItems
+      );
+      setSelectedItems(calcSelectedItems);
+      setActiveItem(calcActiveItems);
+    }
   }, [preSelectedItems]);
+
+  useEffect(() => {
+    /**
+     * scroll left when there is new level opened
+     * which is checed and activated during item click(handleItemSelection)
+     */
+    if (menuLevelDetails.current) {
+      if (mainContainerRef.current && menuLevelDetails.current.shouldScroll) {
+        mainContainerRef.current.scrollLeft += 1000;
+        menuLevelDetails.current.shouldScroll = false;
+      }
+    }
+  }, [activeItem]);
 
   useImperativeHandle(ref, () => ({
     getSelection: () => {
@@ -597,6 +616,9 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           isMultiSelection
         );
         setSelectedItems(newSelectedItems);
+        if (menuLevelDetails.current) {
+          menuLevelDetails.current.shouldScroll = true;
+        }
       }
     }
   };
@@ -656,7 +678,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           allItems={allItems}
           handleBulkAddition={handleBulkAddition}
         />
-        <MenuGroupContainer>
+        <MenuGroupContainer ref={mainContainerRef}>
           <MenuGroupComp
             menuGroup={menuGroup}
             displayValue={displayValue}

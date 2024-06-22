@@ -38,7 +38,7 @@ export const MenuGroupContainer = styled.div`
   list-style-type: none;
   text-decoration: inherit;
   text-transform: inherit;
-  /* box-shadow: #d1d9e6 8px 8px 16px, #d1d9e6 -8px -8px 16px; */
+  scroll-behavior: smooth;
 `;
 
 export const DropdownGroup = styled.div<StyledCompProps>`
