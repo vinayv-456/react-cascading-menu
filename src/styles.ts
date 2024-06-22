@@ -30,28 +30,6 @@ export const MainContainer = styled.div<StyledCompProps>`
   flex-direction: column;
   background-color: ${({ theme }) => theme.background2};
 `;
-
-export const MenuGroupContainer = styled.div`
-  flex: 1;
-  position: relative;
-  margin: 0;
-  box-sizing: border-box;
-  overflow-y: auto;
-  z-index: 10;
-  -webkit-overflow-scrolling: touch;
-  color: #000;
-  font-family: Roboto, sans-serif;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-size: 1rem;
-  letter-spacing: 0.00937em;
-  line-height: 1.5rem;
-  list-style-type: none;
-  text-decoration: inherit;
-  text-transform: inherit;
-  scroll-behavior: smooth;
-`;
-
 export const DropdownGroup = styled.div<StyledCompProps>`
   position: absolute;
   left: ${(props) => `${props.left}rem`};
@@ -94,6 +72,34 @@ export const DropdownGroup = styled.div<StyledCompProps>`
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+  }
+`;
+
+export const MenuGroupContainer = styled.div`
+  flex: 1;
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 10;
+  -webkit-overflow-scrolling: touch;
+  color: #000;
+  font-family: Roboto, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-size: 1rem;
+  letter-spacing: 0.00937em;
+  line-height: 1.5rem;
+  list-style-type: none;
+  text-decoration: inherit;
+  text-transform: inherit;
+  scroll-behavior: smooth;
+
+  @media (width<300px) {
+    & ${DropdownGroup} {
+      position: relative;
+      left: 0;
     }
   }
 `;
