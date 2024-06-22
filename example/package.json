@@ -5,8 +5,8 @@
   "main": "build",
   "scripts": {
     "start": "webpack serve --mode development --open --static ./public --entry ./src/index.js",
-    "build-example": "webpack --mode development --entry ./src/index.js --output-path ../build-example",
-    "gh-deploy": "gh-pages -d build-example"
+    "build": "webpack --mode development --entry ./src/index.js --output-path ./build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
