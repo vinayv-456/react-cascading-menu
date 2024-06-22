@@ -22,7 +22,7 @@ export const FlexContainer = styled.div`
 `;
 
 export const MainContainer = styled.div<StyledCompProps>`
-  width: ${(props) => props.width};
+  width: max(350px, ${(props) => props.width});
   height: ${(props) => props.height};
   min-height: 200px;
   min-width: 200px;
