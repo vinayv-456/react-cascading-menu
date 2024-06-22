@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
-import Index from "../../build";
-// import Index from "../../src/index.tsx"; // dynamic changes
+import Index from "../../src/index.tsx"; // dynamic changes
 import { menuGroup, preSelection } from "./constants.js";
-// import Index from "../../dist/bundle";
 import "./styles.css";
 
 const App = () => {
@@ -27,10 +25,10 @@ const App = () => {
       <Index
         ref={ref}
         menuGroup={menuGroup}
-        selectedItems={preSelection}
+        // selectedItems={preSelection}
         isMultiSelection={true}
         displayValue="value"
-        width="70%"
+        width="25%"
         height="400px"
         theme="light"
       />
