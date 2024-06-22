@@ -4,6 +4,7 @@ import {
   ItemId,
   MenuGroup,
   SelectedItemType,
+  SelectedItemTypeVal,
 } from "../types";
 
 export const getParentGroup = (
@@ -98,4 +99,37 @@ export const formatPreSelectionHelper = (
     };
   }, {});
   return res;
+};
+
+/**
+ * Cascading item removal(current+children)
+ * Removes the current selection and its children selections
+ */
+export const cascadeSelectionRemoval = (
+  cummSelections: SelectedItemType,
+  groupHeading: string,
+  item: MenuGroup
+): SelectedItemType => {
+  try {
+    if (!item) return {};
+    const { id } = item;
+    const updatedSelections = cummSelections;
+    const { childGroup, childIds }: SelectedItemTypeVal =
+      updatedSelections?.[id] || {};
+    delete updatedSelections?.[id];
+    if (childGroup && childIds) {
+      childIds?.forEach((childId) => {
+        cascadeSelectionRemoval(
+          updatedSelections,
+          childGroup,
+          updatedSelections?.[childId]
+        );
+      });
+    }
+    return updatedSelections;
+  } catch (e) {
+    console.log("Issue while remove item", e);
+    // setError("Issue while remove item");
+    return cummSelections;
+  }
 };

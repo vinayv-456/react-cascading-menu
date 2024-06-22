@@ -23,6 +23,7 @@ import {
   MODES,
 } from "./types";
 import {
+  cascadeSelectionRemoval,
   fromatPreSelections,
   getParentGroup,
   initParentSelectedItem,
@@ -30,7 +31,7 @@ import {
 import Tags from "./components/Tags";
 import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
-import { MenuGroupContainer, MainContainer } from "./styles";
+import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
@@ -114,12 +115,14 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   const getConnectedItemByDirection = (
     obj: MenuGroup,
-    isForward = true
+    isForward = true,
+    newSelectedItems: SelectedItemType
   ): SelectedItemType => {
+    const selectedItemsDef = newSelectedItems || selectedItems;
     if (!obj) {
       return {};
     }
-    const itemObj = selectedItems?.[obj?.id];
+    const itemObj = selectedItemsDef?.[obj?.id];
 
     if (!itemObj) {
       return {};
@@ -142,7 +145,11 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
     return {
       ...currentLevelItem,
-      ...getConnectedItemByDirection(selectedItems[connectedId], isForward),
+      ...getConnectedItemByDirection(
+        selectedItemsDef[connectedId],
+        isForward,
+        newSelectedItems
+      ),
     };
   };
 
@@ -217,23 +224,38 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     return [{ label: treeObj.label, indexes: [index] }];
   }
 
-  const getNextAvailableSelection = (id: ItemId): ItemId => {
-    const parentId = selectedItems[id].parentId;
+  const getNextAvailableSelection = (
+    id: ItemId,
+    newSelectedItemsDetails?: {
+      parentIdDef: ItemId | undefined;
+      newSelectedItems: SelectedItemType;
+    }
+  ): ItemId => {
+    // when selectedItems is not updated yet!
+    const { newSelectedItems, parentIdDef } = newSelectedItemsDetails || {};
+    const selectedItemsUsed = newSelectedItems || selectedItems;
+    // the obj of updated selectedItems of id might already have been cleared, so pass parentId
+    const parentId = parentIdDef || selectedItemsUsed[id]?.parentId;
 
     if (parentId) {
       // get the next index
-      const children = selectedItems[parentId].childIds || [];
+      const children = selectedItemsUsed[parentId].childIds || [];
       const length = children?.length - 1;
       const currentNodeIndex = children?.findIndex((itemId) => itemId === id);
 
+      // usefull when the children might already been cleared
+      // so the return parent, as just the children are removed
+      if (length === -1) {
+        return parentId;
+      }
       if (length === 0 && currentNodeIndex === 0) {
         return getNextAvailableSelection(parentId);
       }
+
       return currentNodeIndex + 1 <= length
         ? children[currentNodeIndex + 1]
         : children[currentNodeIndex - 1];
     }
-    // TODO: control, cannot come here as parentId is madatory
     return -1;
   };
 
@@ -293,14 +315,33 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setActiveItem(newActiveItem);
   };
 
-  const getConnectedItems = (obj: MenuGroup): SelectedItemType => {
-    const prevPath = getConnectedItemByDirection(obj, false);
-    const forwardPath = getConnectedItemByDirection(obj);
+  const getConnectedItems = (
+    obj: MenuGroup,
+    newSelectedItems?: SelectedItemType
+  ): SelectedItemType => {
+    const selectedItemsUsed = newSelectedItems || selectedItems;
+    const prevPath = getConnectedItemByDirection(obj, false, selectedItemsUsed);
+    const forwardPath = getConnectedItemByDirection(
+      obj,
+      true,
+      selectedItemsUsed
+    );
+
     const connectedPath = {
       ...prevPath,
-      [obj.id]: selectedItems?.[obj?.id],
+      [obj.id]: selectedItemsUsed?.[obj?.id],
       ...forwardPath,
     };
+    // if the topmost parent is not attached then attach it
+    // compute the childIds based on presence in selectedItems
+    if (!connectedPath[menuGroup.id]) {
+      connectedPath[menuGroup.id] = {
+        ...initParentSelectedItem(menuGroup.id, menuGroup.groupHeading),
+        childIds: menuGroup.options
+          ?.filter((e) => selectedItemsUsed[e.id] && true)
+          .map((e) => e.id),
+      };
+    }
     return connectedPath;
   };
 
@@ -443,39 +484,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       console.log("issue while adding item", e, selectedItems, item);
     }
     return newSelectedItems;
-  };
-
-  /**
-   * Cascading item removal(current+children)
-   * Removes the current selection and its children selections
-   */
-  const cascadeSelectionRemoval = (
-    cummSelections: SelectedItemType,
-    groupHeading: string,
-    item: MenuGroup
-  ): SelectedItemType => {
-    try {
-      if (!item) return {};
-      const { id } = item;
-      const updatedSelections = cummSelections;
-      const { childGroup, childIds }: SelectedItemTypeVal =
-        updatedSelections?.[id] || {};
-      delete updatedSelections?.[id];
-      if (childGroup && childIds) {
-        childIds?.forEach((childId) => {
-          cascadeSelectionRemoval(
-            updatedSelections,
-            childGroup,
-            updatedSelections?.[childId]
-          );
-        });
-      }
-      return updatedSelections;
-    } catch (e) {
-      console.log("Issue while remove item", e);
-      setError("Issue while remove item");
-      return cummSelections;
-    }
   };
 
   /**
@@ -623,6 +631,86 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   };
 
+  const handleMultiChildren = (
+    items: MenuGroup[] | [],
+    parentId: ItemId,
+    parentGroup: string,
+    isSelection: boolean
+  ) => {
+    const formatedItems: SelectedItemType = items.reduce((acc, e) => {
+      const { options, ...eRest } = e;
+      return {
+        ...acc,
+        [e.id]: {
+          ...eRest,
+          parentGroup,
+          parentId,
+        },
+      };
+    }, {});
+
+    const prevChildIds = { ...selectedItems }[parentId]?.childIds || [];
+    const childIds = [
+      ...prevChildIds,
+      ...items.filter((e) => !(selectedItems[e.id] && true)).map((e) => e.id),
+    ];
+    let newSelectedItems = { ...selectedItems };
+
+    // selectedItems updation
+    // updating options to the parent
+    if (isSelection) {
+      // during selection
+      newSelectedItems = {
+        ...formatedItems,
+        ...newSelectedItems,
+      };
+    } else {
+      // during deselection
+      for (const id of childIds || []) {
+        if (newSelectedItems[id]) {
+          newSelectedItems = cascadeSelectionRemoval(
+            newSelectedItems,
+            parentGroup,
+            newSelectedItems[id]
+          );
+        }
+      }
+    }
+
+    // updating childsId to the parent
+    newSelectedItems = {
+      ...newSelectedItems,
+      [parentId]: {
+        ...selectedItems[parentId],
+        childIds: isSelection ? childIds : [],
+        childGroup: items[0]?.groupHeading,
+      },
+    };
+
+    const activeNodeId = childIds.find((e) => activeItem[e]) || childIds[0];
+    let newActiveItem = {};
+    if (isSelection) {
+      // selection
+      newActiveItem = getConnectedItems(
+        formatedItems[activeNodeId],
+        newSelectedItems
+      );
+    } else {
+      // deselection
+      const nextChildId = getNextAvailableSelection(activeNodeId, {
+        newSelectedItems,
+        parentIdDef: selectedItems[activeNodeId]?.parentId,
+      });
+      newActiveItem =
+        nextChildId !== -1
+          ? getConnectedItems(newSelectedItems[nextChildId], newSelectedItems)
+          : {};
+    }
+
+    setActiveItem(newActiveItem);
+    setSelectedItems(newSelectedItems);
+  };
+
   const handleBulkAddition = (items: SelectedItemType, leafId: ItemId) => {
     // make the item as active
     setActiveItem(items);
@@ -668,6 +756,13 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
     setSelectedItems(newSelectedItems);
   };
+
+  const handleClearAllTags = () => {
+    // remove all the selection
+    setSelectedItems({});
+    setActiveItem({});
+  };
+
   const themeDefined = { ...theme[themeMode], selected: selectionColor };
   return (
     <ThemeProvider theme={themeDefined}>
@@ -687,6 +782,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             selectedItems={selectedItems}
             handleItemSelection={handleItemSelection}
             level={0}
+            handleMultipleChildrenSel={handleMultiChildren}
           />
         </MenuGroupContainer>
         {/* render the tag list */}
@@ -695,6 +791,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           handleTagRemoval={handleTagRemoval}
           handleSelectionPopulation={handleSelectionPopulation}
         />
+        <ClearTagsBtn onClick={handleClearAllTags}>Clear All</ClearTagsBtn>
       </MainContainer>
     </ThemeProvider>
   );

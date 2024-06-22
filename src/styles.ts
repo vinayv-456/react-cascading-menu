@@ -10,6 +10,17 @@ export interface StyledCompProps {
   radio?: boolean;
   applytheme?: string;
 }
+
+export const FlexContainer = styled.div`
+  display: flex;
+  &.jc {
+    justify-content: space-between;
+  }
+  &.ai {
+    align-items: center;
+  }
+`;
+
 export const MainContainer = styled.div<StyledCompProps>`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
@@ -183,4 +194,16 @@ export const IconCon = styled.span<StyledCompProps>`
     fill: ${({ theme, applytheme }) =>
       applytheme === "true" ? theme.text : ""};
   }
+`;
+
+export const ClearTagsBtn = styled.button`
+  margin: 0px 5px 5px 0px;
+  background-color: ${({ theme }) => theme.background};
+  height: fit-content;
+  width: 80px;
+  padding: 5px;
+  border: 0px solid black;
+  border-radius: 3px;
+  margin-left: auto;
+  cursor: pointer;
 `;
