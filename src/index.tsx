@@ -61,6 +61,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     shouldScroll: false,
   });
   // console.log("testing-2");
+  // console.log("activeItem", activeItem);
+  // console.log("selectedItems", selectedItems);
 
   useEffect(() => {
     if (Object.keys(preSelectedItems).length) {
@@ -127,7 +129,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const getConnectedItemByDirection = (
     obj: MenuGroup,
     isForward = true,
-    newSelectedItems: SelectedItemType
+    newSelectedItems: SelectedItemType,
+    connectedChildId: ItemId
   ): SelectedItemType => {
     const selectedItemsDef = newSelectedItems || selectedItems;
     if (!obj) {
@@ -143,10 +146,15 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       ? itemObj.childIds?.[0] // by default first child will be selected, if there are more than one children
       : itemObj.parentId;
 
+    let childIds = itemObj.childIds?.length ? [itemObj.childIds?.[0]] : [];
+    // during the backward propogation use the id of the child
+    if (!isForward && connectedChildId) {
+      childIds = [connectedChildId];
+    }
     const currentLevelItem = {
       [obj.id]: {
         ...itemObj,
-        childIds: itemObj.childIds?.length ? [itemObj.childIds?.[0]] : [],
+        childIds,
       },
     };
     // getting prev/next item
@@ -159,7 +167,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       ...getConnectedItemByDirection(
         selectedItemsDef[connectedId],
         isForward,
-        newSelectedItems
+        newSelectedItems,
+        obj.id
       ),
     };
   };
@@ -331,11 +340,17 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     newSelectedItems?: SelectedItemType
   ): SelectedItemType => {
     const selectedItemsUsed = newSelectedItems || selectedItems;
-    const prevPath = getConnectedItemByDirection(obj, false, selectedItemsUsed);
+    const prevPath = getConnectedItemByDirection(
+      obj,
+      false,
+      selectedItemsUsed,
+      obj.id
+    );
     const forwardPath = getConnectedItemByDirection(
       obj,
       true,
-      selectedItemsUsed
+      selectedItemsUsed,
+      obj.id
     );
 
     const connectedPath = {
@@ -432,7 +447,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       }
       const parentGroup = parentGroupLookUp.current?.[groupHeading];
       const parentItem = newSelectedItems?.[parentId];
-
       // cut the previous selections in the group if its not mulitselect
       // already has some values in the current group, so need to clear them
       if (
@@ -585,6 +599,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     // console.log("item", item.id, item.label);
     const activeSelection = isMultiSelection ? activeItem : selectedItems;
     if (activeSelection?.[item.id]) {
+      // console.log("1");
       // deselection of activeItem
       const newActiveItem = cascadeSelectionRemovalWithProps(
         activeItem,
@@ -621,10 +636,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         (ele) => ele.id === item.id
       );
       if (isPreviouslySelected) {
+        // console.log("2");
         // activating already selected path
         const newActiveItem = getConnectedItems(item);
         setActiveItem(newActiveItem);
       } else {
+        // console.log("3");
         // extending the active path
         const pId = parentId;
         const newActiveItem = addItemSelection(
