@@ -32,6 +32,15 @@ interface Props {
 const Icons = (props: Props) => {
   const { icon, width = 12, height = 12, applytheme = "true" } = props;
   const Svg = icons[icon];
+
+  // Handle case where Svg is undefined
+  if (!Svg) {
+    console.log("Svg", Svg);
+
+    console.error(`Icon ${icon} is not defined`, Svg);
+    return <>icon</>; // or a fallback component
+  }
+
   return (
     <IconCon applytheme={applytheme}>
       <Svg width={width} height={height} />

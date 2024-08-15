@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
     "build": "webpack --mode production --entry ./src/index.tsx --output-path ./build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch",
     "deploy": "yarn run build"
   },
   "peerDependencies": {
@@ -19,25 +19,37 @@
   "babel": {
     "presets": [
       "@babel/preset-env",
-      "@babel/preset-react"
+      "@babel/preset-react",
+      "@babel/preset-typescript"
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.16.5",
-    "@babel/preset-env": "^7.16.5",
-    "@babel/preset-react": "^7.16.5",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@svgr/webpack": "^8.1.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/user-event": "^14.3.0",
+    "@types/jest": "^29.5.12",
+    "@types/react": "^18.3.3",
+    "babel-jest": "^29.7.0",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.10.0",
     "gh-pages": "^6.1.1",
     "html-webpack-plugin": "^5.6.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss-styled-syntax": "^0.6.4",
     "style-loader": "^3.3.4",
     "stylelint": "^16.6.1",
     "stylelint-config-standard": "^36.0.0",
+    "ts-jest": "^29.2.4",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.3",
     "typescript-plugin-styled-components": "^3.0.0",
     "webpack": "^5.90.3",
     "webpack-cli": "^4.9.1",
