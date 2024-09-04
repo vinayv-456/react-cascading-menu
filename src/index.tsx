@@ -824,3 +824,4 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 });
 
 export default Index;
+export type { Props };
