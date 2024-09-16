@@ -83,6 +83,11 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   }, [activeItem]);
 
+  const leafNodes = useMemo(() => {
+    // used for tags
+    return getLeafNodes(menuGroup.id);
+  }, [selectedItems]);
+
   useImperativeHandle(ref, () => ({
     getSelection: () => {
       return getFormatedSelections();
@@ -90,6 +95,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     getAllItemsSelected: () => {
       return getAllItems(getFormatedSelections());
     },
+    leafNodes,
   }));
 
   useEffect(() => {
@@ -109,11 +115,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     // caliculated only once, and sent to searchbar component
     return getAllLeafNodes(menuGroup, -1);
   }, [menuGroup]);
-
-  const leafNodes = useMemo(() => {
-    // used for tags
-    return getLeafNodes(menuGroup.id);
-  }, [selectedItems]);
 
   const getConnectedItemByDirection = (
     obj: MenuGroup,
