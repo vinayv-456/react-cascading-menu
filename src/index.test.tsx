@@ -1,7 +1,7 @@
 import React, { createRef } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Index, { CascadingMenuRef } from "./index";
-import { menuGroup } from "./constants";
+import { menuGroup } from "../data/constants";
 import { checkSelections } from "./test_utils/checkSelections";
 
 function runSelectionTest(ids: string[]) {

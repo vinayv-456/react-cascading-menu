@@ -1,10 +1,10 @@
 import React from "react";
 import { IconType } from "../types";
 import Cancel from "./cancel.svg";
-import checkboxChecked from "./checkbox-check.svg";
-import checkboxUnchecked from "./checkbox-unchecked.svg";
-import radioChecked from "./radio-button-checked.svg";
-import radioUnchecked from "./radio-button-unchecked.svg";
+import CheckboxChecked from "./checkbox-check.svg";
+import CheckboxUnchecked from "./checkbox-unchecked.svg";
+import RadioChecked from "./radio-button-checked.svg";
+import RadioUnchecked from "./radio-button-unchecked.svg";
 import { IconCon } from "../styles";
 
 export const ICONS = {
@@ -15,13 +15,6 @@ export const ICONS = {
   RADIO_UNCHECKED: "radioUnchecked",
 };
 
-const icons: IconType = {
-  [ICONS.CANCEL]: Cancel,
-  [ICONS.CHECKBOX_CHECKED]: checkboxChecked,
-  [ICONS.CHECKBOX_UNCHECKED]: checkboxUnchecked,
-  [ICONS.RADIO_CHECKED]: radioChecked,
-  [ICONS.RADIO_UNCHECKED]: radioUnchecked,
-};
 interface Props {
   icon: string;
   width?: number;
@@ -31,21 +24,33 @@ interface Props {
 
 const Icons = (props: Props) => {
   const { icon, width = 12, height = 12, applytheme = "true" } = props;
-  const Svg = icons[icon];
+  const getIconJSX = (): JSX.Element | null => {
+    switch (icon) {
+      case ICONS.CANCEL:
+        return <Cancel width={width} height={height} />;
+      case ICONS.CHECKBOX_CHECKED:
+        return <CheckboxChecked width={width} height={height} />;
+      case ICONS.CHECKBOX_UNCHECKED:
+        return <CheckboxUnchecked width={width} height={height} />;
+      case ICONS.RADIO_CHECKED:
+        return <RadioChecked width={width} height={height} />;
+      case ICONS.RADIO_UNCHECKED:
+        return <RadioUnchecked width={width} height={height} />;
+      default:
+        console.error(`Icon ${icon} is not defined`);
+        return null; // Return null if icon is not found
+    }
+  };
 
-  // Handle case where Svg is undefined
-  if (!Svg) {
-    console.log("Svg", Svg);
+  const IconJSX = getIconJSX();
 
-    console.error(`Icon ${icon} is not defined`, Svg);
-    return <>icon</>; // or a fallback component
+  // Handle case where the icon is not found
+  if (!IconJSX) {
+    return <>icon</>; // Fallback if the icon does not exist
   }
 
-  return (
-    <IconCon applytheme={applytheme}>
-      <Svg width={width} height={height} />
-    </IconCon>
-  );
+  // Render the icon JSX inside IconCon
+  return <IconCon applytheme={applytheme}>{IconJSX}</IconCon>;
 };
 
 export default Icons;

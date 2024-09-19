@@ -137,7 +137,12 @@ interface SelectionIconProps {
 }
 const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
   if (true) {
-    return <>icon</>;
+    <Icons
+      icon={ICONS.CHECKBOX_CHECKED}
+      width={35}
+      height={28}
+      applytheme={false.toString()}
+    />;
   }
 
   return (

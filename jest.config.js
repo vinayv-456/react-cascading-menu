@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-    "^.+.(svg)$": "jest-transform-stub",
+    "\\.svg$": "<rootDir>/__mocks__/svgMock.js",
   },
   transform: {
     "^.+\\.(ts|tsx)?$": "ts-jest",
