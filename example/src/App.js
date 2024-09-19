@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Index from "../../src/index.tsx"; // dynamic changes
-import { menuGroup, preSelection } from "./constants.js";
+// import { menuGroup, preSelection } from "./constants.js";
+import { menuGroup, preSelection } from "../../data/constants.js";
 import "./styles.css";
 
 const App = () => {

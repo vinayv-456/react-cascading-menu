@@ -34,7 +34,7 @@ function Tags(props: Props) {
               className="cancel-icon"
               onClick={() => handleTagRemoval(selectionPath)}
             >
-              <Icons icon={ICONS.CANCEL} />
+              a{/* <Icons icon={ICONS.CANCEL} /> */}
             </span>
           </TagItem>
         );

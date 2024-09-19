@@ -100,7 +100,7 @@ export interface mvpSelectedProps {
 }
 
 export interface IconType {
-  [iconUrl: string]: FunctionComponent<SVGAttributes<SVGElement>>;
+  [key: string]: FunctionComponent<SVGAttributes<SVGElement>>;
 }
 
 export interface CompleteObj {

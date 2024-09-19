@@ -36,7 +36,12 @@ import Search from "./components/Search";
 export interface CascadingMenuRef {
   getSelection: () => ({} | FormatedSelections)[];
   getAllItemsSelected: () => string[][];
+  getSelectionsObjs: () => {
+    selectedItems: SelectedItemType;
+    activeItem: SelectedItemType;
+  };
 }
+
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
@@ -94,6 +99,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     },
     getAllItemsSelected: () => {
       return getAllItems(getFormatedSelections());
+    },
+    getSelectionsObjs: () => {
+      return {
+        selectedItems,
+        activeItem,
+      };
     },
     leafNodes,
   }));
@@ -586,6 +597,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     parentId: ItemId,
     isMultiSelection: boolean
   ) => {
+    // console.log("item", item.id, item.label);
     const activeSelection = isMultiSelection ? activeItem : selectedItems;
     if (activeSelection?.[item.id]) {
       // console.log("1");

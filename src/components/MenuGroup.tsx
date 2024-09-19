@@ -80,6 +80,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
               <React.Fragment key={ele.id}>
                 <DropdownOption
                   key={ele.id}
+                  data-testid={ele.id}
                   fadeactive={fadeActive.toString()}
                   active={isActive.toString()}
                   className="opt-label"
@@ -135,6 +136,15 @@ interface SelectionIconProps {
   isChecked: boolean;
 }
 const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
+  if (true) {
+    <Icons
+      icon={ICONS.CHECKBOX_CHECKED}
+      width={35}
+      height={28}
+      applytheme={false.toString()}
+    />;
+  }
+
   return (
     <>
       {isMultiSelection ? (
