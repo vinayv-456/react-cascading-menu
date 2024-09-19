@@ -50,7 +50,6 @@ module.exports = {
               svgo: false,
             },
           },
-          "file-loader",
         ],
       },
     ],
