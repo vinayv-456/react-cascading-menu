@@ -15,7 +15,8 @@
 - **Enhanced User Experience**: Understanding relationships between options in dependent dropdowns can be challenging. Cascading Menu provides a clear visual representation of the option hierarchy.
 
 ## Demo
-![react-cascading-menu-1 0 1](https://github.com/vinayv-456/react-cascading-menu/assets/49688688/8b97192f-d895-47fb-9b22-a5eace55431b)
+![Untitled-video-Made-with-Clipchamp-_5_](https://github.com/user-attachments/assets/c4c9d8c3-02ef-43e3-9d15-ca40b8116fa1)
+
 
 ### Installation
 ```sh
