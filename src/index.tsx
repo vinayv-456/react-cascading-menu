@@ -40,6 +40,7 @@ export interface CascadingMenuRef {
     selectedItems: SelectedItemType;
     activeItem: SelectedItemType;
   };
+  leafNodes: mvpSelectedProps[][];
 }
 
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
