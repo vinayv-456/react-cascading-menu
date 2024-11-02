@@ -24,7 +24,8 @@
     "jsx": "react",
     "noImplicitAny": true,
     // "jsx": "react-jsx"
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "./build",
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "custom.d.ts", "src/**/*.test.ts", "src/**/*.test.tsx", "**/*.test.ts", "**/*.test.tsx", "example/src/App.test.js"],
   "exclude": ["node_modules"]

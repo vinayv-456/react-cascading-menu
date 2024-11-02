@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const createStyledComponentsTransformer =
   require("typescript-plugin-styled-components").default;
-
+const webpack = require("webpack");
 const styledComponentsTransformer = createStyledComponentsTransformer();
 
 module.exports = {
