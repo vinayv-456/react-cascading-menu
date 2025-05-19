@@ -23,12 +23,14 @@ import {
   MODES,
   MenuGroupMap,
   SelectedItemTypeV2,
+  SelectedItemTypeValV2,
 } from "./types";
 import {
   addItemSelection,
   cascadeSelectionRemoval,
   cascadeSelectionRemovalWithProps,
   fromatPreSelections,
+  getAllLeafNodes,
   getConnectedItemByDirection,
   getConnectedItems,
   getParentGroup,
@@ -138,10 +140,10 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     };
   }, [error]);
 
-  // const allItems = useMemo(() => {
-  //   // caliculated only once, and sent to searchbar component
-  //   return getAllLeafNodes(menuGroup, -1);
-  // }, [menuGroup]);
+  const allItems = useMemo(() => {
+    // caliculated only once, and sent to searchbar component
+    return getAllLeafNodes(menuGroup, -1);
+  }, [menuGroup]);
 
   // /**
   //  * get the leaf nodes, also having the objects of its path
@@ -177,41 +179,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   //     console.log("error in getting the lead nodes", e);
   //   }
   //   return [];
-  // }
-
-  // /**
-  //  * get all leaf-nodes with paths through indexes
-  //  * used for search
-  //  */
-  // function getAllLeafNodes(treeObj: MenuGroup, index: number): CompleteObj[] {
-  //   try {
-  //     const { label, options } = treeObj;
-  //     if (!options?.length) {
-  //       return [{ label, indexes: [index] }];
-  //     }
-
-  //     const childRes = options.reduce(
-  //       (acc: CompleteObj[], item, index: number): CompleteObj[] => {
-  //         return [...acc, ...getAllLeafNodes(item, index)];
-  //       },
-  //       []
-  //     );
-
-  //     return childRes.map((e) => {
-  //       const { label, indexes } = e;
-  //       if (!treeObj.label) {
-  //         return e;
-  //       }
-  //       return {
-  //         label: `${treeObj.label}=>${label}`,
-  //         indexes: [index, ...indexes],
-  //       };
-  //     });
-  //   } catch (e) {
-  //     console.log("error in finding all the leafs", e);
-  //   }
-  //   // not necessary, will not be able to reach this
-  //   return [{ label: treeObj.label, indexes: [index] }];
   // }
 
   // const getNextAvailableSelection = (
@@ -509,51 +476,60 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   //   setSelectedItems(newSelectedItems);
   // };
 
-  // const handleBulkAddition = (items: SelectedItemType, leafId: ItemId) => {
-  //   // make the item as active
-  //   setActiveItem(items);
+  const handleBulkAddition = (items: SelectedItemTypeV2, leafId: ItemId) => {
+    // make the item as active
+    setActiveItem(items);
 
-  //   // insertion/updation in selectedItems
-  //   if (selectedItems[leafId]) {
-  //     return;
-  //   }
+    // insertion/updation in selectedItems
+    if (selectedItems[leafId]) {
+      return;
+    }
 
-  //   const newSelectedItems = { ...selectedItems };
-  //   const deafultSelectionType = true; // TODO: default isMultiSelection
+    const newSelectedItems = { ...selectedItems };
+    const deafultSelectionType = true; // TODO: default isMultiSelection
 
-  //   // if the item is not present in the selections
-  //   for (const [key, value] of Object.entries(items) as [
-  //     ItemId,
-  //     SelectedItemTypeVal
-  //   ][]) {
-  //     const newChildId = value?.childIds?.[0];
+    // if the item is not present in the selections
+    for (const [key, value] of Object.entries(items) as [
+      ItemId,
+      SelectedItemTypeValV2
+    ][]) {
+      const newChildId = value?.childIds?.[0];
 
-  //     // childIds updation: has parent but no child so add childId to childIds list
-  //     if (selectedItems[key] && newChildId && !selectedItems[newChildId]) {
-  //       const selectionTypeDefined = value.isMultiSelection;
-  //       const isMultiSelection =
-  //         selectionTypeDefined === undefined
-  //           ? deafultSelectionType
-  //           : selectionTypeDefined;
+      // childIds updation: has parent but no child so add childId to childIds list
+      if (selectedItems[key] && newChildId && !selectedItems[newChildId]) {
+        const selectionTypeDefined = menuGroupMap[key]?.isMultiSelection;
+        const isMultiSelection =
+          selectionTypeDefined === undefined
+            ? deafultSelectionType
+            : selectionTypeDefined;
 
-  //       // remove prev childs if it is not mult selection
-  //       if (!isMultiSelection) {
-  //         newSelectedItems[key].childIds?.forEach((id) => {
-  //           delete newSelectedItems[id];
-  //         });
-  //       }
+        // remove prev childs if it is not mult selection
+        if (!isMultiSelection) {
+          newSelectedItems[key].childIds?.forEach((id) => {
+            cascadeSelectionRemovalWithProps(
+              menuGroupMap,
+              newSelectedItems,
+              id,
+              {
+                isParentUpdateRequired: true,
+              }
+            );
+          });
+        }
 
-  //       newSelectedItems[key].childIds = isMultiSelection
-  //         ? [...(newSelectedItems[key].childIds || []), newChildId]
-  //         : [newChildId];
-  //     } else if (!selectedItems[key]) {
-  //       // direct addition as no id exist
-  //       newSelectedItems[key] = value;
-  //     }
-  //   }
+        newSelectedItems[key].childIds = isMultiSelection
+          ? [...(newSelectedItems[key].childIds || []), newChildId]
+          : [newChildId];
+      } else if (key && !selectedItems[key]) {
+        // direct addition as no id exist
+        newSelectedItems[key] = value;
+      }
+    }
 
-  //   setSelectedItems(newSelectedItems);
-  // };
+    console.log("newSelectedItems", newSelectedItems);
+
+    setSelectedItems(newSelectedItems);
+  };
 
   const handleClearAllTags = () => {
     // remove all the selection
@@ -568,11 +544,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
       <MainContainer width={width} height={height}>
-        {/* <Search
-          menuGroup={menuGroup}
+        <Search
+          parentId={menuGroup.id}
           allItems={allItems}
+          menuGroupMap={menuGroupMap}
           handleBulkAddition={handleBulkAddition}
-        /> */}
+        />
         <MenuGroupContainer ref={mainContainerRef}>
           <MenuGroupComp
             menuGroup={menuGroup}

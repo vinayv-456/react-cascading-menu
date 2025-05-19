@@ -3,7 +3,9 @@ import {
   CompleteObj,
   ItemId,
   MenuGroup,
+  MenuGroupMap,
   SelectedItemType,
+  SelectedItemTypeV2,
   SelectedItemTypeVal,
 } from "../types";
 import Dropdown from "./Dropdown";
@@ -11,8 +13,12 @@ import { initParentSelectedItem } from "../utils";
 
 interface Props {
   allItems: CompleteObj[];
-  menuGroup: MenuGroup;
-  handleBulkAddition: (selectedItems: SelectedItemType, leadId: ItemId) => void;
+  parentId: ItemId;
+  menuGroupMap: MenuGroupMap;
+  handleBulkAddition: (
+    selectedItems: SelectedItemTypeV2,
+    leadId: ItemId
+  ) => void;
 }
 
 interface SearchResObj {
@@ -22,55 +28,32 @@ interface SearchResObj {
 }
 
 function Search(props: Props) {
-  const { allItems, menuGroup, handleBulkAddition } = props;
+  const { allItems, menuGroupMap, parentId, handleBulkAddition } = props;
   const [searchResults, setSearchResults] = useState<SearchResObj[]>([]);
 
   // format the selected item to SelectedItemType
-  const formSelection = (searchItemSelection: SearchResObj) => {
+  const formatSelection = (searchItemSelection: SearchResObj) => {
     const { indexesPath } = searchItemSelection;
-    let obj: MenuGroup;
-    let nextObj: MenuGroup = menuGroup;
-    let leafId: ItemId = -1;
-    let res = indexesPath.reduce(
-      (acc: SelectedItemType, index: number): SelectedItemType => {
-        obj = nextObj;
-        const parentId = obj.id;
-        const { id, label, value, groupHeading, isMultiSelection } =
-          obj.options?.[index] || {};
-        if (!obj.options?.[index] || !id || !label || !value) return acc;
-        nextObj = obj.options?.[index];
-        if (acc[parentId]) {
-          acc[parentId].childIds = [id];
-        }
-        leafId = id;
+    let nextParentId = parentId;
+    let formatedSelection: SelectedItemTypeV2 = indexesPath.reduce(
+      (acc, index) => {
+        const parentId = nextParentId;
+        nextParentId = menuGroupMap?.[parentId]?.childIds?.[index] || "";
         return {
           ...acc,
-          [id]: {
-            id,
-            label,
-            value,
-            parentGroup: acc?.[parentId]?.groupHeading || "",
-            parentId,
-            groupHeading: obj.groupHeading,
-            childGroup: groupHeading,
-            isMultiSelection,
+          [parentId]: {
+            id: parentId,
+            childIds: [nextParentId],
           },
         };
       },
       {}
     );
-    const topChildId = menuGroup.options?.[indexesPath[0]].id;
-    // also, add the top most parent, which is not part of indexes
-    res = {
-      ...res,
-      [menuGroup.id]: {
-        ...initParentSelectedItem(menuGroup.id, menuGroup.groupHeading),
-        childIds: topChildId ? [topChildId] : null,
-      },
+    formatedSelection[nextParentId] = {
+      id: nextParentId,
+      childIds: [],
     };
-    if (leafId !== -1) {
-      handleBulkAddition(res, leafId);
-    }
+    handleBulkAddition(formatedSelection, nextParentId);
   };
 
   const handleSearch = (searchVal: string) => {
@@ -146,7 +129,7 @@ function Search(props: Props) {
     <Dropdown<SearchResObj>
       items={searchResults}
       handleSearchChange={handleSearch}
-      handleItemClick={formSelection}
+      handleItemClick={formatSelection}
       renderItem={renderItem}
     />
   );

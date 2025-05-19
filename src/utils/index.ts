@@ -1,4 +1,5 @@
 import {
+  CompleteObj,
   FormatedSelections,
   Item,
   ItemId,
@@ -439,3 +440,41 @@ export const cascadeSelectionRemoval = (
     return selectedItems;
   }
 };
+
+// /**
+//  * get all leaf-nodes with paths through indexes
+//  * used for search
+//  */
+export function getAllLeafNodes(
+  treeObj: MenuGroup,
+  index: number
+): CompleteObj[] {
+  try {
+    const { label, options } = treeObj;
+    if (!options?.length) {
+      return [{ label, indexes: [index] }];
+    }
+
+    const childRes = options.reduce(
+      (acc: CompleteObj[], item, index: number): CompleteObj[] => {
+        return [...acc, ...getAllLeafNodes(item, index)];
+      },
+      []
+    );
+
+    return childRes.map((e) => {
+      const { label, indexes } = e;
+      if (!treeObj.label) {
+        return e;
+      }
+      return {
+        label: `${treeObj.label}=>${label}`,
+        indexes: [index, ...indexes],
+      };
+    });
+  } catch (e) {
+    console.log("error in finding all the leafs", e);
+  }
+  // not necessary, will not be able to reach this
+  return [{ label: treeObj.label, indexes: [index] }];
+}
