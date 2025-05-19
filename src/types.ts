@@ -16,6 +16,20 @@ export interface MenuGroup {
   isMultiSelection?: boolean;
 }
 
+export interface MenuGroupMapVal {
+  id: ItemId;
+  label: string;
+  value: string;
+  groupHeading: string;
+  childIds?: ItemId[] | null;
+  parentId?: ItemId;
+  isMultiSelection?: boolean;
+}
+
+export interface MenuGroupMap {
+  [id: ItemId]: MenuGroupMapVal;
+}
+
 export interface parentGroupLookUp {
   [childGrp: string]: string;
 }
@@ -46,6 +60,14 @@ export interface SelectedItemTypeVal {
   isMultiSelection?: boolean; // used during bulk addition
 }
 
+export interface SelectedItemTypeValV2 {
+  id: ItemId;
+  childIds: ItemId[] | null;
+}
+export interface SelectedItemTypeV2 {
+  [id: ItemId]: SelectedItemTypeValV2;
+}
+
 export type ItemId = number | string;
 
 export interface SelectedItemType {
@@ -74,8 +96,8 @@ export interface Props {
 
 export interface DPItemProps {
   menuGroup: MenuGroup;
-  activeItem: SelectedItemType;
-  selectedItems: SelectedItemType;
+  activeItem: SelectedItemTypeV2;
+  selectedItems: SelectedItemTypeV2;
   displayValue: string;
   showNext: boolean;
   handleItemSelection: (
@@ -84,12 +106,12 @@ export interface DPItemProps {
     parentId: ItemId,
     isMultiSelection: boolean
   ) => void;
-  handleMultipleChildrenSel: (
-    items: MenuGroup[] | [],
-    parentId: ItemId,
-    parentGroup: string,
-    allItemsChecked: boolean
-  ) => void;
+  // handleMultipleChildrenSel: (
+  //   items: MenuGroup[] | [],
+  //   parentId: ItemId,
+  //   parentGroup: string,
+  //   allItemsChecked: boolean
+  // ) => void;
   level: number;
 }
 
