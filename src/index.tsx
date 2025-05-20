@@ -106,10 +106,11 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   }, [activeItem]);
 
-  // const leafNodes = useMemo(() => {
-  //   // used for tags
-  //   return getLeafNodes(menuGroup.id);
-  // }, [selectedItems]);
+  const leafNodes = useMemo(() => {
+    // used for tags
+    return getLeafNodes(menuGroup.id);
+  }, [selectedItems]);
+  console.log("leafNodes", leafNodes);
 
   // useImperativeHandle(ref, () => ({
   //   getSelection: () => {
@@ -145,41 +146,37 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     return getAllLeafNodes(menuGroup, -1);
   }, [menuGroup]);
 
-  // /**
-  //  * get the leaf nodes, also having the objects of its path
-  //  */
-  // function getLeafNodes(id: ItemId): mvpSelectedProps[][] {
-  //   try {
-  //     if (!selectedItems[id]) {
-  //       return [];
-  //     }
-  //     const { label, id: nodeId, value } = selectedItems[id];
-  //     if (!selectedItems[id].childIds?.length) {
-  //       return [[{ label, id: nodeId, value }]];
-  //     }
+  /**
+   * get the leaf nodes, also having the objects of its path
+   */
+  function getLeafNodes(id: ItemId): ItemId[][] {
+    try {
+      const parentId = menuGroup.id;
+      const result: ItemId[][] = [];
+      const getLeafNodeshelper = (
+        parentId: ItemId,
+        tempResult: ItemId[],
+        result: ItemId[][]
+      ) => {
+        if (!selectedItems[parentId]?.childIds?.length) {
+          result.push([menuGroup.id, ...tempResult]);
+        }
+        selectedItems[parentId]?.childIds?.forEach((childId) => {
+          tempResult.push(childId);
+          getLeafNodeshelper(childId, tempResult, result);
+          tempResult.pop();
+        });
 
-  //     // children paths
-  //     const childrenRes =
-  //       selectedItems[id].childIds?.reduce(
-  //         (
-  //           acc: mvpSelectedProps[][],
-  //           childId: ItemId
-  //         ): mvpSelectedProps[][] => {
-  //           const { label, id: nodeId, value } = selectedItems[childId];
-  //           return [...acc, ...getLeafNodes(nodeId)];
-  //         },
-  //         []
-  //       ) || [];
+        return result;
+      };
 
-  //     // add parent to all its children
-  //     return childrenRes?.map((sol) => {
-  //       return [{ label, id: nodeId, value }, ...sol];
-  //     });
-  //   } catch (e) {
-  //     console.log("error in getting the lead nodes", e);
-  //   }
-  //   return [];
-  // }
+      getLeafNodeshelper(parentId, [], result);
+      return result;
+    } catch (e) {
+      console.log("error in getting the lead nodes", e);
+    }
+    return [];
+  }
 
   // const getNextAvailableSelection = (
   //   id: ItemId,
@@ -216,61 +213,59 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   //   return -1;
   // };
 
-  // const handleTagRemoval = (selectionPath: mvpSelectedProps[]) => {
-  //   try {
-  //     let newActiveItem = activeItem;
-  //     const leafId = selectionPath[selectionPath.length - 1].id;
-  //     const isCurrentActiveNodeRemoved = activeItem[leafId] && true;
-  //     if (isCurrentActiveNodeRemoved) {
-  //       const nextId = getNextAvailableSelection(leafId);
-  //       if (nextId == -1) {
-  //         // no next item available
-  //         newActiveItem = {};
-  //       } else {
-  //         const obj = selectedItems[nextId];
-  //         newActiveItem = getConnectedItems(obj);
-  //       }
-  //     }
+  const handleTagRemoval = (selectionPath: ItemId[]) => {
+    try {
+      const reversedSelectionPath = selectionPath.reverse();
+      const newSelectedItems = { ...selectedItems };
+      let newActiveItem = {};
 
-  //     // check and change if active item is being removed
-  //     const newSelectedItems = { ...selectedItems };
-  //     const arr = selectionPath.slice().reverse();
-  //     for (let i = 0; i < arr.length; i++) {
-  //       // if the path has another child break, as node will be used for these children
-  //       if ((newSelectedItems[arr[i].id].childIds || [])?.length >= 1) {
-  //         break;
-  //       } else {
-  //         // remove the key from the childIds list in its parent's node
-  //         const idTobeRemoved = arr[i].id;
-  //         const parentIdOfremovedKey = newSelectedItems[idTobeRemoved].parentId;
-  //         if (parentIdOfremovedKey) {
-  //           const childIds =
-  //             newSelectedItems[parentIdOfremovedKey].childIds || [];
-  //           newSelectedItems[parentIdOfremovedKey].childIds = childIds.filter(
-  //             (id) => id !== idTobeRemoved
-  //           );
-  //         }
-  //         // delete the key
-  //         delete newSelectedItems[arr[i].id];
-  //       }
-  //     }
-  //     setSelectedItems(newSelectedItems);
-  //     setActiveItem(newActiveItem);
-  //   } catch (e) {
-  //     console.log("error in tag removal", e);
-  //   }
-  // };
+      for (const id of reversedSelectionPath) {
+        delete newSelectedItems[id];
+        const index = reversedSelectionPath.indexOf(id);
+        const parentId = selectionPath[index + 1];
+        // stop if the parent has more than 1 child
+        if (
+          parentId &&
+          newSelectedItems?.[parentId]?.childIds &&
+          newSelectedItems[parentId]?.childIds?.length > 1
+        ) {
+          newSelectedItems[parentId].childIds = newSelectedItems?.[
+            parentId
+          ]?.childIds?.filter((childId) => childId !== id);
+          const childIds = newSelectedItems[parentId]?.childIds;
+          if (childIds && childIds.length > 0) {
+            const newLeafNodeId = childIds[0];
+            newActiveItem = getConnectedItems(
+              menuGroupMap,
+              newLeafNodeId,
+              newSelectedItems,
+              true
+            );
+          } else {
+            setActiveItem({});
+          }
+          break;
+        }
+      }
+      setActiveItem(newActiveItem);
+      setSelectedItems(newSelectedItems);
+    } catch (e) {
+      console.log("error in tag removal", e);
+    }
+  };
 
-  // const handleSelectionPopulation = (selectionPath: mvpSelectedProps[]) => {
-  //   const newActiveItem = selectionPath.reduce(
-  //     (acc: SelectedItemType, item: mvpSelectedProps): SelectedItemType => {
-  //       const { label, id } = item;
-  //       return { ...acc, [id]: selectedItems[id] };
-  //     },
-  //     {}
-  //   );
-  //   setActiveItem(newActiveItem);
-  // };
+  const handleSelectionPopulation = (selectionPath: ItemId[]) => {
+    const newActiveItem = selectionPath.reduce(
+      (acc: SelectedItemTypeV2, id: ItemId, index): SelectedItemTypeV2 => {
+        return {
+          ...acc,
+          [id]: { id: id, childIds: [selectionPath[index + 1]] },
+        };
+      },
+      {}
+    );
+    setActiveItem(newActiveItem);
+  };
 
   // const getFormatedSelectionsHelper = (
   //   groupName?: string,
@@ -563,11 +558,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           />
         </MenuGroupContainer>
         {/* render the tag list */}
-        {/* <Tags
+        <Tags
           leafNodes={leafNodes}
           handleTagRemoval={handleTagRemoval}
           handleSelectionPopulation={handleSelectionPopulation}
-        /> */}
+          menuGroupMap={menuGroupMap}
+        />
         <ClearTagsBtn onClick={handleClearAllTags}>Clear All</ClearTagsBtn>
       </MainContainer>
     </ThemeProvider>
