@@ -391,85 +391,102 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   };
 
-  // const handleMultiChildren = (
-  //   items: MenuGroup[] | [],
-  //   parentId: ItemId,
-  //   parentGroup: string,
-  //   isSelection: boolean
-  // ) => {
-  //   const formatedItems: SelectedItemType = items.reduce((acc, e) => {
-  //     const { options, ...eRest } = e;
-  //     return {
-  //       ...acc,
-  //       [e.id]: {
-  //         ...eRest,
-  //         parentGroup,
-  //         parentId,
-  //       },
-  //     };
-  //   }, {});
+  const getNextAvailableSelection = (
+    id: ItemId,
+    selectedItems: SelectedItemTypeV2
+  ) => {
+    // check if there is a child in the same level
+    let parentId = menuGroupMap[id].parentId;
+    if (!parentId) return -1;
+    let childIds = selectedItems[parentId]?.childIds || [];
+    if (childIds.length > 1) {
+      let index = childIds.findIndex((e) => e === id);
+      return childIds[index === childIds.length - 1 ? 0 : index + 1];
+    }
 
-  //   const prevChildIds = { ...selectedItems }[parentId]?.childIds || [];
-  //   const childIds = [
-  //     ...prevChildIds,
-  //     ...items.filter((e) => !(selectedItems[e.id] && true)).map((e) => e.id),
-  //   ];
-  //   let newSelectedItems = { ...selectedItems };
+    // check previous level children and pick one of them
+    while (parentId && childIds.length <= 1) {
+      parentId = menuGroupMap[parentId]?.parentId;
+      if (!parentId) return -1;
+      childIds = selectedItems[parentId]?.childIds || [];
+    }
+    if (childIds.length > 0) {
+      return childIds[0];
+    }
+    return -1;
+  };
 
-  //   // selectedItems updation
-  //   // updating options to the parent
-  //   if (isSelection) {
-  //     // during selection
-  //     newSelectedItems = {
-  //       ...formatedItems,
-  //       ...newSelectedItems,
-  //     };
-  //   } else {
-  //     // during deselection
-  //     for (const id of childIds || []) {
-  //       if (newSelectedItems[id]) {
-  //         newSelectedItems = cascadeSelectionRemoval(
-  //           newSelectedItems,
-  //           parentGroup,
-  //           newSelectedItems[id]
-  //         );
-  //       }
-  //     }
-  //   }
+  const handleMultiChildren = (
+    items: MenuGroup[] | [],
+    parentId: ItemId,
+    isSelection: boolean
+  ) => {
+    const formatedItems: SelectedItemTypeV2 = items.reduce((acc, e) => {
+      return {
+        ...acc,
+        [e.id]: {
+          id: e.id,
+          childIds: [],
+        },
+      };
+    }, {});
 
-  //   // updating childsId to the parent
-  //   newSelectedItems = {
-  //     ...newSelectedItems,
-  //     [parentId]: {
-  //       ...selectedItems[parentId],
-  //       childIds: isSelection ? childIds : [],
-  //       childGroup: items[0]?.groupHeading,
-  //     },
-  //   };
+    const prevChildIds = { ...selectedItems }[parentId]?.childIds || [];
+    const childIds = [
+      ...prevChildIds,
+      ...items.filter((e) => !(selectedItems[e.id] && true)).map((e) => e.id),
+    ];
+    let newSelectedItems = { ...selectedItems };
 
-  //   const activeNodeId = childIds.find((e) => activeItem[e]) || childIds[0];
-  //   let newActiveItem = {};
-  //   if (isSelection) {
-  //     // selection
-  //     newActiveItem = getConnectedItems(
-  //       formatedItems[activeNodeId],
-  //       newSelectedItems
-  //     );
-  //   } else {
-  //     // deselection
-  //     // const nextChildId = getNextAvailableSelection(activeNodeId, {
-  //     //   newSelectedItems,
-  //     //   parentIdDef: selectedItems[activeNodeId]?.parentId,
-  //     // });
-  //     // newActiveItem =
-  //     //   nextChildId !== -1
-  //     //     ? getConnectedItems(newSelectedItems[nextChildId], newSelectedItems)
-  //     //     : {};
-  //   }
+    // selectedItems updation
+    // updating options to the parent
+    if (isSelection) {
+      // during selection
+      newSelectedItems = {
+        ...formatedItems,
+        ...newSelectedItems,
+      };
+    } else {
+      // during deselection
+      for (const id of childIds || []) {
+        if (newSelectedItems[id]) {
+          newSelectedItems = cascadeSelectionRemoval(
+            menuGroupMap,
+            newSelectedItems,
+            id
+          );
+        }
+      }
+    }
 
-  //   setActiveItem(newActiveItem);
-  //   setSelectedItems(newSelectedItems);
-  // };
+    // updating childsId to the parent
+    newSelectedItems = {
+      ...newSelectedItems,
+      [parentId]: {
+        ...selectedItems[parentId],
+        childIds: isSelection ? childIds : [],
+      },
+    };
+
+    const activeNodeId = childIds.find((e) => activeItem[e]) || childIds[0];
+    let newActiveItem = {};
+    if (isSelection) {
+      // selection
+      newActiveItem = getConnectedItems(
+        menuGroupMap,
+        activeNodeId,
+        newSelectedItems,
+        true
+      );
+      setActiveItem(newActiveItem);
+    } else {
+      // deselection
+      setActiveItem(
+        getConnectedItemByDirection(menuGroupMap, false, parentId, {})
+      );
+    }
+    setSelectedItems(newSelectedItems);
+  };
 
   const handleBulkAddition = (items: SelectedItemTypeV2, leafId: ItemId) => {
     // make the item as active
@@ -554,7 +571,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             selectedItems={selectedItems}
             handleItemSelection={handleItemSelection}
             level={0}
-            // handleMultipleChildrenSel={handleMultiChildren}
+            handleMultipleChildrenSel={handleMultiChildren}
           />
         </MenuGroupContainer>
         {/* render the tag list */}

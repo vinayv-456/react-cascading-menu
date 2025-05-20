@@ -106,12 +106,11 @@ export interface DPItemProps {
     parentId: ItemId,
     isMultiSelection: boolean
   ) => void;
-  // handleMultipleChildrenSel: (
-  //   items: MenuGroup[] | [],
-  //   parentId: ItemId,
-  //   parentGroup: string,
-  //   allItemsChecked: boolean
-  // ) => void;
+  handleMultipleChildrenSel: (
+    items: MenuGroup[] | [],
+    parentId: ItemId,
+    allItemsChecked: boolean
+  ) => void;
   level: number;
 }
 

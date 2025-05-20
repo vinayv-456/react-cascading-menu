@@ -18,7 +18,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
     displayValue,
     showNext,
     handleItemSelection,
-    // handleMultipleChildrenSel,
+    handleMultipleChildrenSel,
     level,
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
@@ -33,10 +33,10 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   const width = 13;
   const [allItemsChecked, setAllItemsChecked] = useState(false);
   const handleSelectAll = () => {
-    // setAllItemsChecked((prev: boolean) => {
-    //   handleMultipleChildrenSel(options || [], groupId, groupHeading, !prev);
-    //   return !prev;
-    // });
+    setAllItemsChecked((prev: boolean) => {
+      handleMultipleChildrenSel(options || [], groupId, !prev);
+      return !prev;
+    });
   };
 
   // tick the allItemsChecked checkbox based on the options count
@@ -118,7 +118,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                 displayValue={displayValue}
                 showNext={false}
                 handleItemSelection={handleItemSelection}
-                // handleMultipleChildrenSel={handleMultipleChildrenSel}
+                handleMultipleChildrenSel={handleMultipleChildrenSel}
                 level={level + 1}
               />
             )}
