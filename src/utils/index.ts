@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   CompleteObj,
   FormatedSelections,
@@ -336,70 +337,82 @@ export const initParentSelectedItem = (id: ItemId, groupHeading: string) => {
  * convert FormatedSelections to SelectedItemType
  * also, add the top most parent of menugroup to connect all
  */
-export const fromatPreSelections = (
-  menuGroup: MenuGroup,
+// export const fromatPreSelections = (
+//   menuGroup: MenuGroup,
+//   selections: FormatedSelections[] | null
+// ) => {
+//   const calSelectedItems: SelectedItemType =
+//     formatPreSelectionHelper(selections);
+//   const calActiveItems = formatPreSelectionHelper(selections, false);
+
+//   if (!selections) return { calcSelectedItems: {}, calcActiveItems: {} };
+
+//   // add top most child to connect all the children to single node
+//   const childIds: ItemId[] = selections.reduce(
+//     (acc: ItemId[], ele: FormatedSelections): ItemId[] => {
+//       if (!ele.id) return acc;
+//       return [...acc, ele.id];
+//     },
+//     []
+//   );
+//   // console.log("childIds", childIds);
+
+//   const topParentObj = initParentSelectedItem(
+//     menuGroup.id,
+//     menuGroup.groupHeading
+//   );
+
+//   const calcSelectedItems = {
+//     [menuGroup.id]: {
+//       ...topParentObj,
+//       childIds,
+//     },
+//     ...calSelectedItems,
+//   };
+
+//   const calcActiveItems = {
+//     [menuGroup.id]: {
+//       ...topParentObj,
+//       childIds: childIds.length ? [childIds[0]] : [],
+//     },
+//     ...calActiveItems,
+//   };
+
+//   return { calcSelectedItems, calcActiveItems };
+// };
+
+export const initPreSelections = (
+  menuGroupMap: MenuGroupMap,
   selections: FormatedSelections[] | null
 ) => {
-  const calSelectedItems: SelectedItemType =
-    formatPreSelectionHelper(selections);
-  const calActiveItems = formatPreSelectionHelper(selections, false);
+  const newSelectedItems: SelectedItemTypeV2 = {};
+  const newActiveItems = {};
 
-  if (!selections) return { calcSelectedItems: {}, calcActiveItems: {} };
+  if (!selections) return { newSelectedItems, newActiveItems };
 
-  // add top most child to connect all the children to single node
-  const childIds: ItemId[] = selections.reduce(
-    (acc: ItemId[], ele: FormatedSelections): ItemId[] => {
-      if (!ele.id) return acc;
-      return [...acc, ele.id];
-    },
-    []
-  );
-  // console.log("childIds", childIds);
-
-  const topParentObj = initParentSelectedItem(
-    menuGroup.id,
-    menuGroup.groupHeading
-  );
-
-  const calcSelectedItems = {
-    [menuGroup.id]: {
-      ...topParentObj,
-      childIds,
-    },
-    ...calSelectedItems,
-  };
-
-  const calcActiveItems = {
-    [menuGroup.id]: {
-      ...topParentObj,
-      childIds: childIds.length ? [childIds[0]] : [],
-    },
-    ...calActiveItems,
-  };
-
-  return { calcSelectedItems, calcActiveItems };
-};
-/**
- * convert FormatedSelections to SelectedItemType
- */
-export const formatPreSelectionHelper = (
-  selections: FormatedSelections[] | null,
-  isSingle: boolean = true
-): SelectedItemType => {
-  if (!selections) return {};
-  const res = selections.reduce((acc1, ele1) => {
-    const { options, ...rest } = ele1;
-    if (!ele1.id) return acc1;
-    return {
-      ...acc1,
-      [ele1.id]: rest,
-      ...formatPreSelectionHelper(
-        isSingle ? options : options?.[0] ? [options?.[0]] : [],
-        isSingle
-      ),
+  const initPreSelectionsHelper = (e: FormatedSelections) => {
+    newSelectedItems[e.id] = {
+      ...menuGroupMap[e.id],
+      childIds: e.options?.map((e) => e.id) || null,
     };
-  }, {});
-  return res;
+    e.options?.forEach((e) => {
+      initPreSelectionsHelper(e);
+    });
+  };
+  selections.forEach((e) => {
+    if (menuGroupMap[e.id]?.parentId) {
+      const parentId = menuGroupMap[e.id].parentId;
+
+      if (parentId) {
+        newSelectedItems[parentId] = {
+          id: parentId,
+          childIds: [e.id],
+        };
+      }
+    }
+    initPreSelectionsHelper(e);
+  });
+  return { newSelectedItems };
 };
 
 /**

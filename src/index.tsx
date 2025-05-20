@@ -35,6 +35,7 @@ import {
   getConnectedItems,
   getParentGroup,
   initParentSelectedItem,
+  initPreSelections,
   menuGroupTreeToMap,
 } from "./utils";
 import Tags from "./components/Tags";
@@ -42,6 +43,7 @@ import { theme } from "./theme";
 import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
+import { preSelection } from "../data/constants";
 export interface CascadingMenuRef {
   getSelection: () => FormatedSelections[] | null;
   getAllItemsSelected: () => string[][];
@@ -55,7 +57,7 @@ export interface CascadingMenuRef {
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
-    selectedItems: preSelectedItems = [],
+    selectedItems: preSelectedItems = preSelection,
     width = "100%",
     height = "360px",
     displayValue = "label",
@@ -78,20 +80,29 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   console.log("menuGroupMap", menuGroupMap);
 
-  // console.log("testing-2");
   // console.log("activeItem", activeItem);
   // console.log("selectedItems", selectedItems);
 
-  // useEffect(() => {
-  //   if (Object.keys(preSelectedItems).length) {
-  //     const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
-  //       menuGroup,
-  //       preSelectedItems
-  //     );
-  //     setSelectedItems(calcSelectedItems);
-  //     setActiveItem(calcActiveItems);
-  //   }
-  // }, [preSelectedItems]);
+  useEffect(() => {
+    if (Object.keys(menuGroupMap).length) {
+      const { newSelectedItems } = initPreSelections(
+        menuGroupMap,
+        preSelectedItems
+      );
+      setSelectedItems(newSelectedItems);
+      setActiveItem(
+        getConnectedItems(menuGroupMap, menuGroup.id, newSelectedItems, true)
+      );
+    }
+    // if (Object.keys(preSelectedItems).length) {
+    //   const { calcSelectedItems, calcActiveItems } = fromatPreSelections(
+    //     menuGroup,
+    //     preSelectedItems
+    //   );
+    //   setSelectedItems(calcSelectedItems);
+    //   setActiveItem(calcActiveItems);
+    // }
+  }, [menuGroupMap, preSelectedItems]);
 
   useEffect(() => {
     /**
