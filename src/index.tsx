@@ -43,13 +43,13 @@ import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 export interface CascadingMenuRef {
-  getSelection: () => ({} | FormatedSelections)[];
+  getSelection: () => FormatedSelections[] | null;
   getAllItemsSelected: () => string[][];
   getSelectionsObjs: () => {
-    selectedItems: SelectedItemType;
-    activeItem: SelectedItemType;
+    selectedItems: SelectedItemTypeV2;
+    activeItem: SelectedItemTypeV2;
   };
-  leafNodes: mvpSelectedProps[][];
+  leafNodes: ItemId[][];
 }
 
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
@@ -112,21 +112,21 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   }, [selectedItems]);
   console.log("leafNodes", leafNodes);
 
-  // useImperativeHandle(ref, () => ({
-  //   getSelection: () => {
-  //     return getFormatedSelections();
-  //   },
-  //   getAllItemsSelected: () => {
-  //     return getAllItems(getFormatedSelections());
-  //   },
-  //   getSelectionsObjs: () => {
-  //     return {
-  //       selectedItems,
-  //       activeItem,
-  //     };
-  //   },
-  //   leafNodes,
-  // }));
+  useImperativeHandle(ref, () => ({
+    getSelection: () => {
+      return getFormatedSelections();
+    },
+    getAllItemsSelected: () => {
+      return getAllItems();
+    },
+    getSelectionsObjs: () => {
+      return {
+        selectedItems,
+        activeItem,
+      };
+    },
+    leafNodes,
+  }));
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -267,65 +267,58 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setActiveItem(newActiveItem);
   };
 
-  // const getFormatedSelectionsHelper = (
-  //   groupName?: string,
-  //   id?: ItemId
-  // ): FormatedSelections | {} => {
-  //   // if the object is not present then return empty obj
-  //   if (!groupName || !id || !selectedItems?.[id]) {
-  //     return {};
-  //   }
-  //   const obj: SelectedItemTypeVal = selectedItems?.[id];
-  //   const options =
-  //     obj.childIds?.reduce((acc: SelectedItemType[], childId) => {
-  //       return [...acc, getFormatedSelectionsHelper(obj.childGroup, childId)];
-  //     }, []) || [];
+  const getFormatedSelections = () => {
+    const getFromatedSelectionsHelper = (
+      nodeId: ItemId
+    ): FormatedSelections => {
+      const childOption: FormatedSelections[] =
+        (selectedItems[nodeId]?.childIds || [])?.map((childId) => {
+          return getFromatedSelectionsHelper(childId);
+        }) || [];
 
-  //   return {
-  //     ...obj,
-  //     options,
-  //   };
-  // };
+      const {
+        id,
+        label,
+        value,
+        groupHeading,
+        groupHeading: childGroup,
+        parentId,
+      } = menuGroupMap[nodeId];
+      let parentGroup;
+      if (parentId) {
+        const { groupHeading } = menuGroupMap[parentId];
+        parentGroup = groupHeading;
+      }
+      return {
+        id,
+        label,
+        value,
+        groupHeading,
+        parentGroup,
+        parentId,
+        childGroup,
+        childIds: selectedItems[nodeId]?.childIds ?? undefined,
+        options: childOption,
+      };
+    };
+    return getFromatedSelectionsHelper(menuGroup.id).options;
+  };
 
-  // const getFormatedSelections = () => {
-  //   const mainGroupName = menuGroup.groupHeading;
-
-  //   const formatedselections: (FormatedSelections | {})[] = menuGroup.options
-  //     ? menuGroup.options?.reduce((acc: SelectedItemType[], opt) => {
-  //         return [...acc, getFormatedSelectionsHelper(mainGroupName, opt.id)];
-  //       }, [])
-  //     : [];
-
-  //   return formatedselections;
-  // };
-
-  // const getAllItemsHelper = (obj: FormatedSelections): string[] => {
-  //   if (!obj.options?.length) return [obj.label];
-  //   else {
-  //     const childItems = obj.options.reduce((acc: string[], e) => {
-  //       return [...acc, ...getAllItemsHelper(e)];
-  //     }, []);
-  //     return [obj.label, ...childItems];
-  //   }
-  // };
-
-  // const getAllItems = (
-  //   formatedSelections: (FormatedSelections | {})[]
-  // ): string[][] => {
-  //   if (!formatedSelections?.length) {
-  //     return [];
-  //   }
-  //   return formatedSelections.map((ele: FormatedSelections | {}) => {
-  //     if (!Object.keys(ele).length) {
-  //       return [];
-  //     }
-  //     let result: string[] = [];
-  //     if (ele && Object.keys(ele)?.length !== 0) {
-  //       result = getAllItemsHelper(ele as FormatedSelections);
-  //     }
-  //     return result;
-  //   });
-  // };
+  const getAllItems = (): string[][] => {
+    const getAllItemsHelper = (id: ItemId): string[] => {
+      if (!menuGroupMap[id]) return [];
+      const { childIds } = selectedItems[id];
+      return [
+        menuGroupMap[id].label,
+        ...(childIds || []).flatMap(getAllItemsHelper),
+      ];
+    };
+    const result = selectedItems[menuGroup.id]?.childIds?.map((e) =>
+      getAllItemsHelper(e)
+    );
+    console.log("result", result);
+    return result || [];
+  };
 
   const handleItemSelection = (item: MenuGroup) => {
     // console.log("item", item.id, item.label);

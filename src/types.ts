@@ -35,7 +35,7 @@ export interface parentGroupLookUp {
 }
 
 export interface FormatedSelections {
-  id: number;
+  id: ItemId;
   label: string;
   value: string;
   groupHeading: string;
