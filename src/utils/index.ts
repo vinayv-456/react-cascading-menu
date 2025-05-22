@@ -181,7 +181,7 @@ export const addItemSelection = (
     const parentItem = menuGroupMap[parentId];
     let isMultiSelection = true;
     if (parentId && menuGroupMap[parentId].isMultiSelection !== undefined) {
-      isMultiSelection = menuGroupMap[parentId].isMultiSelection; // multi selection is defined in the parent as true
+      isMultiSelection = menuGroupMap[parentId].isMultiSelection ?? true; // Provide default value
     }
     // cut the previous selections in the group if its not mulitselect
     // already has some values in the current group, so need to clear them
