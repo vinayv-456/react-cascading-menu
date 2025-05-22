@@ -29,7 +29,7 @@ import {
   addItemSelection,
   cascadeSelectionRemoval,
   cascadeSelectionRemovalWithProps,
-  fromatPreSelections,
+  // fromatPreSelections,
   getAllLeafNodes,
   getConnectedItemByDirection,
   getConnectedItems,
@@ -44,8 +44,9 @@ import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 import { preSelection } from "../data/constants";
+// import { preSelection } from "../data/constants";
 export interface CascadingMenuRef {
-  getSelection: () => FormatedSelections[] | null;
+  getSelection: () => FormatedSelections | null;
   getAllItemsSelected: () => string[][];
   getSelectionsObjs: () => {
     selectedItems: SelectedItemTypeV2;
@@ -85,10 +86,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   useEffect(() => {
     if (Object.keys(menuGroupMap).length) {
-      const { newSelectedItems } = initPreSelections(
-        menuGroupMap,
-        preSelectedItems
-      );
+      const { newSelectedItems } = initPreSelections(preSelectedItems);
       setSelectedItems(newSelectedItems);
       setActiveItem(
         getConnectedItems(menuGroupMap, menuGroup.id, newSelectedItems, true)
@@ -278,7 +276,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setActiveItem(newActiveItem);
   };
 
-  const getFormatedSelections = () => {
+  const getFormatedSelections = (): FormatedSelections => {
     const getFromatedSelectionsHelper = (
       nodeId: ItemId
     ): FormatedSelections => {
@@ -312,7 +310,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         options: childOption,
       };
     };
-    return getFromatedSelectionsHelper(menuGroup.id).options;
+    return getFromatedSelectionsHelper(menuGroup.id);
   };
 
   const getAllItems = (): string[][] => {

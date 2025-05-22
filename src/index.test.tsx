@@ -3,10 +3,12 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Index, { CascadingMenuRef } from "./index";
 import { menuGroup } from "../data/constants";
 import { checkSelections } from "./test_utils/checkSelections";
+import { menuGroupTreeToMap } from "./utils";
 
 function runSelectionTest(ids: string[]) {
   const ref = createRef<CascadingMenuRef>();
   render(<Index ref={ref} menuGroup={menuGroup} />);
+  const menuGroupMap = menuGroupTreeToMap(menuGroup);
 
   for (let i = 0; i < ids.length - 1; i++) {
     const option1 = screen.getByTestId(ids[i]);
@@ -19,11 +21,13 @@ function runSelectionTest(ids: string[]) {
       if (details) {
         const { selectedItems, activeItem } = details;
         const isSelectionsValid = checkSelections(
+          menuGroupMap,
           selectedItems,
           menuGroup.id,
           false
         );
         const isActiveItemValid = checkSelections(
+          menuGroupMap,
           activeItem,
           menuGroup.id,
           true

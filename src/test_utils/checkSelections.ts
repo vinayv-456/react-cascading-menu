@@ -1,7 +1,13 @@
-import { ItemId, SelectedItemType } from "../types";
+import {
+  ItemId,
+  MenuGroupMap,
+  SelectedItemType,
+  SelectedItemTypeV2,
+} from "../types";
 
 export const checkSelections = (
-  selectionObj: SelectedItemType,
+  menuObj: MenuGroupMap,
+  selectionObj: SelectedItemTypeV2,
   topParentId: ItemId,
   isActiveItem: boolean
 ): boolean => {
@@ -20,7 +26,7 @@ export const checkSelections = (
     if (topmostId !== topParentId) {
       // checks if all the childs are having correct parentId
       const isCorrectParent = newIds?.some(
-        (e) => selectionObj[e]?.parentId !== topmostId
+        (e) => menuObj[e]?.parentId !== topmostId
       );
       if (isCorrectParent) {
         console.log("===2===");

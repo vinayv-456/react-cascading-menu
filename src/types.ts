@@ -43,7 +43,7 @@ export interface FormatedSelections {
   parentId?: ItemId;
   childGroup?: string;
   childIds?: ItemId[];
-  options: FormatedSelections[] | null;
+  options: FormatedSelections[];
 }
 
 export type emptyObj = {};
@@ -86,7 +86,7 @@ export enum MODES {
  */
 export interface Props {
   menuGroup: MenuGroup;
-  selectedItems?: FormatedSelections[];
+  selectedItems?: FormatedSelections | null;
   width?: string;
   height?: string;
   displayValue?: string; // read label using this property of menugroup

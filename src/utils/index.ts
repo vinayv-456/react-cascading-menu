@@ -381,37 +381,25 @@ export const initParentSelectedItem = (id: ItemId, groupHeading: string) => {
 //   return { calcSelectedItems, calcActiveItems };
 // };
 
-export const initPreSelections = (
-  menuGroupMap: MenuGroupMap,
-  selections: FormatedSelections[] | null
-) => {
+export const initPreSelections = (selections: FormatedSelections | null) => {
   const newSelectedItems: SelectedItemTypeV2 = {};
   const newActiveItems = {};
 
   if (!selections) return { newSelectedItems, newActiveItems };
 
   const initPreSelectionsHelper = (e: FormatedSelections) => {
+    if (!e) return;
     newSelectedItems[e.id] = {
-      ...menuGroupMap[e.id],
-      childIds: e.options?.map((e) => e.id) || null,
+      id: e.id,
+      childIds: e.options?.map((e) => e?.id) || [],
     };
-    e.options?.forEach((e) => {
-      initPreSelectionsHelper(e);
+    e.options.forEach((opt) => {
+      initPreSelectionsHelper(opt);
     });
   };
-  selections.forEach((e) => {
-    if (menuGroupMap[e.id]?.parentId) {
-      const parentId = menuGroupMap[e.id].parentId;
 
-      if (parentId) {
-        newSelectedItems[parentId] = {
-          id: parentId,
-          childIds: [e.id],
-        };
-      }
-    }
-    initPreSelectionsHelper(e);
-  });
+  initPreSelectionsHelper(selections);
+
   return { newSelectedItems };
 };
 
