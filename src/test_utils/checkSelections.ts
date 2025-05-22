@@ -1,13 +1,8 @@
-import {
-  ItemId,
-  MenuGroupMap,
-  SelectedItemType,
-  SelectedItemTypeV2,
-} from "../types";
+import { ItemId, MenuGroupMap, SelectedItemType } from "../types";
 
 export const checkSelections = (
   menuObj: MenuGroupMap,
-  selectionObj: SelectedItemTypeV2,
+  selectionObj: SelectedItemType,
   topParentId: ItemId,
   isActiveItem: boolean
 ): boolean => {

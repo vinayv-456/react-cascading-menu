@@ -1,5 +1,5 @@
 import React from "react";
-import { ItemId, MenuGroupMap, mvpSelectedProps } from "../types";
+import { ItemId, MenuGroupMap } from "../types";
 import "../classes.css";
 import { TagContainer, TagHover, TagItem, TagLabel } from "../styles";
 import Icons, { ICONS } from "../icons";

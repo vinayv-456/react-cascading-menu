@@ -11,30 +11,20 @@ import { ThemeProvider } from "styled-components";
 import {
   MenuGroup,
   Props,
-  SelectedItemType,
   ItemId,
-  SelectedItemTypeVal,
-  parentGroupLookUp,
-  Item,
   FormatedSelections,
-  emptyObj,
-  mvpSelectedProps,
-  CompleteObj,
   MODES,
   MenuGroupMap,
-  SelectedItemTypeV2,
-  SelectedItemTypeValV2,
+  SelectedItemType,
+  SelectedItemTypeVal,
 } from "./types";
 import {
   addItemSelection,
   cascadeSelectionRemoval,
   cascadeSelectionRemovalWithProps,
-  // fromatPreSelections,
   getAllLeafNodes,
   getConnectedItemByDirection,
   getConnectedItems,
-  getParentGroup,
-  initParentSelectedItem,
   initPreSelections,
   menuGroupTreeToMap,
 } from "./utils";
@@ -44,13 +34,12 @@ import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 import { preSelection } from "../data/constants";
-// import { preSelection } from "../data/constants";
 export interface CascadingMenuRef {
   getSelection: () => FormatedSelections | null;
   getAllItemsSelected: () => string[][];
   getSelectionsObjs: () => {
-    selectedItems: SelectedItemTypeV2;
-    activeItem: SelectedItemTypeV2;
+    selectedItems: SelectedItemType;
+    activeItem: SelectedItemType;
   };
   leafNodes: ItemId[][];
 }
@@ -66,9 +55,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     selectionColor = "#007BFF",
   } = props;
   const [menuGroupMap, setMenuGroupMap] = useState<MenuGroupMap>({});
-  const [selectedItems, setSelectedItems] = useState<SelectedItemTypeV2>({});
-  const [activeItem, setActiveItem] = useState<SelectedItemTypeV2>({});
-  const parentGroupLookUp = useRef<parentGroupLookUp>({});
+  const [selectedItems, setSelectedItems] = useState<SelectedItemType>({});
+  const [activeItem, setActiveItem] = useState<SelectedItemType>({});
   const [error, setError] = useState("");
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const menuLevelDetails = useRef<{ shouldScroll: boolean }>({
@@ -79,8 +67,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setMenuGroupMap(menuGroupTreeToMap(menuGroup));
   }, [menuGroup]);
 
-  console.log("menuGroupMap", menuGroupMap);
-
+  // console.log("menuGroupMap", menuGroupMap);
   // console.log("activeItem", activeItem);
   // console.log("selectedItems", selectedItems);
 
@@ -119,7 +106,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     // used for tags
     return getLeafNodes(menuGroup.id);
   }, [selectedItems]);
-  console.log("leafNodes", leafNodes);
+  // console.log("leafNodes", leafNodes);
 
   useImperativeHandle(ref, () => ({
     getSelection: () => {
@@ -187,40 +174,30 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     return [];
   }
 
-  // const getNextAvailableSelection = (
-  //   id: ItemId,
-  //   newSelectedItemsDetails?: {
-  //     parentIdDef: ItemId | undefined;
-  //     newSelectedItems: SelectedItemType;
-  //   }
-  // ): ItemId => {
-  //   // when selectedItems is not updated yet!
-  //   const { newSelectedItems, parentIdDef } = newSelectedItemsDetails || {};
-  //   const selectedItemsUsed = newSelectedItems || selectedItems;
-  //   // the obj of updated selectedItems of id might already have been cleared, so pass parentId
-  //   const parentId = parentIdDef || selectedItemsUsed[id]?.parentId;
+  const getNextAvailableSelection = (
+    id: ItemId,
+    selectedItems: SelectedItemType
+  ) => {
+    // check if there is a child in the same level
+    let parentId = menuGroupMap[id].parentId;
+    if (!parentId) return -1;
+    let childIds = selectedItems[parentId]?.childIds || [];
+    if (childIds.length > 1) {
+      let index = childIds.findIndex((e) => e === id);
+      return childIds[index === childIds.length - 1 ? 0 : index + 1];
+    }
 
-  //   if (parentId) {
-  //     // get the next index
-  //     const children = selectedItemsUsed[parentId].childIds || [];
-  //     const length = children?.length - 1;
-  //     const currentNodeIndex = children?.findIndex((itemId) => itemId === id);
-
-  //     // usefull when the children might already been cleared
-  //     // so the return parent, as just the children are removed
-  //     if (length === -1) {
-  //       return parentId;
-  //     }
-  //     if (length === 0 && currentNodeIndex === 0) {
-  //       return getNextAvailableSelection(parentId);
-  //     }
-
-  //     return currentNodeIndex + 1 <= length
-  //       ? children[currentNodeIndex + 1]
-  //       : children[currentNodeIndex - 1];
-  //   }
-  //   return -1;
-  // };
+    // check previous level children and pick one of them
+    while (parentId && childIds.length <= 1) {
+      parentId = menuGroupMap[parentId]?.parentId;
+      if (!parentId) return -1;
+      childIds = selectedItems[parentId]?.childIds || [];
+    }
+    if (childIds.length > 0) {
+      return childIds[0];
+    }
+    return -1;
+  };
 
   const handleTagRemoval = (selectionPath: ItemId[]) => {
     try {
@@ -265,7 +242,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
 
   const handleSelectionPopulation = (selectionPath: ItemId[]) => {
     const newActiveItem = selectionPath.reduce(
-      (acc: SelectedItemTypeV2, id: ItemId, index): SelectedItemTypeV2 => {
+      (acc: SelectedItemType, id: ItemId, index): SelectedItemType => {
         return {
           ...acc,
           [id]: { id: id, childIds: [selectionPath[index + 1]] },
@@ -328,7 +305,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     const result = selectedItems[menuGroup.id]?.childIds?.map((e) =>
       getAllItemsHelper(e)
     );
-    console.log("result", result);
+    // console.log("result", result);
     return result || [];
   };
 
@@ -396,37 +373,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }
   };
 
-  const getNextAvailableSelection = (
-    id: ItemId,
-    selectedItems: SelectedItemTypeV2
-  ) => {
-    // check if there is a child in the same level
-    let parentId = menuGroupMap[id].parentId;
-    if (!parentId) return -1;
-    let childIds = selectedItems[parentId]?.childIds || [];
-    if (childIds.length > 1) {
-      let index = childIds.findIndex((e) => e === id);
-      return childIds[index === childIds.length - 1 ? 0 : index + 1];
-    }
-
-    // check previous level children and pick one of them
-    while (parentId && childIds.length <= 1) {
-      parentId = menuGroupMap[parentId]?.parentId;
-      if (!parentId) return -1;
-      childIds = selectedItems[parentId]?.childIds || [];
-    }
-    if (childIds.length > 0) {
-      return childIds[0];
-    }
-    return -1;
-  };
-
   const handleMultiChildren = (
     items: MenuGroup[] | [],
     parentId: ItemId,
     isSelection: boolean
   ) => {
-    const formatedItems: SelectedItemTypeV2 = items.reduce((acc, e) => {
+    const formatedItems: SelectedItemType = items.reduce((acc, e) => {
       return {
         ...acc,
         [e.id]: {
@@ -493,7 +445,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     setSelectedItems(newSelectedItems);
   };
 
-  const handleBulkAddition = (items: SelectedItemTypeV2, leafId: ItemId) => {
+  const handleBulkAddition = (items: SelectedItemType, leafId: ItemId) => {
     // make the item as active
     setActiveItem(items);
 
@@ -508,7 +460,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     // if the item is not present in the selections
     for (const [key, value] of Object.entries(items) as [
       ItemId,
-      SelectedItemTypeValV2
+      SelectedItemTypeVal
     ][]) {
       const newChildId = value?.childIds?.[0];
 
@@ -543,7 +495,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       }
     }
 
-    console.log("newSelectedItems", newSelectedItems);
+    // console.log("newSelectedItems", newSelectedItems);
 
     setSelectedItems(newSelectedItems);
   };

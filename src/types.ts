@@ -30,10 +30,6 @@ export interface MenuGroupMap {
   [id: ItemId]: MenuGroupMapVal;
 }
 
-export interface parentGroupLookUp {
-  [childGrp: string]: string;
-}
-
 export interface FormatedSelections {
   id: ItemId;
   label: string;
@@ -47,34 +43,16 @@ export interface FormatedSelections {
 }
 
 export type emptyObj = {};
-export interface SelectedItemTypeVal {
-  id: ItemId;
-  label: string;
-  value: string;
-  groupHeading: string;
-  // connecting front and back to traversing from one to another
-  parentGroup?: string;
-  parentId?: ItemId;
-  childGroup?: string;
-  childIds?: ItemId[] | null;
-  isMultiSelection?: boolean; // used during bulk addition
-}
 
-export interface SelectedItemTypeValV2 {
+export interface SelectedItemTypeVal {
   id: ItemId;
   childIds: ItemId[] | null;
 }
-export interface SelectedItemTypeV2 {
-  [id: ItemId]: SelectedItemTypeValV2;
+export interface SelectedItemType {
+  [id: ItemId]: SelectedItemTypeVal;
 }
 
 export type ItemId = number | string;
-
-export interface SelectedItemType {
-  // [grpHeading: string]: {
-  [id: ItemId]: SelectedItemTypeVal;
-  // };
-}
 
 export enum MODES {
   LIGHT = "light",
@@ -96,8 +74,8 @@ export interface Props {
 
 export interface DPItemProps {
   menuGroup: MenuGroup;
-  activeItem: SelectedItemTypeV2;
-  selectedItems: SelectedItemTypeV2;
+  activeItem: SelectedItemType;
+  selectedItems: SelectedItemType;
   displayValue: string;
   showNext: boolean;
   handleItemSelection: (
@@ -112,12 +90,6 @@ export interface DPItemProps {
     allItemsChecked: boolean
   ) => void;
   level: number;
-}
-
-export interface mvpSelectedProps {
-  label: string;
-  id: ItemId;
-  value: string;
 }
 
 export interface IconType {

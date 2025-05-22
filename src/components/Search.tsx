@@ -5,20 +5,14 @@ import {
   MenuGroup,
   MenuGroupMap,
   SelectedItemType,
-  SelectedItemTypeV2,
-  SelectedItemTypeVal,
 } from "../types";
 import Dropdown from "./Dropdown";
-import { initParentSelectedItem } from "../utils";
 
 interface Props {
   allItems: CompleteObj[];
   parentId: ItemId;
   menuGroupMap: MenuGroupMap;
-  handleBulkAddition: (
-    selectedItems: SelectedItemTypeV2,
-    leadId: ItemId
-  ) => void;
+  handleBulkAddition: (selectedItems: SelectedItemType, leadId: ItemId) => void;
 }
 
 interface SearchResObj {
@@ -35,7 +29,7 @@ function Search(props: Props) {
   const formatSelection = (searchItemSelection: SearchResObj) => {
     const { indexesPath } = searchItemSelection;
     let nextParentId = parentId;
-    let formatedSelection: SelectedItemTypeV2 = indexesPath.reduce(
+    let formatedSelection: SelectedItemType = indexesPath.reduce(
       (acc, index) => {
         const parentId = nextParentId;
         nextParentId = menuGroupMap?.[parentId]?.childIds?.[index] || "";

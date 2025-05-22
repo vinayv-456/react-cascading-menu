@@ -2,14 +2,10 @@ import { useEffect } from "react";
 import {
   CompleteObj,
   FormatedSelections,
-  Item,
   ItemId,
   MenuGroup,
   MenuGroupMap,
   SelectedItemType,
-  SelectedItemTypeV2,
-  SelectedItemTypeVal,
-  SelectedItemTypeValV2,
 } from "../types";
 
 /**
@@ -48,20 +44,20 @@ export const getConnectedItemByDirection = (
   obj: MenuGroupMap,
   isForward = true,
   nodeId: ItemId,
-  selectedItems: SelectedItemTypeV2,
+  selectedItems: SelectedItemType,
   isSingleSelection: boolean = false // valid only for forward propogation
-): SelectedItemTypeV2 => {
-  const connectedResult: SelectedItemTypeV2 = isSingleSelection
+): SelectedItemType => {
+  const connectedResult: SelectedItemType = isSingleSelection
     ? {}
     : { ...selectedItems };
-  console.log(isForward ? "forward" : "backward");
+  // console.log(isForward ? "forward" : "backward");
 
   const getConnectedItemByDirectionHelper = (
     obj: MenuGroupMap,
     isForward = true,
     nodeId: ItemId,
-    selectedItems: SelectedItemTypeV2,
-    connectedResult: SelectedItemTypeV2
+    selectedItems: SelectedItemType,
+    connectedResult: SelectedItemType
   ) => {
     try {
       if (!nodeId) return connectedResult;
@@ -74,7 +70,7 @@ export const getConnectedItemByDirection = (
           const firstChild = selectedItems[nodeId].childIds?.[0];
           childIds = firstChild ? [firstChild] : [];
         }
-        console.log("picking", childIds, "for", nodeId);
+        // console.log("picking", childIds, "for", nodeId);
         connectedResult[nodeId] = {
           ...selectedItems[nodeId],
           childIds,
@@ -97,7 +93,7 @@ export const getConnectedItemByDirection = (
       const parentId = obj[nodeId].parentId;
       // add the nodeId to the connectedResult if not present.
       if (!connectedResult[nodeId]) {
-        console.log("adding", nodeId, "to connectedResult");
+        // console.log("adding", nodeId, "to connectedResult");
         connectedResult[nodeId] = {
           id: nodeId,
           childIds: [...(selectedItems[nodeId]?.childIds || [])],
@@ -145,9 +141,9 @@ export const getConnectedItemByDirection = (
 export const getConnectedItems = (
   obj: MenuGroupMap,
   nodeId: ItemId,
-  selectedItems: SelectedItemTypeV2,
+  selectedItems: SelectedItemType,
   isSingleSelection: boolean = false
-): SelectedItemTypeV2 => {
+): SelectedItemType => {
   const selectedItemsUsed = selectedItems;
   const prevPath = getConnectedItemByDirection(
     obj,
@@ -172,9 +168,9 @@ export const getConnectedItems = (
 
 export const addItemSelection = (
   menuGroupMap: MenuGroupMap,
-  selectedItems: SelectedItemTypeV2,
+  selectedItems: SelectedItemType,
   itemId: ItemId
-): SelectedItemTypeV2 => {
+): SelectedItemType => {
   let newSelectedItems = { ...selectedItems };
   try {
     const parentId = menuGroupMap[itemId].parentId || "";
@@ -223,7 +219,7 @@ export const addItemSelection = (
  */
 export const cascadeSelectionRemovalWithProps = (
   menuGroupMap: MenuGroupMap,
-  selectedItems: SelectedItemTypeV2,
+  selectedItems: SelectedItemType,
   itemId: ItemId,
   additionalProps?: {
     isParentUpdateRequired?: boolean;
@@ -231,7 +227,7 @@ export const cascadeSelectionRemovalWithProps = (
     isMultiSelection?: boolean;
   }
 ): {
-  newSelectedItems: SelectedItemTypeV2;
+  newSelectedItems: SelectedItemType;
   newChildId?: ItemId;
 } => {
   const {
@@ -309,80 +305,8 @@ export const cascadeSelectionRemovalWithProps = (
   }
 };
 
-export const getParentGroup = (
-  item: SelectedItemType,
-  parentId: ItemId
-): string => {
-  if (item) {
-    return (
-      Object.values(item).find((e) => e.parentId === parentId)?.parentGroup ||
-      ""
-    );
-  }
-  return "";
-};
-
-export const initParentSelectedItem = (id: ItemId, groupHeading: string) => {
-  return {
-    id,
-    label: "",
-    value: "",
-    groupHeading: "",
-    childGroup: groupHeading,
-    childIds: [],
-  };
-};
-
-/**
- * convert FormatedSelections to SelectedItemType
- * also, add the top most parent of menugroup to connect all
- */
-// export const fromatPreSelections = (
-//   menuGroup: MenuGroup,
-//   selections: FormatedSelections[] | null
-// ) => {
-//   const calSelectedItems: SelectedItemType =
-//     formatPreSelectionHelper(selections);
-//   const calActiveItems = formatPreSelectionHelper(selections, false);
-
-//   if (!selections) return { calcSelectedItems: {}, calcActiveItems: {} };
-
-//   // add top most child to connect all the children to single node
-//   const childIds: ItemId[] = selections.reduce(
-//     (acc: ItemId[], ele: FormatedSelections): ItemId[] => {
-//       if (!ele.id) return acc;
-//       return [...acc, ele.id];
-//     },
-//     []
-//   );
-//   // console.log("childIds", childIds);
-
-//   const topParentObj = initParentSelectedItem(
-//     menuGroup.id,
-//     menuGroup.groupHeading
-//   );
-
-//   const calcSelectedItems = {
-//     [menuGroup.id]: {
-//       ...topParentObj,
-//       childIds,
-//     },
-//     ...calSelectedItems,
-//   };
-
-//   const calcActiveItems = {
-//     [menuGroup.id]: {
-//       ...topParentObj,
-//       childIds: childIds.length ? [childIds[0]] : [],
-//     },
-//     ...calActiveItems,
-//   };
-
-//   return { calcSelectedItems, calcActiveItems };
-// };
-
 export const initPreSelections = (selections: FormatedSelections | null) => {
-  const newSelectedItems: SelectedItemTypeV2 = {};
+  const newSelectedItems: SelectedItemType = {};
   const newActiveItems = {};
 
   if (!selections) return { newSelectedItems, newActiveItems };
@@ -409,18 +333,18 @@ export const initPreSelections = (selections: FormatedSelections | null) => {
  */
 export const cascadeSelectionRemoval = (
   obj: MenuGroupMap,
-  selectedItems: SelectedItemTypeV2,
+  selectedItems: SelectedItemType,
   nodeId: ItemId
-): SelectedItemTypeV2 => {
+): SelectedItemType => {
   try {
     if (!nodeId) return {};
     const result = { ...selectedItems };
 
     const cascadeSelectionRemovalHelper = (
       obj: MenuGroupMap,
-      selectedItems: SelectedItemTypeV2,
+      selectedItems: SelectedItemType,
       nodeId: ItemId,
-      result: SelectedItemTypeV2
+      result: SelectedItemType
     ) => {
       const childIds = selectedItems[nodeId]?.childIds;
       delete result[nodeId];

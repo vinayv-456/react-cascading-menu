@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
-import { getParentGroup } from "../utils";
 import {
   DropdownGroup,
   DropdownNoresults,
