@@ -233,19 +233,17 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         const index = reversedSelectionPath.indexOf(id);
         const parentId = selectionPath[index + 1];
         // stop if the parent has more than 1 child
-        const parentItem = parentId ? newSelectedItems[parentId] : undefined;
         if (
-          parentId &&
-          parentItem?.childIds &&
-          parentItem.childIds.length > 1
+          newSelectedItems?.[parentId]?.childIds &&
+          (newSelectedItems[parentId]?.childIds?.length ?? 0) > 1
         ) {
-          const filteredChildIds = parentItem.childIds.filter(
-            (childId) => childId !== id
-          );
-          parentItem.childIds = filteredChildIds;
-
-          if (filteredChildIds.length > 0) {
-            const newLeafNodeId = filteredChildIds[0];
+          newSelectedItems[parentId].childIds =
+            newSelectedItems?.[parentId]?.childIds?.filter(
+              (childId) => childId !== id
+            ) || null;
+          const childIds = newSelectedItems[parentId]?.childIds;
+          if (childIds && childIds.length > 0) {
+            const newLeafNodeId = childIds[0];
             newActiveItem = getConnectedItems(
               menuGroupMap,
               newLeafNodeId,
