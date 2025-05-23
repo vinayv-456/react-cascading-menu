@@ -17,6 +17,7 @@ import {
   MenuGroupMap,
   SelectedItemType,
   SelectedItemTypeVal,
+  LAYOUT,
 } from "./types";
 import {
   addItemSelection,
@@ -53,7 +54,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     displayValue = "label",
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
-    layout = "horizontal",
+    layout = LAYOUT.HORIZONTAL,
   } = props;
   const [menuGroupMap, setMenuGroupMap] = useState<MenuGroupMap>({});
   const [selectedItems, setSelectedItems] = useState<SelectedItemType>({});

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Index from "../../src/index.tsx"; // dynamic changes
 // import { menuGroup, preSelection } from "./constants.js";
 import { menuGroup, preSelection } from "../../data/constants.js";
@@ -6,7 +6,7 @@ import "./styles.css";
 
 const App = () => {
   const ref = useRef();
-
+  const [layout, setLayout] = useState("horizontal");
   const fetchSelectionItemsLabels = () => {
     console.log(
       "get selections as label array",
@@ -22,7 +22,9 @@ const App = () => {
       ref.current?.getAllItemsSelectedBySplit()
     );
   };
-  const layout = "vertical";
+  const changeLayout = () => {
+    setLayout((prev) => (prev === "horizontal" ? "vertical" : "horizontal"));
+  };
   return (
     <div>
       <Index
@@ -49,6 +51,11 @@ const App = () => {
       {/* <button onClick={fetchSelectionItemsAtSplit}>
         get selections as label array at split
       </button> */}
+      <div className="md-top">
+        <button className="btn " onClick={changeLayout}>
+          Change layout
+        </button>
+      </div>
     </div>
   );
 };
