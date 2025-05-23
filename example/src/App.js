@@ -31,8 +31,9 @@ const App = () => {
         isMultiSelection={true}
         displayValue="value"
         width="60%"
-        height="400px"
+        height="1000px"
         theme="light"
+        layout="vertical"
       />
       <br />
       <br />

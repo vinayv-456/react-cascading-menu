@@ -9,7 +9,9 @@ import {
 } from "../styles";
 import Icons, { ICONS } from "../icons";
 
-const MenuGroupComp: React.FC<DPItemProps> = (props) => {
+const MenuGroupComp: React.FC<
+  DPItemProps & { layout?: "horizontal" | "vertical" }
+> = (props) => {
   const {
     menuGroup,
     activeItem,
@@ -19,6 +21,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
     handleItemSelection,
     handleMultipleChildrenSel,
     level,
+    layout = "horizontal",
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
   const { options: opt, ...parentItemObj } = menuGroup;
@@ -56,7 +59,12 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
    */
   return (
     <>
-      <DropdownGroup width={width} left={level * width}>
+      <DropdownGroup
+        width={width}
+        left={level * width}
+        layout={layout}
+        level={layout === "vertical" ? level : undefined}
+      >
         <FlexContainer className="jc ai">
           <div className="grp-heading">{menuGroup.groupHeading}</div>
           {isMultiSelection && options && (
@@ -74,6 +82,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
             const isActive = activeItem?.[ele.id]?.id === ele.id;
             const fadeActive =
               !isActive && selectedItems?.[ele.id]?.id === ele.id;
+            const hasOptions = ele.options;
 
             return (
               <React.Fragment key={ele.id}>
@@ -83,6 +92,8 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                   fadeactive={fadeActive.toString()}
                   active={isActive.toString()}
                   className="opt-label"
+                  level={layout === "vertical" ? level : undefined}
+                  layout={layout}
                   onClick={() =>
                     // TODO: use only the part of the parentItemObj
                     handleItemSelection(
@@ -99,31 +110,46 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                   />
                   <div style={{ width: "100%" }}>{label}</div>
                 </DropdownOption>
+                {layout === "vertical" && hasOptions && (
+                  <MenuGroupComp
+                    menuGroup={ele}
+                    activeItem={activeItem}
+                    selectedItems={selectedItems}
+                    displayValue={displayValue}
+                    showNext={false}
+                    handleItemSelection={handleItemSelection}
+                    handleMultipleChildrenSel={handleMultipleChildrenSel}
+                    level={level + 1}
+                    layout={layout}
+                  />
+                )}
               </React.Fragment>
             );
           })}
         </div>
       </DropdownGroup>
-      {options?.map((ele: Item) => {
-        const isSubMenuActive = activeItem?.[ele.id];
-        const hasOptions = ele.options;
-        return (
-          <React.Fragment key={ele.id}>
-            {isSubMenuActive && hasOptions && (
-              <MenuGroupComp
-                menuGroup={ele}
-                activeItem={activeItem}
-                selectedItems={selectedItems}
-                displayValue={displayValue}
-                showNext={false}
-                handleItemSelection={handleItemSelection}
-                handleMultipleChildrenSel={handleMultipleChildrenSel}
-                level={level + 1}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
+      {layout === "horizontal" &&
+        options?.map((ele: Item) => {
+          const isSubMenuActive = activeItem?.[ele.id];
+          const hasOptions = ele.options;
+          return (
+            <React.Fragment key={ele.id}>
+              {isSubMenuActive && hasOptions && (
+                <MenuGroupComp
+                  menuGroup={ele}
+                  activeItem={activeItem}
+                  selectedItems={selectedItems}
+                  displayValue={displayValue}
+                  showNext={false}
+                  handleItemSelection={handleItemSelection}
+                  handleMultipleChildrenSel={handleMultipleChildrenSel}
+                  level={level + 1}
+                  layout={layout}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
     </>
   );
 };
