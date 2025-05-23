@@ -53,10 +53,14 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     displayValue = "label",
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
+    layout = "horizontal",
   } = props;
   const [menuGroupMap, setMenuGroupMap] = useState<MenuGroupMap>({});
   const [selectedItems, setSelectedItems] = useState<SelectedItemType>({});
   const [activeItem, setActiveItem] = useState<SelectedItemType>({});
+
+  const visibleState = layout === "vertical" ? selectedItems : activeItem;
+
   const [error, setError] = useState("");
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const menuLevelDetails = useRef<{ shouldScroll: boolean }>({
@@ -312,7 +316,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const handleItemSelection = (item: MenuGroup) => {
     // console.log("item", item.id, item.label);
     // clicking on the active item
-    if (activeItem?.[item.id]) {
+    if (visibleState?.[item.id]) {
       // console.log("1");
       // deselection of selectedItems
       const { newSelectedItems, newChildId } = cascadeSelectionRemovalWithProps(
@@ -335,10 +339,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
         );
       }
     } else {
-      // add item
-      const isPreviouslySelected = Object.values(selectedItems || {})?.some(
-        (ele) => ele.id === item.id
-      );
+      const isPreviouslySelected = selectedItems[item.id];
+      // vertical layout will not pass this condition as it will get satisfied by the deselection condition
       if (isPreviouslySelected) {
         // console.log("2");
         // activating already selected path
@@ -358,6 +360,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           selectedItems,
           item.id
         );
+
         setSelectedItems(newSelectedItems);
         // as this item is newly added, so it will be leaf
         setActiveItem(
@@ -389,6 +392,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     }, {});
 
     const prevChildIds = { ...selectedItems }[parentId]?.childIds || [];
+    // new childIds, while maintaing the order of selection
     const childIds = [
       ...prevChildIds,
       ...items.filter((e) => !(selectedItems[e.id] && true)).map((e) => e.id),
@@ -425,6 +429,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
       },
     };
 
+    // if the active item is in the childIds then use the active item or else use the first childId
     const activeNodeId = childIds.find((e) => activeItem[e]) || childIds[0];
     let newActiveItem = {};
     if (isSelection) {
@@ -509,6 +514,12 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const themeDefined = { ...theme[themeMode], selected: selectionColor };
   // console.log("selected", selectedItems, activeItem);
 
+  // console.log("testing-2");
+  // console.log("menuGroup", menuGroup);
+  // console.log("activeItem", activeItem);
+  // console.log("selectedItems", selectedItems);
+  // console.log("allItems", allItems);
+
   return (
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
@@ -519,7 +530,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           menuGroupMap={menuGroupMap}
           handleBulkAddition={handleBulkAddition}
         />
-        <MenuGroupContainer ref={mainContainerRef}>
+        <MenuGroupContainer layout={layout}>
           <MenuGroupComp
             menuGroup={menuGroup}
             displayValue={displayValue}
@@ -529,6 +540,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleItemSelection={handleItemSelection}
             level={0}
             handleMultipleChildrenSel={handleMultiChildren}
+            layout={layout}
           />
         </MenuGroupContainer>
         {/* render the tag list */}

@@ -22,6 +22,7 @@ const App = () => {
       ref.current?.getAllItemsSelectedBySplit()
     );
   };
+  const layout = "vertical";
   return (
     <div>
       <Index
@@ -30,9 +31,10 @@ const App = () => {
         // selectedItems={preSelection}
         isMultiSelection={true}
         displayValue="value"
-        width="60%"
-        height="400px"
+        width={layout === "vertical" ? "40%" : "100%"}
+        height={layout === "vertical" ? "1000px" : "400px"}
         theme="light"
+        layout={layout}
       />
       <br />
       <br />

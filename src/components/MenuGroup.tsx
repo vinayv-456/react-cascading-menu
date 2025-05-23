@@ -9,7 +9,9 @@ import {
 } from "../styles";
 import Icons, { ICONS } from "../icons";
 
-const MenuGroupComp: React.FC<DPItemProps> = (props) => {
+const MenuGroupComp: React.FC<
+  DPItemProps & { layout?: "horizontal" | "vertical" }
+> = (props) => {
   const {
     menuGroup,
     activeItem,
@@ -19,6 +21,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
     handleItemSelection,
     handleMultipleChildrenSel,
     level,
+    layout = "horizontal",
   } = props;
   const { options, groupHeading, id: groupId } = menuGroup;
   const { options: opt, ...parentItemObj } = menuGroup;
@@ -56,17 +59,24 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
    */
   return (
     <>
-      <DropdownGroup width={width} left={level * width}>
+      <DropdownGroup
+        width={width}
+        left={level * width}
+        layout={layout}
+        level={layout === "vertical" ? level : undefined}
+      >
         <FlexContainer className="jc ai">
-          <div className="grp-heading">{menuGroup.groupHeading}</div>
-          {isMultiSelection && options && (
+          {layout !== "vertical" && (
+            <div className="grp-heading">{menuGroup.groupHeading}</div>
+          )}
+          {/* {isMultiSelection && options && (
             <div onClick={handleSelectAll}>
               <SelectionIcon
                 isMultiSelection={options ? options.length > 0 : false}
                 isChecked={allItemsChecked}
               />
             </div>
-          )}
+          )} */}
         </FlexContainer>
         <div className="grp-opts">
           {options?.map((ele: Item) => {
@@ -74,6 +84,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
             const isActive = activeItem?.[ele.id]?.id === ele.id;
             const fadeActive =
               !isActive && selectedItems?.[ele.id]?.id === ele.id;
+            const hasOptions = ele.options;
 
             return (
               <React.Fragment key={ele.id}>
@@ -83,6 +94,8 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                   fadeactive={fadeActive.toString()}
                   active={isActive.toString()}
                   className="opt-label"
+                  level={layout === "vertical" ? level : undefined}
+                  layout={layout}
                   onClick={() =>
                     // TODO: use only the part of the parentItemObj
                     handleItemSelection(
@@ -96,34 +109,50 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
                   <SelectionIcon
                     isMultiSelection={isMultiSelection}
                     isChecked={isActive || fadeActive}
+                    layout={layout}
                   />
                   <div style={{ width: "100%" }}>{label}</div>
                 </DropdownOption>
+                {layout === "vertical" && hasOptions && (
+                  <MenuGroupComp
+                    menuGroup={ele}
+                    activeItem={activeItem}
+                    selectedItems={selectedItems}
+                    displayValue={displayValue}
+                    showNext={false}
+                    handleItemSelection={handleItemSelection}
+                    handleMultipleChildrenSel={handleMultipleChildrenSel}
+                    level={level + 1}
+                    layout={layout}
+                  />
+                )}
               </React.Fragment>
             );
           })}
         </div>
       </DropdownGroup>
-      {options?.map((ele: Item) => {
-        const isSubMenuActive = activeItem?.[ele.id];
-        const hasOptions = ele.options;
-        return (
-          <React.Fragment key={ele.id}>
-            {isSubMenuActive && hasOptions && (
-              <MenuGroupComp
-                menuGroup={ele}
-                activeItem={activeItem}
-                selectedItems={selectedItems}
-                displayValue={displayValue}
-                showNext={false}
-                handleItemSelection={handleItemSelection}
-                handleMultipleChildrenSel={handleMultipleChildrenSel}
-                level={level + 1}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
+      {layout === "horizontal" &&
+        options?.map((ele: Item) => {
+          const isSubMenuActive = activeItem?.[ele.id];
+          const hasOptions = ele.options;
+          return (
+            <React.Fragment key={ele.id}>
+              {isSubMenuActive && hasOptions && (
+                <MenuGroupComp
+                  menuGroup={ele}
+                  activeItem={activeItem}
+                  selectedItems={selectedItems}
+                  displayValue={displayValue}
+                  showNext={false}
+                  handleItemSelection={handleItemSelection}
+                  handleMultipleChildrenSel={handleMultipleChildrenSel}
+                  level={level + 1}
+                  layout={layout}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
     </>
   );
 };
@@ -133,46 +162,30 @@ export default MenuGroupComp;
 interface SelectionIconProps {
   isMultiSelection: boolean;
   isChecked: boolean;
+  layout: "horizontal" | "vertical";
 }
-const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
+
+const SelectionIcon = ({
+  isMultiSelection,
+  isChecked,
+  layout,
+}: SelectionIconProps) => {
   return (
     <>
-      {isMultiSelection ? (
-        <>
-          {isChecked ? (
-            <Icons
-              icon={ICONS.CHECKBOX_CHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          ) : (
-            <Icons
-              icon={ICONS.CHECKBOX_UNCHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          )}
-        </>
+      {isChecked ? (
+        <Icons
+          icon={isMultiSelection ? ICONS.CHECKBOX_CHECKED : ICONS.RADIO_CHECKED}
+          layout={layout}
+          applytheme={false.toString()}
+        />
       ) : (
-        <>
-          {isChecked ? (
-            <Icons
-              icon={ICONS.RADIO_CHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          ) : (
-            <Icons
-              icon={ICONS.RADIO_UNCHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          )}
-        </>
+        <Icons
+          icon={
+            isMultiSelection ? ICONS.CHECKBOX_UNCHECKED : ICONS.RADIO_UNCHECKED
+          }
+          layout={layout}
+          applytheme={false.toString()}
+        />
       )}
     </>
   );

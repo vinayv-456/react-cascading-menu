@@ -31,7 +31,9 @@ export const MainContainer = styled.div<StyledCompProps>`
   background-color: ${({ theme }) => theme.background2};
 `;
 
-export const MenuGroupContainer = styled.div`
+export const MenuGroupContainer = styled.div<{
+  layout?: "horizontal" | "vertical";
+}>`
   flex: 1;
   position: relative;
   margin: 0;
@@ -50,28 +52,45 @@ export const MenuGroupContainer = styled.div`
   text-decoration: inherit;
   text-transform: inherit;
   scroll-behavior: smooth;
+  display: flex;
+  flex-direction: ${(props) =>
+    props.layout === "vertical" ? "column" : "row"};
 `;
 
-export const DropdownGroup = styled.div<StyledCompProps>`
-  position: absolute;
-  left: ${(props) => `${props.left}rem`};
-  background-color: ${(props) => props.theme.background};
-  width: ${(props) => `${props.width}rem`};
-  word-wrap: none;
-  /* width: max-content; */
-  height: 10rem;
-  max-height: 20rem;
-  overflow-y: auto;
-  max-width: 20rem;
-  overflow-x: auto;
-  border-right: 3px dotted #f6f6f6;
-  height: 100%;
-
-  & + & {
-    /* left: 13rem; */
+export const DropdownGroup = styled.div<
+  StyledCompProps & { layout?: "horizontal" | "vertical"; level?: number }
+>`
+  ${(props) =>
+    props.layout === "vertical"
+      ? `
+    position: relative;
+    left: 0;
+    width: 100%;
+    border-right: none;
+    border-bottom: 3px dotted #f6f6f6;
+    height: auto;
+    max-height: none;
+    margin-left: ${props.level ? props.level * 1.5 : 0}rem;
+  `
+      : `
     position: absolute;
-    top: 0;
-  }
+    left: ${props.left}rem;
+    width: ${props.width}rem;
+    word-wrap: none;
+    height: 10rem;
+    max-height: 20rem;
+    overflow-y: auto;
+    max-width: 20rem;
+    overflow-x: auto;
+    border-right: 3px dotted #f6f6f6;
+    height: 100%;
+
+    & + & {
+      position: absolute;
+      top: 0;
+    }
+  `}
+
   & .grp-heading {
     position: sticky;
     top: 0px;
@@ -98,7 +117,9 @@ export const DropdownGroup = styled.div<StyledCompProps>`
   }
 `;
 
-export const DropdownOption = styled.div<StyledCompProps>`
+export const DropdownOption = styled.div<
+  StyledCompProps & { level?: number; layout?: "horizontal" | "vertical" }
+>`
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -107,15 +128,15 @@ export const DropdownOption = styled.div<StyledCompProps>`
   cursor: pointer;
   align-items: center;
   display: flex;
-  min-height: 2.5rem;
+  min-height: ${(props) => (props.layout === "vertical" ? "1.8rem" : "2.5rem")};
   padding: 0rem 1.5rem;
 
   /* fadeActive stylings */
   ${(props) =>
     props.fadeactive === "true" &&
     css`
-      background-color: ${(props) => props.theme.selected};
-      opacity: 0.7;
+      background-color: ${props.theme.selected};
+      opacity: ${props.layout === "vertical" ? 1 : 0.7};
       & > div {
         color: #ccc;
       }
@@ -194,6 +215,7 @@ export const TagLabel = styled.span`
 
 export const IconCon = styled.span<StyledCompProps>`
   padding-right: 5px;
+  line-height: 1;
   svg g {
     fill: ${({ theme, applytheme }) =>
       applytheme === "true" ? theme.text : ""};

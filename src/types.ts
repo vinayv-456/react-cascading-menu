@@ -70,6 +70,7 @@ export interface Props {
   displayValue?: string; // read label using this property of menugroup
   theme?: MODES.LIGHT | MODES.DARK;
   selectionColor?: string;
+  layout?: "horizontal" | "vertical";
 }
 
 export interface DPItemProps {
