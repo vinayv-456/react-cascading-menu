@@ -361,7 +361,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           item.id
         );
 
-        console.log("newSelectedItems--v2", newSelectedItems);
         setSelectedItems(newSelectedItems);
         // as this item is newly added, so it will be leaf
         setActiveItem(
@@ -516,10 +515,10 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   // console.log("selected", selectedItems, activeItem);
 
   // console.log("testing-2");
-  console.log("menuGroup", menuGroup);
-  console.log("activeItem", activeItem);
-  console.log("selectedItems", selectedItems);
-  console.log("allItems", allItems);
+  // console.log("menuGroup", menuGroup);
+  // console.log("activeItem", activeItem);
+  // console.log("selectedItems", selectedItems);
+  // console.log("allItems", allItems);
 
   return (
     <ThemeProvider theme={themeDefined}>

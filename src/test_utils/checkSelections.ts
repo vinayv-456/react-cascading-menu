@@ -13,7 +13,7 @@ export const checkSelections = (
     // console.log("ids", ids, topmostId);
     // the id is not present, which means there is an error
     if (!topmostId || !selectionObj[topmostId]) {
-      console.log("1");
+      // console.log("1");
       return false;
     }
 
@@ -24,7 +24,7 @@ export const checkSelections = (
         (e) => menuObj[e]?.parentId !== topmostId
       );
       if (isCorrectParent) {
-        console.log("===2===");
+        // console.log("===2===");
         return false;
       }
     }
