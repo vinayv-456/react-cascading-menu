@@ -128,7 +128,7 @@ export const DropdownOption = styled.div<
   cursor: pointer;
   align-items: center;
   display: flex;
-  min-height: 2.5rem;
+  min-height: ${(props) => (props.layout === "vertical" ? "1.8rem" : "2.5rem")};
   padding: 0rem 1.5rem;
 
   /* fadeActive stylings */
@@ -215,6 +215,7 @@ export const TagLabel = styled.span`
 
 export const IconCon = styled.span<StyledCompProps>`
   padding-right: 5px;
+  line-height: 1;
   svg g {
     fill: ${({ theme, applytheme }) =>
       applytheme === "true" ? theme.text : ""};

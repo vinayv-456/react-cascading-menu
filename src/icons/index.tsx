@@ -20,10 +20,16 @@ interface Props {
   width?: number;
   height?: number;
   applytheme?: string;
+  layout?: "horizontal" | "vertical";
 }
 
 const Icons = (props: Props) => {
-  const { icon, width = 12, height = 12, applytheme = "true" } = props;
+  const {
+    icon,
+    width = props.layout === "vertical" ? 20 : 30,
+    height = props.layout === "vertical" ? 20 : 30,
+    applytheme = "true",
+  } = props;
   const getIconJSX = (): JSX.Element | null => {
     switch (icon) {
       case ICONS.CANCEL:

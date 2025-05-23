@@ -66,15 +66,17 @@ const MenuGroupComp: React.FC<
         level={layout === "vertical" ? level : undefined}
       >
         <FlexContainer className="jc ai">
-          <div className="grp-heading">{menuGroup.groupHeading}</div>
-          {isMultiSelection && options && (
+          {layout !== "vertical" && (
+            <div className="grp-heading">{menuGroup.groupHeading}</div>
+          )}
+          {/* {isMultiSelection && options && (
             <div onClick={handleSelectAll}>
               <SelectionIcon
                 isMultiSelection={options ? options.length > 0 : false}
                 isChecked={allItemsChecked}
               />
             </div>
-          )}
+          )} */}
         </FlexContainer>
         <div className="grp-opts">
           {options?.map((ele: Item) => {
@@ -107,6 +109,7 @@ const MenuGroupComp: React.FC<
                   <SelectionIcon
                     isMultiSelection={isMultiSelection}
                     isChecked={isActive || fadeActive}
+                    layout={layout}
                   />
                   <div style={{ width: "100%" }}>{label}</div>
                 </DropdownOption>
@@ -159,46 +162,30 @@ export default MenuGroupComp;
 interface SelectionIconProps {
   isMultiSelection: boolean;
   isChecked: boolean;
+  layout: "horizontal" | "vertical";
 }
-const SelectionIcon = ({ isMultiSelection, isChecked }: SelectionIconProps) => {
+
+const SelectionIcon = ({
+  isMultiSelection,
+  isChecked,
+  layout,
+}: SelectionIconProps) => {
   return (
     <>
-      {isMultiSelection ? (
-        <>
-          {isChecked ? (
-            <Icons
-              icon={ICONS.CHECKBOX_CHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          ) : (
-            <Icons
-              icon={ICONS.CHECKBOX_UNCHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          )}
-        </>
+      {isChecked ? (
+        <Icons
+          icon={isMultiSelection ? ICONS.CHECKBOX_CHECKED : ICONS.RADIO_CHECKED}
+          layout={layout}
+          applytheme={false.toString()}
+        />
       ) : (
-        <>
-          {isChecked ? (
-            <Icons
-              icon={ICONS.RADIO_CHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          ) : (
-            <Icons
-              icon={ICONS.RADIO_UNCHECKED}
-              width={35}
-              height={28}
-              applytheme={false.toString()}
-            />
-          )}
-        </>
+        <Icons
+          icon={
+            isMultiSelection ? ICONS.CHECKBOX_UNCHECKED : ICONS.RADIO_UNCHECKED
+          }
+          layout={layout}
+          applytheme={false.toString()}
+        />
       )}
     </>
   );
