@@ -58,6 +58,11 @@ export enum MODES {
   LIGHT = "light",
   DARK = "dark",
 }
+
+export enum LAYOUT {
+  HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
+}
 /**
  * update:
  *  selectionLimit?: number;
@@ -70,7 +75,7 @@ export interface Props {
   displayValue?: string; // read label using this property of menugroup
   theme?: MODES.LIGHT | MODES.DARK;
   selectionColor?: string;
-  layout?: "horizontal" | "vertical";
+  layout?: LAYOUT.HORIZONTAL | LAYOUT.VERTICAL;
 }
 
 export interface DPItemProps {
