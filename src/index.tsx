@@ -47,7 +47,7 @@ export interface CascadingMenuRef {
 const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   const {
     menuGroup,
-    selectedItems: preSelectedItems = preSelection,
+    selectedItems: preSelectedItems = null,
     width = "100%",
     height = "360px",
     displayValue = "label",

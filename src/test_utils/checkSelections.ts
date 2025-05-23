@@ -30,7 +30,7 @@ export const checkSelections = (
     }
     // if the no of childs are more than 1
     if (isActiveItem && newIds && newIds.length > 1) {
-      console.log("3");
+      // console.log("3", isActiveItem, topmostId, newIds, selectionObj);
       return false;
     }
     // add the newIds to the stack

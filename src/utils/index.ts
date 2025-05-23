@@ -96,12 +96,16 @@ export const getConnectedItemByDirection = (
         // console.log("adding", nodeId, "to connectedResult");
         connectedResult[nodeId] = {
           id: nodeId,
-          childIds: [...(selectedItems[nodeId]?.childIds || [])],
+          childIds: [
+            ...(isSingleSelection
+              ? [nodeId]
+              : selectedItems[nodeId]?.childIds || []),
+          ],
         };
       }
 
       // console.log("parentId", parentId);
-      // if the child is not present in the selectedItems, then add it to the list
+      // able to connect the path even if the item is not part of the selections, works for back propogation
       if (parentId && !selectedItems[nodeId]) {
         connectedResult[parentId] = {
           id: parentId,
