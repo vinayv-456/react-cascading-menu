@@ -1,33 +1,43 @@
 import React from "react";
-import { mvpSelectedProps } from "../types";
+import { ItemId, MenuGroupMap } from "../types";
 import "../classes.css";
 import { TagContainer, TagHover, TagItem, TagLabel } from "../styles";
 import Icons, { ICONS } from "../icons";
 interface Props {
-  leafNodes: mvpSelectedProps[][];
-  handleTagRemoval: (selectionPath: mvpSelectedProps[]) => void;
-  handleSelectionPopulation: (selectionPath: mvpSelectedProps[]) => void;
+  leafNodes: ItemId[][];
+  handleTagRemoval: (selectionPath: ItemId[]) => void;
+  handleSelectionPopulation: (selectionPath: ItemId[]) => void;
+  menuGroupMap: MenuGroupMap;
 }
 
 function Tags(props: Props) {
-  const { leafNodes, handleTagRemoval, handleSelectionPopulation } = props;
+  const {
+    leafNodes,
+    menuGroupMap,
+    handleTagRemoval,
+    handleSelectionPopulation,
+  } = props;
 
   return (
     <TagContainer>
       {leafNodes.map((selectionPath) => {
         const leafIndex = selectionPath.length - 1;
         const leafNode = selectionPath[leafIndex];
-        if (!leafNode.label) return;
+        const menuItem = menuGroupMap[leafNode];
+        if (!menuItem || !menuItem.label) return null;
+        const { label: leafNodeLabel, id: leafNodeId } = menuItem;
         return (
-          <TagItem key={leafNode.id}>
+          <TagItem key={leafNodeId}>
             <TagLabel onClick={() => handleSelectionPopulation(selectionPath)}>
-              {leafNode.label}
+              {leafNodeLabel}
             </TagLabel>
             <TagHover>
               {selectionPath.map((e, index) => {
                 if (index === 0) return "";
-                if (index === leafIndex) return e.label;
-                return `${e.label} => `;
+                const item = menuGroupMap[e];
+                if (!item) return "";
+                if (index === leafIndex) return item.label;
+                return `${item.label} => `;
               })}
             </TagHover>
             <span

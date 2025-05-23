@@ -6,6 +6,7 @@ import "./styles.css";
 
 const App = () => {
   const ref = useRef();
+
   const fetchSelectionItemsLabels = () => {
     console.log(
       "get selections as label array",

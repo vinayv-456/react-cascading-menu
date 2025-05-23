@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { DPItemProps, Item, MenuGroup, SelectedItemType } from "../types";
 import "../classes.css";
-import { getParentGroup } from "../utils";
 import {
   DropdownGroup,
   DropdownNoresults,
@@ -34,7 +33,7 @@ const MenuGroupComp: React.FC<DPItemProps> = (props) => {
   const [allItemsChecked, setAllItemsChecked] = useState(false);
   const handleSelectAll = () => {
     setAllItemsChecked((prev: boolean) => {
-      handleMultipleChildrenSel(options || [], groupId, groupHeading, !prev);
+      handleMultipleChildrenSel(options || [], groupId, !prev);
       return !prev;
     });
   };

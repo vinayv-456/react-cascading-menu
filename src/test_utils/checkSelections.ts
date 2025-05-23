@@ -1,6 +1,7 @@
-import { ItemId, SelectedItemType } from "../types";
+import { ItemId, MenuGroupMap, SelectedItemType } from "../types";
 
 export const checkSelections = (
+  menuObj: MenuGroupMap,
   selectionObj: SelectedItemType,
   topParentId: ItemId,
   isActiveItem: boolean
@@ -20,7 +21,7 @@ export const checkSelections = (
     if (topmostId !== topParentId) {
       // checks if all the childs are having correct parentId
       const isCorrectParent = newIds?.some(
-        (e) => selectionObj[e]?.parentId !== topmostId
+        (e) => menuObj[e]?.parentId !== topmostId
       );
       if (isCorrectParent) {
         console.log("===2===");
@@ -29,7 +30,7 @@ export const checkSelections = (
     }
     // if the no of childs are more than 1
     if (isActiveItem && newIds && newIds.length > 1) {
-      console.log("3");
+      // console.log("3", isActiveItem, topmostId, newIds, selectionObj);
       return false;
     }
     // add the newIds to the stack

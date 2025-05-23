@@ -16,12 +16,22 @@ export interface MenuGroup {
   isMultiSelection?: boolean;
 }
 
-export interface parentGroupLookUp {
-  [childGrp: string]: string;
+export interface MenuGroupMapVal {
+  id: ItemId;
+  label: string;
+  value: string;
+  groupHeading: string;
+  childIds?: ItemId[] | null;
+  parentId?: ItemId;
+  isMultiSelection?: boolean;
+}
+
+export interface MenuGroupMap {
+  [id: ItemId]: MenuGroupMapVal;
 }
 
 export interface FormatedSelections {
-  id: number;
+  id: ItemId;
   label: string;
   value: string;
   groupHeading: string;
@@ -29,30 +39,20 @@ export interface FormatedSelections {
   parentId?: ItemId;
   childGroup?: string;
   childIds?: ItemId[];
-  options: FormatedSelections[] | null;
+  options: FormatedSelections[];
 }
 
 export type emptyObj = {};
+
 export interface SelectedItemTypeVal {
   id: ItemId;
-  label: string;
-  value: string;
-  groupHeading: string;
-  // connecting front and back to traversing from one to another
-  parentGroup?: string;
-  parentId?: ItemId;
-  childGroup?: string;
-  childIds?: ItemId[] | null;
-  isMultiSelection?: boolean; // used during bulk addition
+  childIds: ItemId[] | null;
+}
+export interface SelectedItemType {
+  [id: ItemId]: SelectedItemTypeVal;
 }
 
 export type ItemId = number | string;
-
-export interface SelectedItemType {
-  // [grpHeading: string]: {
-  [id: ItemId]: SelectedItemTypeVal;
-  // };
-}
 
 export enum MODES {
   LIGHT = "light",
@@ -64,7 +64,7 @@ export enum MODES {
  */
 export interface Props {
   menuGroup: MenuGroup;
-  selectedItems?: FormatedSelections[];
+  selectedItems?: FormatedSelections | null;
   width?: string;
   height?: string;
   displayValue?: string; // read label using this property of menugroup
@@ -87,16 +87,9 @@ export interface DPItemProps {
   handleMultipleChildrenSel: (
     items: MenuGroup[] | [],
     parentId: ItemId,
-    parentGroup: string,
     allItemsChecked: boolean
   ) => void;
   level: number;
-}
-
-export interface mvpSelectedProps {
-  label: string;
-  id: ItemId;
-  value: string;
 }
 
 export interface IconType {
