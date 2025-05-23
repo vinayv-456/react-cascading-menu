@@ -3,13 +3,14 @@
 **Cascading Menu** is a multi-selectable cascading menu component for React. It enhances user experience and navigation efficiency with the following features:
 
 ## Features
-1. Visual Hierarchy and Context Clarity
-2. Tag-Based Navigation and Deletion
-3. Interactive Selection and Deletion
-4. Search Capability
-5. Multi/Single-Select Flexibility at Each Level
-6. Maintains Selection Order
-7. Theme Customization Options
+1. Layout Mode/Orientation
+2. Visual Hierarchy and Context Clarity
+3. Tag-Based Navigation and Deletion
+4. Interactive Selection and Deletion
+5. Search Capability
+6. Multi/Single-Select Flexibility at Each Level
+7. Maintains Selection Order
+8. Theme Customization Options
 
 - **Navigation Efficiency**: Searching and selecting options in traditional dependent dropdowns is difficult and time-consuming as the user needs to navigate through multiple dropdowns. Cascading Menu provides easy access to options through interactive selection or global search, making selection faster and more efficient.
 - **Enhanced User Experience**: Understanding relationships between options in dependent dropdowns can be challenging. Cascading Menu provides a clear visual representation of the option hierarchy.
@@ -17,6 +18,8 @@
 ## Demo
 ![Untitled-video-Made-with-Clipchamp-_5_](https://github.com/user-attachments/assets/c4c9d8c3-02ef-43e3-9d15-ca40b8116fa1)
 
+## Screenshots
+![image](https://github.com/user-attachments/assets/cac9ccee-3358-41c8-8772-1c25cad6e2dc)
 
 ### Installation
 ```sh
