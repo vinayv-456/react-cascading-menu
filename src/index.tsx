@@ -532,24 +532,33 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           handleTagRemoval={handleTagRemoval}
           handleSelectionPopulation={handleSelectionPopulation}
           layout={layout}
+          allItems={allItems}
+          handleBulkAddition={handleBulkAddition}
         >
-          <Search
+          {/* <Search
             parentId={menuGroup.id}
             allItems={allItems}
             menuGroupMap={menuGroupMap}
             handleBulkAddition={handleBulkAddition}
-          />
-          <MenuGroupComp
-            menuGroup={menuGroup}
-            displayValue={displayValue}
-            showNext={true}
-            activeItem={activeItem}
-            selectedItems={selectedItems}
-            handleItemSelection={handleItemSelection}
-            level={0}
-            handleMultipleChildrenSel={handleMultiChildren}
-            layout={layout}
-          />
+          /> */}
+          <div
+            style={{
+              position: "relative",
+              height: layout === "vertical" ? "400px" : "300px",
+            }}
+          >
+            <MenuGroupComp
+              menuGroup={menuGroup}
+              displayValue={displayValue}
+              showNext={true}
+              activeItem={activeItem}
+              selectedItems={selectedItems}
+              handleItemSelection={handleItemSelection}
+              level={0}
+              handleMultipleChildrenSel={handleMultiChildren}
+              layout={layout}
+            />
+          </div>
         </CascadingDropdown>
       </MainContainer>
     </ThemeProvider>

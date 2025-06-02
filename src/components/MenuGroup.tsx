@@ -132,27 +132,24 @@ const MenuGroupComp: React.FC<
         </div>
       </DropdownGroup>
       {layout === "horizontal" &&
-        options?.map((ele: Item) => {
-          const isSubMenuActive = activeItem?.[ele.id];
-          const hasOptions = ele.options;
-          return (
-            <React.Fragment key={ele.id}>
-              {isSubMenuActive && hasOptions && (
-                <MenuGroupComp
-                  menuGroup={ele}
-                  activeItem={activeItem}
-                  selectedItems={selectedItems}
-                  displayValue={displayValue}
-                  showNext={false}
-                  handleItemSelection={handleItemSelection}
-                  handleMultipleChildrenSel={handleMultipleChildrenSel}
-                  level={level + 1}
-                  layout={layout}
-                />
-              )}
-            </React.Fragment>
-          );
-        })}
+        showNext &&
+        options?.length &&
+        options.map((ele) =>
+          activeItem?.[ele.id]?.id === ele.id && ele.options ? (
+            <MenuGroupComp
+              key={ele.id}
+              menuGroup={ele}
+              activeItem={activeItem}
+              selectedItems={selectedItems}
+              displayValue={displayValue}
+              showNext={true}
+              handleItemSelection={handleItemSelection}
+              handleMultipleChildrenSel={handleMultipleChildrenSel}
+              level={level + 1}
+              layout={layout}
+            />
+          ) : null
+        )}
     </>
   );
 };
