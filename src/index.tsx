@@ -35,6 +35,7 @@ import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 import { preSelection } from "../data/constants";
+import CascadingDropdown from "./components/CascadingDropdown";
 export interface CascadingMenuRef {
   getSelection: () => FormatedSelections | null;
   getAllItemsSelected: () => string[][];
@@ -525,13 +526,19 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
       <MainContainer width={width} height={height}>
-        <Search
-          parentId={menuGroup.id}
-          allItems={allItems}
+        <CascadingDropdown
+          leafNodes={leafNodes}
           menuGroupMap={menuGroupMap}
-          handleBulkAddition={handleBulkAddition}
-        />
-        <MenuGroupContainer layout={layout}>
+          handleTagRemoval={handleTagRemoval}
+          handleSelectionPopulation={handleSelectionPopulation}
+          layout={layout}
+        >
+          <Search
+            parentId={menuGroup.id}
+            allItems={allItems}
+            menuGroupMap={menuGroupMap}
+            handleBulkAddition={handleBulkAddition}
+          />
           <MenuGroupComp
             menuGroup={menuGroup}
             displayValue={displayValue}
@@ -543,15 +550,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
             handleMultipleChildrenSel={handleMultiChildren}
             layout={layout}
           />
-        </MenuGroupContainer>
-        {/* render the tag list */}
-        <Tags
-          leafNodes={leafNodes}
-          handleTagRemoval={handleTagRemoval}
-          handleSelectionPopulation={handleSelectionPopulation}
-          menuGroupMap={menuGroupMap}
-        />
-        <ClearTagsBtn onClick={handleClearAllTags}>Clear All</ClearTagsBtn>
+        </CascadingDropdown>
       </MainContainer>
     </ThemeProvider>
   );
