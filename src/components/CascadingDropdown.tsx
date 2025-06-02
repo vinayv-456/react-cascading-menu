@@ -46,12 +46,15 @@ const TagsWrapper = styled.div`
   }
 `;
 
-const SearchWrapper = styled.div`
-  flex: 2;
-  min-width: 120px;
+const SearchTermChip = styled.span`
   margin-left: 8px;
-  display: flex;
-  align-items: center;
+  background: #222a3a;
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 `;
 
 const DropdownMenu = styled.div<{ isOpen: boolean; layout: string }>`
@@ -88,6 +91,7 @@ const CascadingDropdown: React.FC<Props> = ({
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -106,15 +110,33 @@ const CascadingDropdown: React.FC<Props> = ({
     };
   }, [handleClickOutside]);
 
-  // Split children: first is search, rest is menu
-  let searchChild: ReactNode = null;
+  // Listen for keypresses when dropdown is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        setSearchTerm((prev) => prev + e.key);
+      } else if (e.key === "Backspace") {
+        setSearchTerm((prev) => prev.slice(0, -1));
+      } else if (e.key === "Escape") {
+        setSearchTerm("");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  // Reset search term when dropdown closes
+  useEffect(() => {
+    if (!isOpen) setSearchTerm("");
+  }, [isOpen]);
+
+  // Split children: only menu is rendered in dropdown for now
   let menuChildren: ReactNode = null;
   if (Array.isArray(children)) {
-    searchChild = children[0];
-    menuChildren = children.slice(1);
+    menuChildren = children[1];
   } else {
-    searchChild = children;
-    menuChildren = null;
+    menuChildren = children;
   }
 
   return (
@@ -128,7 +150,7 @@ const CascadingDropdown: React.FC<Props> = ({
             handleSelectionPopulation={handleSelectionPopulation}
           />
         </TagsWrapper>
-        <SearchWrapper>{searchChild}</SearchWrapper>
+        {searchTerm && <SearchTermChip>{searchTerm}</SearchTermChip>}
         <span>▼</span>
       </DropdownTrigger>
       <DropdownMenu layout={layout} isOpen={isOpen}>
