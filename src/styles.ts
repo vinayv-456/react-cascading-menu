@@ -23,9 +23,6 @@ export const FlexContainer = styled.div`
 
 export const MainContainer = styled.div<StyledCompProps>`
   width: max(350px, ${(props) => props.width});
-  height: ${(props) => props.height};
-  min-height: 200px;
-  min-width: 200px;
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.background2};
@@ -70,7 +67,7 @@ export const DropdownGroup = styled.div<
     border-bottom: 3px dotted #f6f6f6;
     height: auto;
     max-height: none;
-    margin-left: ${props.level ? props.level * 1.5 : 0}rem;
+    padding-left: ${props.level ? props.level * 1.5 : 0}rem;
   `
       : `
     position: absolute;
@@ -159,17 +156,6 @@ export const DropdownNoresults = styled.div<StyledCompProps>`
   cursor: default;
   display: block;
   padding: 8px 10px;
-`;
-
-export const TagContainer = styled.div`
-  width: 100%;
-  min-height: 100px;
-  max-height: 125px;
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 5px;
-  margin-top: 10px;
 `;
 
 export const TagItem = styled.div`

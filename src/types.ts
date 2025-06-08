@@ -71,7 +71,6 @@ export interface Props {
   menuGroup: MenuGroup;
   selectedItems?: FormatedSelections | null;
   width?: string;
-  height?: string;
   displayValue?: string; // read label using this property of menugroup
   theme?: MODES.LIGHT | MODES.DARK;
   selectionColor?: string;

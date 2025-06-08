@@ -1,7 +1,7 @@
 import React from "react";
 import { ItemId, MenuGroupMap } from "../types";
 import "../classes.css";
-import { TagContainer, TagHover, TagItem, TagLabel } from "../styles";
+import { TagHover, TagItem, TagLabel } from "../styles";
 import Icons, { ICONS } from "../icons";
 interface Props {
   leafNodes: ItemId[][];
@@ -19,7 +19,7 @@ function Tags(props: Props) {
   } = props;
 
   return (
-    <TagContainer>
+    <>
       {leafNodes.map((selectionPath) => {
         const leafIndex = selectionPath.length - 1;
         const leafNode = selectionPath[leafIndex];
@@ -49,7 +49,7 @@ function Tags(props: Props) {
           </TagItem>
         );
       })}
-    </TagContainer>
+    </>
   );
 }
 

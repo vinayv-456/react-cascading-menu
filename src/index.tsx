@@ -35,6 +35,7 @@ import MenuGroupComp from "./components/MenuGroup";
 import { MenuGroupContainer, MainContainer, ClearTagsBtn } from "./styles";
 import Search from "./components/Search";
 import { preSelection } from "../data/constants";
+import CascadingDropdown from "./components/CascadingDropdown";
 export interface CascadingMenuRef {
   getSelection: () => FormatedSelections | null;
   getAllItemsSelected: () => string[][];
@@ -50,7 +51,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     menuGroup,
     selectedItems: preSelectedItems = null,
     width = "100%",
-    height = "360px",
     displayValue = "label",
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
@@ -524,34 +524,36 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   return (
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
-      <MainContainer width={width} height={height}>
-        <Search
-          parentId={menuGroup.id}
-          allItems={allItems}
-          menuGroupMap={menuGroupMap}
-          handleBulkAddition={handleBulkAddition}
-        />
-        <MenuGroupContainer layout={layout}>
-          <MenuGroupComp
-            menuGroup={menuGroup}
-            displayValue={displayValue}
-            showNext={true}
-            activeItem={activeItem}
-            selectedItems={selectedItems}
-            handleItemSelection={handleItemSelection}
-            level={0}
-            handleMultipleChildrenSel={handleMultiChildren}
-            layout={layout}
-          />
-        </MenuGroupContainer>
-        {/* render the tag list */}
-        <Tags
+      <MainContainer width={width}>
+        <CascadingDropdown
           leafNodes={leafNodes}
+          menuGroupMap={menuGroupMap}
           handleTagRemoval={handleTagRemoval}
           handleSelectionPopulation={handleSelectionPopulation}
-          menuGroupMap={menuGroupMap}
-        />
-        <ClearTagsBtn onClick={handleClearAllTags}>Clear All</ClearTagsBtn>
+          layout={layout}
+          allItems={allItems}
+          handleBulkAddition={handleBulkAddition}
+          mainParentId={menuGroup.id}
+        >
+          <div
+            style={{
+              position: "relative",
+              height: layout === "vertical" ? "400px" : "300px",
+            }}
+          >
+            <MenuGroupComp
+              menuGroup={menuGroup}
+              displayValue={displayValue}
+              showNext={true}
+              activeItem={activeItem}
+              selectedItems={selectedItems}
+              handleItemSelection={handleItemSelection}
+              level={0}
+              handleMultipleChildrenSel={handleMultiChildren}
+              layout={layout}
+            />
+          </div>
+        </CascadingDropdown>
       </MainContainer>
     </ThemeProvider>
   );
