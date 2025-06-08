@@ -1,6 +1,6 @@
 {
   "name": "react-cascading-menu",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "React-Cascading-Menu is a multi-selectable cascading menu component for React, providing horizontal navigation and global search for efficient option selection.",
   "main": "build",
   "scripts": {
