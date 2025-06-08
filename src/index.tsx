@@ -51,7 +51,6 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
     menuGroup,
     selectedItems: preSelectedItems = null,
     width = "100%",
-    height = "360px",
     displayValue = "label",
     theme: themeMode = MODES.LIGHT,
     selectionColor = "#007BFF",
@@ -525,7 +524,7 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
   return (
     <ThemeProvider theme={themeDefined}>
       <span>{error}</span>
-      <MainContainer width={width} height={height}>
+      <MainContainer width={width}>
         <CascadingDropdown
           leafNodes={leafNodes}
           menuGroupMap={menuGroupMap}
@@ -534,13 +533,8 @@ const Index = forwardRef<CascadingMenuRef, Props>((props, ref) => {
           layout={layout}
           allItems={allItems}
           handleBulkAddition={handleBulkAddition}
+          mainParentId={menuGroup.id}
         >
-          {/* <Search
-            parentId={menuGroup.id}
-            allItems={allItems}
-            menuGroupMap={menuGroupMap}
-            handleBulkAddition={handleBulkAddition}
-          /> */}
           <div
             style={{
               position: "relative",

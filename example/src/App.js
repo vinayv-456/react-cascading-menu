@@ -6,7 +6,7 @@ import "./styles.css";
 
 const App = () => {
   const ref = useRef();
-  const [layout, setLayout] = useState("horizontal");
+  const [layout, setLayout] = useState("vertical");
   const fetchSelectionItemsLabels = () => {
     console.log(
       "get selections as label array",
@@ -33,12 +33,11 @@ const App = () => {
         // selectedItems={preSelection}
         isMultiSelection={true}
         displayValue="value"
-        width={layout === "vertical" ? "40%" : "100%"}
-        height={layout === "vertical" ? "1000px" : "400px"}
+        width={layout === "vertical" ? "40%" : "60%"}
         theme="light"
         layout={layout}
       />
-      <br />
+      {/* <br /> */}
       <br />
 
       <button className="btn" onClick={fetchSelectionItems}>

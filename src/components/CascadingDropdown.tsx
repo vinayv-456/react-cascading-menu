@@ -21,7 +21,6 @@ const DropdownTrigger = styled.div`
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background: ${(props) => props.theme.background};
   color: ${(props) => props.theme.text};
   &:hover {
@@ -29,36 +28,42 @@ const DropdownTrigger = styled.div`
   }
 `;
 
-const TagsWrapper = styled.div`
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
+const TriggerContent = styled.div`
   display: flex;
   align-items: center;
-  .tag-container {
-    margin: 0;
-    padding: 0;
-    min-height: 0;
-    max-height: 60px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    background: none;
+  flex: 1;
+  min-width: 0;
+`;
+
+const TagsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-wrap: wrap;
+`;
+
+const SearchTermInput = styled.input`
+  background: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
+  border: none;
+  outline: none;
+  font-size: 1em;
+  font-weight: 500;
+  margin-left: 8px;
+  min-width: 60px;
+  max-width: 200px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: none;
+  flex: 1;
+  ::placeholder {
+    color: ${({ theme }) => theme.text2 || "#aaa"};
+    opacity: 1;
   }
 `;
 
-const SearchTermChip = styled.span`
-  margin-left: 8px;
-  background: #222a3a;
-  color: #fff;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 1em;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-`;
-
 const SuggestionsPanel = styled.div`
-  background: #232b3a;
+  background: ${({ theme }) => theme.background2 || "#232b3a"};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   border-radius: 6px;
   margin: 8px 8px 12px 8px;
@@ -70,10 +75,10 @@ const SuggestionsPanel = styled.div`
 const SuggestionItem = styled.div`
   padding: 8px 16px;
   cursor: pointer;
-  color: #fff;
+  color: ${({ theme }) => theme.text};
   font-size: 1em;
   &:hover {
-    background: #2d3950;
+    background: ${({ theme }) => theme.selected || "#2d3950"};
   }
 `;
 
@@ -82,7 +87,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean; layout: string }>`
   top: 100%;
   left: 0;
   width: 100%;
-  background: ${(props) => props.theme.background};
+  background: ${(props) => props.theme.background2 || props.theme.background};
   border: 1px solid ${(props) => props.theme.border};
   border-radius: 4px;
   margin-top: 4px;
@@ -113,6 +118,7 @@ interface Props {
   allItems: CompleteObj[];
   handleBulkAddition: (items: SelectedItemType, leafId: ItemId) => void;
   children: ReactNode;
+  mainParentId: ItemId;
 }
 
 const CascadingDropdown: React.FC<Props> = ({
@@ -124,6 +130,7 @@ const CascadingDropdown: React.FC<Props> = ({
   allItems,
   handleBulkAddition,
   children,
+  mainParentId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -147,8 +154,14 @@ const CascadingDropdown: React.FC<Props> = ({
 
   // Listen for keypresses when dropdown is open
   useEffect(() => {
+    console.log("isOpen", isOpen);
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle typing if input is focused
+      if (document.activeElement && document.activeElement.tagName === "INPUT")
+        return;
+      console.log("e.key", e.key);
+
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         setSearchTerm((prev) => prev + e.key);
       } else if (e.key === "Backspace") {
@@ -235,7 +248,10 @@ const CascadingDropdown: React.FC<Props> = ({
       };
       handleBulkAddition(formatedSelection, nextParentId);
       setSearchTerm("");
-      // setIsOpen(false);
+      // close only if it is not a multi selection
+      if (menuGroupMap[mainParentId]?.isMultiSelection === false) {
+        setIsOpen(false);
+      }
     }
   };
 
@@ -252,15 +268,25 @@ const CascadingDropdown: React.FC<Props> = ({
   return (
     <DropdownContainer ref={dropdownRef}>
       <DropdownTrigger onClick={() => setIsOpen(!isOpen)}>
-        <TagsWrapper>
-          <Tags
-            leafNodes={leafNodes}
-            menuGroupMap={menuGroupMap}
-            handleTagRemoval={handleTagRemoval}
-            handleSelectionPopulation={handleSelectionPopulation}
-          />
-        </TagsWrapper>
-        {searchTerm && <SearchTermChip>{searchTerm}</SearchTermChip>}
+        <TriggerContent>
+          <TagsWrapper>
+            <Tags
+              leafNodes={leafNodes}
+              menuGroupMap={menuGroupMap}
+              handleTagRemoval={handleTagRemoval}
+              handleSelectionPopulation={handleSelectionPopulation}
+            />
+            {isOpen && (
+              <SearchTermInput
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Type to search..."
+                autoFocus
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
+          </TagsWrapper>
+        </TriggerContent>
         <span>▼</span>
       </DropdownTrigger>
       <DropdownMenu layout={layout} isOpen={isOpen}>
