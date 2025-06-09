@@ -58,17 +58,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinayv-456/react-cascading-dropdown.git"
+    "url": "https://github.com/vinayv-456/react-cascading-menu.git"
   },
   "keywords": [
+    "react",
+    "dropdown",
     "cascading",
     "menu",
-    "react"
+    "select",
+    "multiselect",
+    "search",
+    "keyboard-navigation"
   ],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vinayv-456/react-cascading-dropdown/issues"
+    "url": "https://github.com/vinayv-456/react-cascading-menu/issues"
   },
   "homepage": "https://vinayv-456.github.io/react-cascading-menu/"
 }
