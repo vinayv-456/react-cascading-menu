@@ -1,7 +1,7 @@
 {
   "name": "react-cascading-menu",
   "version": "2.1.2",
-  "description": "React-Cascading-Menu is a multi-selectable cascading menu component for React, providing horizontal navigation and global search for efficient option selection.",
+  "description": "A powerful React cascading dropdown component with multi-selection, search functionality, and hierarchical navigation. Perfect for building category selectors, dependent dropdowns, and nested menu systems with TypeScript support.",
   "main": "build/index.js",
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
@@ -62,7 +62,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vinayv-456/react-cascading-menu.git"
+    "url": "git+https://github.com/vinayv-456/react-cascading-menu.git"
   },
   "keywords": [
     "react",
@@ -72,9 +72,25 @@
     "select",
     "multiselect",
     "search",
-    "keyboard-navigation"
+    "keyboard-navigation",
+    "react-component",
+    "ui-component",
+    "navigation",
+    "hierarchical",
+    "nested-dropdown",
+    "tree-select",
+    "category-selector",
+    "filter",
+    "react-dropdown",
+    "dependent-dropdown",
+    "dynamic-dropdown",
+    "breadcrumb"
   ],
-  "author": "",
+  "author": {
+    "name": "Vinay Vallabineni",
+    "email": "vinayvallabineni456@gmail.com",
+    "url": "https://github.com/vinayv-456"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/vinayv-456/react-cascading-menu/issues"
