@@ -6,6 +6,7 @@
 - **Enhanced User Experience**: Understanding relationships between options in dependent dropdowns can be challenging. Cascading Menu provides a clear visual representation of the option hierarchy.
 
 ## Features
+
 1. Layout Mode/Orientation
 2. Visual Hierarchy and Context Clarity
 3. Tag-Based Navigation and Deletion
@@ -16,9 +17,11 @@
 8. Theme Customization Options
 
 ## Demo
+
 ![updated_rc mp4](https://github.com/user-attachments/assets/159c9e0e-5474-4099-ba03-36272d9eab09)
 
 ### Installation
+
 ```sh
 npm install react-cascading-menu
 ```
@@ -26,38 +29,60 @@ npm install react-cascading-menu
 ### Example Usage
 
 ```jsx
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ReactCascadingMenu from "react-cascading-menu";
-import { menuGroup, preSelectedItems } from "./data.js";
+import { menuGroup } from "./data.js";
 
-const App = () => {
+const CascadingMenu = () => {
   const ref = useRef();
+  const [layout, setLayout] = useState("vertical");
 
   const fetchSelectionItemsLabels = () => {
-    console.log("get selections as label array", ref.current?.getAllItemsSelected());
+    console.log(
+      "get selections as label array",
+      ref.current?.getAllItemsSelected()
+    );
   };
 
   const fetchSelectionItems = () => {
     console.log("get selections", ref.current?.getSelection());
   };
 
+  const changeLayout = () => {
+    setLayout((prev) => (prev === "horizontal" ? "vertical" : "horizontal"));
+  };
+
   return (
-    <div>
+    <>
       <ReactCascadingMenu
+        layout={layout}
         ref={ref}
         menuGroup={menuGroup}
-        selectedItems={preSelectedItems}
+        // selectedItems={preSelectedItems}
         isMultiSelection={true}
         displayValue="label"
-        width="70%"
+        width={layout === "vertical" ? "40vw" : "60vw"}
         height="400px"
         theme="light"
       />
-    </div>
+      <br />
+      <button className="btn" onClick={fetchSelectionItems}>
+        get selections
+      </button>
+      <button className="btn" onClick={fetchSelectionItemsLabels}>
+        get selections as label array
+      </button>
+      <span>(Check console logs for results)</span>
+      <div className="md-top">
+        <button className="btn" onClick={changeLayout}>
+          Change layout
+        </button>
+      </div>
+    </>
   );
 };
 
-export default App;
+export default CascadingMenu;
 ```
 
 ### Data Example
@@ -112,5 +137,6 @@ const menuGroup = {
 ```
 
 ## Screenshots
+
 ![1_rc](https://github.com/user-attachments/assets/aa80d7ef-f008-4807-8ad4-87a5ccac2ad4)
 ![2_rc_new](https://github.com/user-attachments/assets/894fbef2-f564-444f-b9ee-4620acc7febd)
