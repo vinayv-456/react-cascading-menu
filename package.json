@@ -2,10 +2,13 @@
   "name": "react-cascading-menu",
   "version": "2.1.2",
   "description": "React-Cascading-Menu is a multi-selectable cascading menu component for React, providing horizontal navigation and global search for efficient option selection.",
-  "main": "build",
+  "main": "build/index.js",
   "scripts": {
     "start": "webpack serve --mode development --open --static ./example/public --entry ./example/src/index.js",
     "build": "webpack --mode production --entry ./src/index.tsx --output-path ./build",
+    "build:watch": "webpack --mode development --entry ./src/index.tsx --output-path ./build --watch",
+    "dev": "concurrently \"npm run build:watch\" \"npm run example:dev\"",
+    "example:dev": "cd example && npm start",
     "test": "jest --watch",
     "deploy": "yarn run build"
   },
@@ -36,6 +39,7 @@
     "@types/react": "^18.3.3",
     "babel-jest": "^29.7.0",
     "babel-loader": "^8.2.3",
+    "concurrently": "^8.2.2",
     "css-loader": "^6.10.0",
     "gh-pages": "^6.1.1",
     "html-webpack-plugin": "^5.6.0",

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Index from "../../src/index.tsx"; // dynamic changes
+import ReactCascadingMenu from "react-cascading-menu"; // Always use built package
 // import { menuGroup, preSelection } from "./constants.js";
 import { menuGroup, preSelection } from "../../data/constants.js";
 import "./styles.css";
@@ -27,7 +27,7 @@ const App = () => {
   };
   return (
     <div>
-      <Index
+      <ReactCascadingMenu
         ref={ref}
         menuGroup={menuGroup}
         // selectedItems={preSelection}
