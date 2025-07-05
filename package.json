@@ -1,6 +1,6 @@
 {
   "name": "react-cascading-menu",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "A powerful React cascading dropdown component with multi-selection, search functionality, and hierarchical navigation. Perfect for building category selectors, dependent dropdowns, and nested menu systems with TypeScript support.",
   "main": "build/index.js",
   "scripts": {
